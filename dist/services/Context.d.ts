@@ -1,4 +1,6 @@
+/// <reference types="koa-router" />
+import Koa from "koa";
 export declare class Context {
-    ctx: any;
-    constructor(ctx: any);
+    ctx: Koa.Context;
+    constructor(ctx: Koa.Context);
 }

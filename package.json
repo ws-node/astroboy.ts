@@ -1,6 +1,6 @@
 {
   "name": "astroboy.ts",
-  "version": "1.0.1-rc1",
+  "version": "1.0.1-rc2",
   "description": "rt",
   "main": "./dist/index.js",
   "scripts": {

@@ -17,7 +17,6 @@ exports.serverInit = (ctx, next) => __awaiter(this, void 0, void 0, function* ()
     const state = ctx.state || (ctx.state = {});
     const scopeId = state["$$scopeId"] = v4_1.default();
     inject_server_1.GlobalDI.createScope(scopeId, { ctx });
-    console.log("start request");
     yield next();
 });
 //# sourceMappingURL=index.js.map

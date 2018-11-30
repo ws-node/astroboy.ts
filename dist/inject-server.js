@@ -36,6 +36,7 @@ class Server {
                     return;
                 const data = {};
                 Object.getOwnPropertyNames(tempInstance).forEach(name => {
+                    // 暂时没做深度拷贝，以后再搞这个。。。
                     data[name] = tempInstance[name];
                 });
                 exports.GlobalServiceMeta.set(t, data);
