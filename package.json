@@ -1,0 +1,38 @@
+{
+  "name": "astroboy-inject",
+  "version": "1.0.0-rc1",
+  "description": "rt",
+  "main": "index.js",
+  "scripts": {
+    "start": "ast dev --ts --inspect=64001 --tsconfig app/tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ws-node/astroboy-inject.git"
+  },
+  "keywords": [
+    "di",
+    "inject",
+    "astroboy"
+  ],
+  "author": "bigmogician",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ws-node/astroboy-inject/issues"
+  },
+  "homepage": "https://github.com/ws-node/astroboy-inject#readme",
+  "dependencies": {
+    "@bonbons/di": "1.3.1",
+    "@types/koa": "^2.0.47",
+    "@types/koa-router": "^7.0.35",
+    "@types/node": "^10.12.10",
+    "astroboy": "^0.0.35",
+    "astroboy-router": "^1.0.0-rc.26"
+  },
+  "devDependencies": {
+    "astroboy-cli": "^0.0.8",
+    "ts-node": "^7.0.1",
+    "tslint": "5.11.0",
+    "typescript": "3.0.1"
+  }
+}

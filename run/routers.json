@@ -1,0 +1,10 @@
+[
+  [
+    "GET",
+    [
+      "/v1/api/test/get"
+    ],
+    "test",
+    "Get"
+  ]
+]

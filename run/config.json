@@ -1,0 +1,9 @@
+{
+  "view": {
+    "root": "/Users/bigmogician/Documents/github.com/ws-node/astroboy-inject/app/views",
+    "cache": false,
+    "defaultExtension": ".html",
+    "defaultViewEngine": "",
+    "mapping": {}
+  }
+}
