@@ -3,6 +3,7 @@ export * from "./decorators/controller";
 export * from "./middlewares";
 export * from "./services/Context";
 export * from "./services/Injector";
+export * from "./services/BaseClass";
 export * from "./inject-server";
 export * from "astroboy-router";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";

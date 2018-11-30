@@ -9,24 +9,24 @@ export function Injectable(config?: Partial<{
     const { token = undefined, type = InjectScope.Scope } = config || {};
     const prototype: IBaseInjectable = target.prototype;
     prototype.__valid = true;
-    const implement = class {
-      constructor(ctx) {
-        const data = GlobalServiceMeta.get(token || implement) || {};
+    const DYNAMIC_SERVICE = class {
+      constructor() {
+        const data = GlobalServiceMeta.get(token || DYNAMIC_SERVICE) || {};
         Object.keys(data).forEach(k => this[k] = data[k]);
       }
     };
-    Object.defineProperty(implement, "name", { value: target.name });
+    Object.defineProperty(DYNAMIC_SERVICE, "name", { value: target.name });
     Object.getOwnPropertyNames(prototype).forEach(name => {
       Object.defineProperty(
-        implement.prototype,
+        DYNAMIC_SERVICE.prototype,
         name,
         Object.getOwnPropertyDescriptor(prototype, name)
       );
     });
     // @ts-ignore
-    implement.prototype.__proto__ = target.prototype.__proto__;
-    GlobalSourceDI.register(token || implement, target, InjectScope.Singleton);
-    GlobalDI.register(token || implement, implement, type);
-    return <typeof target>implement;
+    DYNAMIC_SERVICE.prototype.__proto__ = target.prototype.__proto__;
+    GlobalSourceDI.register(token || DYNAMIC_SERVICE, target, InjectScope.Singleton);
+    GlobalDI.register(token || DYNAMIC_SERVICE, DYNAMIC_SERVICE, type);
+    return <typeof target>DYNAMIC_SERVICE;
   };
 }

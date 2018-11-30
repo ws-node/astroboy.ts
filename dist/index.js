@@ -5,6 +5,10 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./decorators/injectable"));
 __export(require("./decorators/controller"));
+__export(require("./middlewares"));
+__export(require("./services/Context"));
+__export(require("./services/Injector"));
+__export(require("./services/BaseClass"));
 __export(require("./inject-server"));
 __export(require("astroboy-router"));
 const astroboy_router_1 = require("astroboy-router");

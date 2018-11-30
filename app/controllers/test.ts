@@ -1,19 +1,21 @@
 import TestService from "../services/test";
-import { Controller, Context, API } from "../../src";
+import { Controller, Context, API, BaseClass } from "../../src";
 
 @Controller("test")
-class TestController {
+class TestController extends BaseClass {
 
-  constructor(private ctx: Context, private test: TestService) {
-
+  constructor(private context: Context, private test: TestService) {
+    super(context.ctx);
   }
 
   @API("GET", "get")
   public Get() {
     console.log(this);
     this.test.reset(4534);
-    // @ts-ignore
-    this.ctx.body = this.test.demoMethod2();
+    this.ctx.body = JSON.stringify({
+      status: this.test.demoMethod2(),
+      config: this.getConfig()
+    });
   }
 
 }
