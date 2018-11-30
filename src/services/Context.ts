@@ -1,4 +1,5 @@
+import Koa from "koa";
 
 export class Context {
-  constructor(public ctx: any) { }
+  constructor(public ctx: Koa.Context) { }
 }
