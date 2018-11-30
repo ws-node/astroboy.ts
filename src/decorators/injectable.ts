@@ -16,11 +16,11 @@ export function Injectable(config?: Partial<{
       }
     };
     Object.defineProperty(implement, "name", { value: target.name });
-    Object.getOwnPropertyNames(target.prototype).forEach(name => {
+    Object.getOwnPropertyNames(prototype).forEach(name => {
       Object.defineProperty(
         implement.prototype,
         name,
-        Object.getOwnPropertyDescriptor(target.prototype, name)
+        Object.getOwnPropertyDescriptor(prototype, name)
       );
     });
     // @ts-ignore

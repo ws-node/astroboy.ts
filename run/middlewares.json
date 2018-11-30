@@ -1,5 +1,10 @@
 [
   {
+    "priority": 0.1,
+    "name": "server-init",
+    "enable": true
+  },
+  {
     "priority": 3,
     "name": "astroboy-static",
     "enable": true,

@@ -1,19 +1,17 @@
-import { Router, API } from "astroboy-router";
-import { BaseClass } from "astroboy";
 import TestService from "../services/test";
-import { Controller } from "../../src";
+import { Controller, Context, API } from "../../src";
 
 @Controller("test")
 class TestController {
 
-  constructor(private test: TestService) {
+  constructor(private ctx: Context, private test: TestService) {
 
   }
 
   @API("GET", "get")
   public Get() {
     console.log(this);
-    console.log(this.test.demoMethod2());
+    this.test.reset(4534);
     // @ts-ignore
     this.ctx.body = this.test.demoMethod2();
   }

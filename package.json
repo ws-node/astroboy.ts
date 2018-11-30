@@ -26,8 +26,10 @@
     "@types/koa": "^2.0.47",
     "@types/koa-router": "^7.0.35",
     "@types/node": "^10.12.10",
+    "@types/uuid": "^3.4.4",
     "astroboy": "^0.0.35",
-    "astroboy-router": "^1.0.0-rc.26"
+    "astroboy-router": "^1.0.0-rc.26",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "astroboy-cli": "^0.0.8",
