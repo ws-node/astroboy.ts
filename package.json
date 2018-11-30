@@ -2,7 +2,7 @@
   "name": "astroboy-inject",
   "version": "1.0.0-rc1",
   "description": "rt",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "start": "ast dev --ts --inspect=64001 --tsconfig app/tsconfig.json"
   },
