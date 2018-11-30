@@ -1,6 +1,6 @@
 {
   "name": "astroboy-inject",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-rc2",
   "description": "rt",
   "main": "./dist/index.js",
   "scripts": {
