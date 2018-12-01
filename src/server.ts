@@ -4,7 +4,7 @@ import { Context } from "./services/Context";
 import { InjectService } from "./services/Injector";
 import { ConfigCollection, ConfigEntry, ConfigToken, Configs } from "./services/Configs";
 import { GlobalDI, optionAssign, getScopeId, setColor } from "./utils";
-import { AST_BASE, ENV, defaultEnv } from "./configs";
+import { ENV, defaultEnv } from "./configs";
 import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
 
@@ -275,10 +275,18 @@ export class Server {
     this.scoped(Scope);
   }
 
+  private readConfigs(configs: any = {}) {
+    this.configs.toArray().forEach(({ token }) => {
+      const key = token.key.toString();
+      if (/Symbol\(config::(.+)\)$/.test(key)) {
+        this.option(token, configs[RegExp.$1] || {});
+      }
+    });
+  }
+
   private startApp(onStart: () => void) {
     new this.appBuilder(this.appConfigs || {}).on("start", (app: Koa) => {
-      this.option(ENV, app["config"]["@astroboy.ts"] || {});
-      this.option(AST_BASE, { app, config: app["config"] || {} });
+      this.readConfigs(app["config"]);
       this.resolveInjections();
       onStart && onStart();
     }).on("error", (_, ctx) => {

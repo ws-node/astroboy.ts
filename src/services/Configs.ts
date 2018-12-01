@@ -7,7 +7,7 @@ import {
 export type ConfigToken<T> = IToken<T>;
 export type ConfigEntry<T> = IEntry<T>;
 
-export const createToken: ITokenGenerator = (key: string) => ({ key: Symbol(`ASTROBOY-TS-TOKEN:${key}`) });
+export const createToken: ITokenGenerator = (key: string) => ({ key: Symbol(key) });
 
 export class ConfigCollection implements IConfigCollection {
 

@@ -1,6 +1,6 @@
 import TestService from "../services/test";
 import Test02Service from "../services/test02";
-import { Controller, API, Configs, AST_BASE, AstroboyContext, ENV } from "../../src";
+import { Controller, API, Configs, AstroboyContext, ENV } from "../../src";
 
 interface GetQuery {
   id: string;
@@ -22,9 +22,7 @@ class TestController {
   public Get({ id, name }: GetQuery) {
     this.test02.add(345);
     this.test.reset(4534);
-    const configBase = this.configs.get(AST_BASE);
     const env = this.configs.get(ENV);
-    // console.log(configBase);
     // console.log(env);
     // console.log(this.base);
     const { ctx } = this.base;
@@ -34,7 +32,6 @@ class TestController {
       config: this.base.getConfig(),
       haha: this.notMethod(),
       env,
-      configBase,
       type: ctx.type,
       id, name,
       t05: this.test.t05 === this.test.t02.t05,

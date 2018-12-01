@@ -9,5 +9,5 @@ export const defaultEnv: IENV = {
   showTrace: false
 };
 
-/** node env环境变量 */
-export const ENV = createToken<IENV>("ENV");
+/** astroboy.ts环境变量 */
+export const ENV = createToken<IENV>("config::@astroboy.ts");
