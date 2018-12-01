@@ -2,6 +2,8 @@ import { Constructor, IBaseInjectable } from "@bonbons/di";
 import { Router } from "astroboy-router";
 import { createInstance, GlobalImplements, getInjector, getShortScopeId, setColor } from "../utils";
 import { InjectService } from "../services/Injector";
+import { Configs } from "../services/Configs";
+import { ENV } from "../configs";
 
 export function Controller(prefix: string) {
   return function <T>(target: Constructor<T>) {
@@ -36,10 +38,22 @@ export function Controller(prefix: string) {
             throw e;
           } finally {
             const injector: InjectService = this["$$injector"];
-            injector["INTERNAL_dispose"]();
-            console.log(`${setColor("blue", "[astroboy.ts]")} : scope ${
-              setColor("cyan", getShortScopeId(injector.scopeId))
-              } is disposed [${setColor("red", new Date().getTime())}].`);
+            if (!injector) {
+              console.log(setColor("red", "[astroboy.ts] warning: $$injector is lost, memory weak."));
+              return;
+            }
+            injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
+            const { mode } = injector.get(Configs).get(ENV);
+            if (mode !== "production" && mode !== "prod") {
+              console.log(`${
+                setColor("blue", "[astroboy.ts]")
+                } : scope ${
+                setColor("cyan", getShortScopeId(injector.scopeId))
+                } is disposed [${
+                setColor("red", new Date().getTime())
+                }].`
+              );
+            }
           }
         };
         Object.defineProperty(prototype, name, descriptor);

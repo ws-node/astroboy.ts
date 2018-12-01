@@ -1,8 +1,8 @@
-import Koa from "koa";
 import get from "lodash/get";
 import uuid from "uuid/v4";
 import { Constructor, getDependencies, DIContainer, ConfigsCollection, ScopeID } from "@bonbons/di";
 import { InjectService } from "./services/Injector";
+import { IContext } from "./typings/IContext";
 
 export const Colors = {
   reset: "\x1b[0m",
@@ -22,12 +22,12 @@ export function setColor(name: keyof typeof Colors, value: any): string {
 export const GlobalDI = new DIContainer();
 export const GlobalImplements = new Map<any, any>();
 
-export function setScopeId(ctx: Koa.Context) {
+export function setScopeId(ctx: IContext) {
   const state = ctx.state || (ctx.state = {});
   return state["$$scopeId"] = uuid();
 }
 
-export function getScopeId(ctx: Koa.Context, short?: boolean): ScopeID {
+export function getScopeId(ctx: IContext, short?: boolean): ScopeID {
   if (!short) return get(ctx, "state['$$scopeId']");
   return getShortScopeId(getScopeId(ctx, false));
 }
@@ -36,15 +36,15 @@ export function getShortScopeId(scopeId: ScopeID): ScopeID {
   return (scopeId || "").toString().split("-")[0];
 }
 
-export function getInjector(ctx: Koa.Context) {
+export function getInjector(ctx: IContext) {
   return GlobalDI.get(InjectService, getScopeId(ctx));
 }
 
-export function resolveDepts<T>(target: Constructor<T>, ctx: Koa.Context) {
+export function resolveDepts<T>(target: Constructor<T>, ctx: IContext) {
   return GlobalDI.getDepedencies(getDependencies(target) || [], getScopeId(ctx));
 }
 
-export function createInstance<T>(target: Constructor<T>, ctx: Koa.Context) {
+export function createInstance<T>(target: Constructor<T>, ctx: IContext) {
   return new target(...resolveDepts(target, ctx));
 }
 

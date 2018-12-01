@@ -84,9 +84,15 @@ export class Server {
       onStart && onStart();
     }).on("error", (_, ctx) => {
       this.di.dispose(getScopeId(ctx));
-      console.log(`${setColor("blue", "[astroboy.ts]")} : scope ${
-        setColor("cyan", getScopeId(ctx, true))
-        } is disposed (global error handler).`);
+      const { mode } = this.configs.get(ENV);
+      if (mode !== "production" && mode !== "prod") {
+        console.log(`${
+          setColor("blue", "[astroboy.ts]")
+          } : scope ${
+          setColor("cyan", getScopeId(ctx, true))
+          } is disposed (global error handler).`
+        );
+      }
     });
   }
 

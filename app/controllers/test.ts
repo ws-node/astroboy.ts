@@ -19,9 +19,9 @@ class TestController {
     this.test.reset(4534);
     const configBase = this.configs.get(AST_BASE);
     const env = this.configs.get(ENV);
-    console.log(configBase);
-    console.log(env);
-    console.log(this.base);
+    // console.log(configBase);
+    // console.log(env);
+    // console.log(this.base);
     const { ctx } = this.base;
     ctx.body = JSON.stringify({
       status: this.test.demoMethod2(),

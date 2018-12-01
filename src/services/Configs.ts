@@ -28,6 +28,25 @@ export class ConfigCollection implements IConfigCollection {
 
 }
 
+/**
+ * ## 全局配置容器
+ * @description
+ * @author Big Mogician
+ * @export
+ * @abstract
+ * @class Configs
+ * @implements {ReadonlyConfigs}
+ */
 export abstract class Configs implements ReadonlyConfigs {
+  /**
+   * ### 解析并获得token对应的配置信息
+   * @description
+   * @author Big Mogician
+   * @abstract
+   * @template T
+   * @param {ConfigToken<T>} token
+   * @returns {T}
+   * @memberof Configs
+   */
   abstract get<T>(token: ConfigToken<T>): T;
 }

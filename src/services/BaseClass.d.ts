@@ -1,5 +1,14 @@
 import Koa from "koa";
 
+/**
+ * ## 基础astroboy类
+ * * 不建议在astroboy.ts的体系中使用
+ * * 完整功能替代：AstroboyContext服务
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class BaseClass
+ */
 export class BaseClass {
   public ctx: Koa.Context;
   public app: Koa;

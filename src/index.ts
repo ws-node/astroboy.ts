@@ -6,7 +6,7 @@ export * from "./services/Injector";
 export * from "./services/Configs";
 export * from "./services/BaseClass";
 export * from "./services/AstroboyContext";
-export * from "./inject-server";
+export * from "./server";
 export * from "./configs";
 export * from "astroboy-router";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";
