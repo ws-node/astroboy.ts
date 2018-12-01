@@ -5,5 +5,8 @@
     "defaultExtension": ".html",
     "defaultViewEngine": "",
     "mapping": {}
+  },
+  "@astroboy.ts": {
+    "showTrace": true
   }
 }

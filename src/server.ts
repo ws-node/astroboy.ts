@@ -1,12 +1,14 @@
 import Koa from "koa";
-import { Constructor, InjectScope, ScopeID, InjectToken } from "@bonbons/di";
+import { Constructor, InjectScope, ScopeID, InjectToken, AbstractType, ImplementFactory, ImplementType } from "@bonbons/di";
 import { Context } from "./services/Context";
 import { InjectService } from "./services/Injector";
 import { ConfigCollection, ConfigEntry, ConfigToken, Configs } from "./services/Configs";
 import { GlobalDI, optionAssign, getScopeId, setColor } from "./utils";
-import { AST_BASE, ENV } from "./configs";
+import { AST_BASE, ENV, defaultEnv } from "./configs";
 import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
+
+type DIPair = [any, any];
 
 /**
  * ## astroboy.ts服务
@@ -19,6 +21,9 @@ export class Server {
 
   private di = GlobalDI;
   private configs = new ConfigCollection();
+
+  private preSingletons: DIPair[] = [];
+  private preScopeds: DIPair[] = [];
 
   constructor(private appBuilder: Constructor<any>, private appConfigs?: any) { }
 
@@ -76,6 +81,176 @@ export class Server {
   }
 
   /**
+   * Set a scoped service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a scoped service with constructor.
+   * All scoped services will be created new instance in different request pipe
+   *
+   * @description
+   * @author Big Mogician
+   * @template TInject
+   * @param {Constructor<TInject>} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public scoped<TInject>(srv: Constructor<TInject>): this;
+  /**
+   * Set a scoped service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a scoped service with injectable token (such abstract class,
+   * but not the typescript interface because there's no interface in
+   * the javascript runtime) and implement service constructor. All
+   * scoped services will be created new instance in different request pipe.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken<TToken>} token
+   * @param {ImplementToken<TImplement>} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementType<TImplement>): this;
+  /**
+   * Set a scoped service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a scoped service with injectable token (such abstract class,
+   * but not the typescript interface because there's no interface in
+   * the javascript runtime) and implement service instance factory
+   * ( pure function with no side effects).
+   * All scoped services will be created new instance in different request pipe.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken<TToken>} token
+   * @param {InjectFactory<TImplement>} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementFactory<TImplement>): this;
+  /**
+   * Set a scoped service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a scoped service with injectable token (such abstract class,
+   * but not the typescript interface because there's no interface in
+   * the javascript runtime) and a well-created implement service instance.
+   * All scoped services will be created new
+   * instance in different request pipe (but injecting by instance means
+   * the instance may be changed in runtime, so please be careful. If you
+   * want to prevent this situation, use a service factory here).
+   *
+   * @description
+   * @author Big Mogician
+   * @template TInject
+   * @template TImplement
+   * @param {InjectableToken<TToken>} token
+   * @param {TImplement} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: TImplement): this;
+  public scoped(...args: any[]): this {
+    this.preScopeds.push([args[0], args[1] || args[0]]);
+    return this;
+  }
+
+  /**
+   * Set a singleton service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a singleton service with constructor.
+   * All singleton services will use unique instance throught different request pipes.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TInject
+   * @param {Constructor<TInject>} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public singleton<TInject>(srv: Constructor<TInject>): this;
+  /**
+   * Set a singleton service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a singleton service with injectable token (such abstract class,
+   * but not the typescript interface because there's no interface in
+   * the javascript runtime) and implement service constructor.
+   * All singleton services will use unique
+   * instance throught different request pipes.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken<TToken>} token
+   * @param {ImplementToken<TImplement>} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementType<TImplement>): this;
+  /**
+   * Set a singleton service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a singleton service with injectable token (such abstract class,
+   * but not the typescript interface because there's no interface in
+   * the javascript runtime) and implement service factory ( pure function with no side effects).
+   * All singleton services will use unique
+   * instance throught different request pipes.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken<B>} token
+   * @param {InjectFactory<TImplement>} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementFactory<TImplement>): this;
+  /**
+   * Set a singleton service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a singleton service with injectable token (such abstract class,
+   * but not the typescript interface because there's no interface in
+   * the javascript runtime) and a well-created implement service instance.
+   * All singleton services will use unique
+   * instance throught different request pipes.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken<TToken>} token
+   * @param {TImplement} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: TImplement): this;
+  public singleton(...args: any[]): this {
+    this.preSingletons.push([args[0], args[1] || args[0]]);
+    return this;
+  }
+
+
+  /**
    * ### 启动app
    * @description
    * @author Big Mogician
@@ -89,27 +264,27 @@ export class Server {
   }
 
   private initOptions() {
-
+    this.option(ENV, defaultEnv);
   }
 
   private initInjections() {
     this.initConfigCollection();
     this.initInjectService();
     this.initContextProvider();
-    this.di.register(AstroboyContext, AstroboyContext, InjectScope.Scope);
-    this.di.register(Scope, Scope, InjectScope.Scope);
+    this.scoped(AstroboyContext);
+    this.scoped(Scope);
   }
 
   private startApp(onStart: () => void) {
     new this.appBuilder(this.appConfigs || {}).on("start", (app: Koa) => {
-      this.option(ENV, { mode: app["NODE_ENV"] });
+      this.option(ENV, app["config"]["@astroboy.ts"] || {});
       this.option(AST_BASE, { app, config: app["config"] || {} });
-      this.di.complete();
+      this.resolveInjections();
       onStart && onStart();
     }).on("error", (_, ctx) => {
       this.di.dispose(getScopeId(ctx));
-      const { mode } = this.configs.get(ENV);
-      if (mode !== "production" && mode !== "prod") {
+      const { showTrace } = this.configs.get(ENV);
+      if (showTrace) {
         console.log(`${
           setColor("blue", "[astroboy.ts]")
           } : scope ${
@@ -120,32 +295,38 @@ export class Server {
     });
   }
 
+  private resolveInjections() {
+    this.preSingletons.forEach(([token, srv]) => this.di.register(token, srv, InjectScope.Singleton));
+    this.preScopeds.forEach(([token, srv]) => this.di.register(token, srv, InjectScope.Scope));
+    this.di.complete();
+  }
+
   private initContextProvider() {
-    this.di.register(
+    this.scoped(
       Context,
       (scopeId?: ScopeID, { ctx = null } = {}) => {
         if (ctx === null) throw new Error("invalid call, you can only call a context in request pipe scope.");
         return new Context(ctx);
-      },
-      InjectScope.Scope);
+      }
+    );
   }
 
   private initInjectService() {
-    this.di.register(
+    this.scoped(
       InjectService,
       (scopeId?: ScopeID) => ({
         get: (token: InjectToken) => this.di.get(token, scopeId),
         INTERNAL_dispose: () => this.di.dispose(scopeId),
         scopeId
-      }),
-      InjectScope.Scope);
+      })
+    );
   }
 
   private initConfigCollection() {
-    this.di.register(
+    this.singleton(
       Configs,
       () => ({ get: this.configs.get.bind(this.configs) }),
-      InjectScope.Singleton);
+    );
   }
 
 }

@@ -16,8 +16,8 @@ export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
   const scopeId = setScopeId(ctx);
   GlobalDI.createScope(scopeId, { ctx });
   const injector = GlobalDI.get(InjectService, scopeId);
-  const { mode } = injector.get(Configs).get(ENV);
-  if (mode !== "production" && mode !== "prod") {
+  const { showTrace } = injector.get(Configs).get(ENV);
+  if (showTrace) {
     const scope = injector.get(Scope);
     scope.init(scopeId).begin();
     console.log(`${

@@ -61,8 +61,8 @@ export function Controller(prefix: string) {
               console.log(setColor("red", "[astroboy.ts] warning: $$injector is lost, memory weak."));
               return;
             }
-            const { mode } = injector.get(Configs).get(ENV);
-            if (mode !== "production" && mode !== "prod") {
+            const { showTrace } = injector.get(Configs).get(ENV);
+            if (showTrace) {
               const scope = injector.get(Scope);
               scope.end();
               const duration = scope.diration();
