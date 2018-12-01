@@ -5,6 +5,15 @@ import { InjectService } from "../services/Injector";
 import { Configs } from "../services/Configs";
 import { ENV } from "../configs";
 
+/**
+ * ## 定义控制器
+ * * routes部分由astroboy-router实现
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {string} prefix
+ * @returns
+ */
 export function Controller(prefix: string) {
   return function <T>(target: Constructor<T>) {
     const prototype: IBaseInjectable = target.prototype;

@@ -7,6 +7,13 @@ import { GlobalDI, optionAssign, getScopeId, setColor } from "./utils";
 import { AST_BASE, ENV } from "./configs";
 import { AstroboyContext } from "./services/AstroboyContext";
 
+/**
+ * ## astroboy.ts服务
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class Server
+ */
 export class Server {
 
   private di = GlobalDI;
@@ -14,13 +21,22 @@ export class Server {
 
   constructor(private appBuilder: Constructor<any>, private appConfigs?: any) { }
 
+  /**
+   * ### 创建一个新的应用
+   * @description
+   * @author Big Mogician
+   * @static
+   * @param {Constructor<any>} ctor astroboy或者其继承
+   * @param {*} [configs] astroboy启动配置
+   * @returns
+   * @memberof Server
+   */
   public static Create(ctor: Constructor<any>, configs?: any) {
     return new Server(ctor, configs);
   }
 
   /**
-   * Set an option
-   * ---
+   * ### 注入一个配置项
    * Set an option with format entry{@ConfigEntry<T>}.
    *
    * @description
@@ -32,8 +48,7 @@ export class Server {
    */
   public option<T>(entry: ConfigEntry<Partial<T> | T>): this;
   /**
-   * Set an option
-   * ---
+   * ### 注入一个配置项
    * Set an option with token and provided value.
    *
    * @description
@@ -59,6 +74,13 @@ export class Server {
     return this;
   }
 
+  /**
+   * ### 启动app
+   * @description
+   * @author Big Mogician
+   * @param {() => void} [onStart] on('start') 回调
+   * @memberof Server
+   */
   public run(onStart?: () => void) {
     this.initOptions();
     this.initInjections();

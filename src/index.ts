@@ -13,6 +13,18 @@ import { ControllerConstructor } from "astroboy-router/dist/metadata";
 import { createRouter } from "astroboy-router";
 import { GlobalImplements } from "./utils";
 
+/**
+ * ## 构建路由
+ * * 等效astroboy-router的createRouter方法
+ * @description
+ * @author Big Mogician
+ * @export
+ * @template T
+ * @param {ControllerConstructor<T>} ctor
+ * @param {string} name
+ * @param {string} root
+ * @returns
+ */
 export function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string) {
   return createRouter(GlobalImplements.get(ctor), name, root);
 }

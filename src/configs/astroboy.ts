@@ -5,4 +5,5 @@ interface IAstroboyBase {
   config: any;
 }
 
+/** astroboy的基础配置，app和config */
 export const AST_BASE = createToken<IAstroboyBase>("AstroboyBase");
