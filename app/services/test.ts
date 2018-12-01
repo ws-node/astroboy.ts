@@ -38,4 +38,33 @@ class TestService {
 
 }
 
+// @Injectable({
+//   token: TestService,
+// })
+// class B {
+
+//   constructor(
+//     public t01: T01Service,
+//     public t02: T02Service,
+//     public t03: T03Service,
+//     public t04: T04Service,
+//     public t05: T05Service,
+//     public t06: T06Service,
+//     public t07: T07Service,
+//     public t08: T08Service,
+//     public context: Context,
+//     private inner: Test02Service) { }
+
+//   public reset(v: number): void {
+//     throw new Error("Method not implemented.");
+//   }
+
+//   public demoMethod2(): number {
+//     throw new Error("Method not implemented.");
+//   }
+
+
+// }
+
+// export = B;
 export = TestService;

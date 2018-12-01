@@ -21,6 +21,6 @@ export function Injectable(config?: Partial<{
     const prototype: IBaseInjectable = target.prototype;
     prototype.__valid = true;
     GlobalDI.register(token || target, target, type);
-    return target;
+    return <Constructor<T>>(token || target);
   };
 }
