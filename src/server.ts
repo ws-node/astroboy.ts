@@ -6,6 +6,7 @@ import { ConfigCollection, ConfigEntry, ConfigToken, Configs } from "./services/
 import { GlobalDI, optionAssign, getScopeId, setColor } from "./utils";
 import { AST_BASE, ENV } from "./configs";
 import { AstroboyContext } from "./services/AstroboyContext";
+import { Scope } from "./services/Scope";
 
 /**
  * ## astroboy.ts服务
@@ -96,6 +97,7 @@ export class Server {
     this.initInjectService();
     this.initContextProvider();
     this.di.register(AstroboyContext, AstroboyContext, InjectScope.Scope);
+    this.di.register(Scope, Scope, InjectScope.Scope);
   }
 
   private startApp(onStart: () => void) {

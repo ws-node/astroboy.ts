@@ -2,8 +2,13 @@ import { Constructor, IBaseInjectable } from "@bonbons/di";
 import { Router } from "astroboy-router";
 import { createInstance, GlobalImplements, getInjector, getShortScopeId, setColor } from "../utils";
 import { InjectService } from "../services/Injector";
+import { Context } from "../services/Context";
 import { Configs } from "../services/Configs";
 import { ENV } from "../configs";
+import { Scope } from "../services/Scope";
+
+const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
+const $$injector = "$$injector";
 
 /**
  * ## 定义控制器
@@ -23,12 +28,12 @@ export function Controller(prefix: string) {
       constructor(ctx) {
         const injector = getInjector(ctx);
         const controller = createInstance(target, ctx);
-        controller["$INTERNAL_INJECTOR"] = injector;
+        controller[INTERNAL_INJECTOR] = injector;
         return controller;
       }
     };
-    Object.defineProperty(prototype, "$$injector", {
-      get() { return this["$INTERNAL_INJECTOR"]; },
+    Object.defineProperty(prototype, $$injector, {
+      get() { return this[INTERNAL_INJECTOR]; },
       configurable: false,
       enumerable: false
     });
@@ -40,29 +45,37 @@ export function Controller(prefix: string) {
       const { value, get } = descriptor;
       if (get) return;
       if (name in routes && value && typeof value === "function") {
+        const method = routes[name].method[0] || "GET";
         descriptor.value = async function () {
+          const injector: InjectService = this[$$injector];
           try {
-            await value.bind(this)();
+            const { ctx } = injector.get<Context<{}>>(Context);
+            const params = method === "GET" ?
+              [ctx.query] :
+              [ctx.body, ctx.query];
+            await value.bind(this)(...params);
           } catch (e) {
             throw e;
           } finally {
-            const injector: InjectService = this["$$injector"];
             if (!injector) {
               console.log(setColor("red", "[astroboy.ts] warning: $$injector is lost, memory weak."));
               return;
             }
-            injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
             const { mode } = injector.get(Configs).get(ENV);
             if (mode !== "production" && mode !== "prod") {
+              const scope = injector.get(Scope);
+              scope.end();
+              const duration = scope.diration();
               console.log(`${
                 setColor("blue", "[astroboy.ts]")
                 } : scope ${
                 setColor("cyan", getShortScopeId(injector.scopeId))
-                } is disposed [${
-                setColor("red", new Date().getTime())
-                }].`
+                } is [${
+                setColor(duration > 500 ? "red" : duration > 200 ? "yellow" : "green", duration)
+                } ms] disposed.`
               );
             }
+            injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
           }
         };
         Object.defineProperty(prototype, name, descriptor);

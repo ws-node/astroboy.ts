@@ -9,7 +9,7 @@ import { IContext } from "../typings/IContext";
  * @class Context
  * @template T
  */
-export class Context<T = {}> {
+export class Context<T extends Partial<Koa.Context> = {}> {
   /**
    * ### Koa上下文对象
    * * 有可能被astroboy和后续框架扩展

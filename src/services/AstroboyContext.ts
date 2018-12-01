@@ -1,4 +1,5 @@
 import { Injectable } from "../decorators/injectable";
+import { IContext } from "../typings/IContext";
 import { Context } from "./Context";
 
 /**
@@ -13,7 +14,7 @@ import { Context } from "./Context";
  * @template T
  */
 @Injectable()
-export class AstroboyContext<T = {}> {
+export class AstroboyContext<T extends Partial<IContext> = {}> {
 
   /** BaseClass.ctx */
   public get ctx() { return this.context.ctx; }
@@ -37,12 +38,12 @@ export class AstroboyContext<T = {}> {
   }
 
   callService(...args: any[]) {
-    // @ts-ignore
+    // @ts-ignore 参数定义override忽略
     return this.ctx.callService(...args);
   }
 
   invokeServiceMethod(...args: any[]) {
-    // @ts-ignore
+    // @ts-ignore 参数定义override忽略
     return this.ctx.invokeServiceMethod(...args);
   }
 

@@ -3,6 +3,7 @@ import { IContext } from "../typings/IContext";
 import { InjectService } from "../services/Injector";
 import { ENV } from "../configs";
 import { Configs } from "../services/Configs";
+import { Scope } from "../services/Scope";
 
 /**
  * ## astroboy.ts初始化中间件
@@ -17,13 +18,13 @@ export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
   const injector = GlobalDI.get(InjectService, scopeId);
   const { mode } = injector.get(Configs).get(ENV);
   if (mode !== "production" && mode !== "prod") {
+    const scope = injector.get(Scope);
+    scope.init(scopeId).begin();
     console.log(`${
       setColor("blue", "[astroboy.ts]")
       } : scope ${
       setColor("cyan", getShortScopeId(scopeId))
-      } is init [${
-      setColor("green", new Date().getTime())
-      }].`
+      } is init.`
     );
   }
   await next();
