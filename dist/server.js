@@ -81,10 +81,17 @@ class Server {
         this.scoped(AstroboyContext_1.AstroboyContext);
         this.scoped(Scope_1.Scope);
     }
+    readConfigs(configs = {}) {
+        this.configs.toArray().forEach(({ token }) => {
+            const key = token.key.toString();
+            if (/Symbol\(config::(.+)\)$/.test(key)) {
+                this.option(token, configs[RegExp.$1] || {});
+            }
+        });
+    }
     startApp(onStart) {
         new this.appBuilder(this.appConfigs || {}).on("start", (app) => {
-            this.option(configs_1.ENV, app["config"]["@astroboy.ts"] || {});
-            this.option(configs_1.AST_BASE, { app, config: app["config"] || {} });
+            this.readConfigs(app["config"]);
             this.resolveInjections();
             onStart && onStart();
         }).on("error", (_, ctx) => {

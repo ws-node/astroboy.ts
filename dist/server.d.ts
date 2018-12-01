@@ -220,6 +220,7 @@ export declare class Server {
     run(onStart?: () => void): void;
     private initOptions;
     private initInjections;
+    private readConfigs;
     private startApp;
     private resolveInjections;
     private initContextProvider;

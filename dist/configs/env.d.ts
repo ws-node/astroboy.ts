@@ -3,6 +3,6 @@ interface IENV {
     showTrace: boolean;
 }
 export declare const defaultEnv: IENV;
-/** node env环境变量 */
+/** astroboy.ts环境变量 */
 export declare const ENV: import("@bonbons/di/dist/src/core/declares").IToken<IENV>;
 export {};

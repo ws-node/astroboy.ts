@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createToken = (key) => ({ key: Symbol(`ASTROBOY-TS-TOKEN:${key}`) });
+exports.createToken = (key) => ({ key: Symbol(key) });
 class ConfigCollection {
     constructor() {
         this.map = new Map();
