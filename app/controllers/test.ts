@@ -1,21 +1,40 @@
 import TestService from "../services/test";
-import { Controller, Context, API, BaseClass } from "../../src";
+import Test02Service from "../services/test02";
+import { Controller, API, Configs, AST_BASE, AstroboyContext, ENV } from "../../src";
 
 @Controller("test")
-class TestController extends BaseClass {
+class TestController {
 
-  constructor(private context: Context, private test: TestService) {
-    super(context.ctx);
+  constructor(
+    private configs: Configs,
+    private base: AstroboyContext<{ fakeId: string; type: number }>,
+    private test: TestService,
+    private test02: Test02Service) {
+
   }
 
   @API("GET", "get")
   public Get() {
-    console.log(this);
+    this.test02.add(345);
     this.test.reset(4534);
-    this.ctx.body = JSON.stringify({
+    const configBase = this.configs.get(AST_BASE);
+    const env = this.configs.get(ENV);
+    console.log(configBase);
+    console.log(env);
+    console.log(this.base);
+    const { ctx } = this.base;
+    ctx.body = JSON.stringify({
       status: this.test.demoMethod2(),
-      config: this.getConfig()
+      config: this.base.getConfig(),
+      haha: this.notMethod(),
+      env,
+      configBase,
+      type: ctx.type
     });
+  }
+
+  private notMethod() {
+    return "hahaha";
   }
 
 }

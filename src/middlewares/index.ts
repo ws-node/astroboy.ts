@@ -1,10 +1,11 @@
-import uuid from "uuid/v4";
 import Koa from "koa";
-import { GlobalDI } from "../inject-server";
+import { GlobalDI, getShortScopeId, setScopeId, setColor } from "../utils";
 
 export const serverInit = async (ctx: Koa.Context, next: () => Promise<void>) => {
-  const state = ctx.state || (ctx.state = {});
-  const scopeId = state["$$scopeId"] = uuid();
+  const scopeId = setScopeId(ctx);
   GlobalDI.createScope(scopeId, { ctx });
+  console.log(`${setColor("blue", "[astroboy.ts]")} : scope ${
+    setColor("cyan", getShortScopeId(scopeId))
+    } is init [${setColor("green", new Date().getTime())}].`);
   await next();
 };

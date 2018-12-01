@@ -6,6 +6,8 @@ class TestService {
 
   private value = 555;
 
+  public get thisValue() { return this.value; }
+
   constructor(private inner: Test02Service) { }
 
   public reset(v: number) {
@@ -13,7 +15,7 @@ class TestService {
   }
 
   public demoMethod2() {
-    return this.value + this.inner.showValue();
+    return this.thisValue + this.inner.showValue();
   }
 
 }
