@@ -3,8 +3,23 @@ export * from "./decorators/controller";
 export * from "./middlewares";
 export * from "./services/Context";
 export * from "./services/Injector";
+export * from "./services/Configs";
 export * from "./services/BaseClass";
-export * from "./inject-server";
+export * from "./services/AstroboyContext";
+export * from "./server";
+export * from "./configs";
 export * from "astroboy-router";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";
+/**
+ * ## 构建路由
+ * * 等效astroboy-router的createRouter方法
+ * @description
+ * @author Big Mogician
+ * @export
+ * @template T
+ * @param {ControllerConstructor<T>} ctor
+ * @param {string} name
+ * @param {string} root
+ * @returns
+ */
 export declare function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string): (string | string[])[][];

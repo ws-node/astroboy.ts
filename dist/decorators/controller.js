@@ -1,30 +1,88 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const di_1 = require("@bonbons/di");
 const astroboy_router_1 = require("astroboy-router");
-const inject_server_1 = require("../inject-server");
-function resolveDepts(target, ctx) {
-    return inject_server_1.GlobalDI.getDepedencies(di_1.getDependencies(target) || [], ctx.state["$$scopeId"]);
-}
-function createInstance(target, ctx) {
-    return new target(...(inject_server_1.GlobalDI.getDepedencies(di_1.getDependencies(target) || [], ctx.state["$$scopeId"])));
-}
+const utils_1 = require("../utils");
+const Configs_1 = require("../services/Configs");
+const configs_1 = require("../configs");
+/**
+ * ## 定义控制器
+ * * routes部分由astroboy-router实现
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {string} prefix
+ * @returns
+ */
 function Controller(prefix) {
     return function (target) {
         const prototype = target.prototype;
         prototype.__valid = true;
+        astroboy_router_1.Router(prefix)(target);
         const DI_CONTROLLER = class {
             constructor(ctx) {
-                return createInstance(target, ctx);
+                const injector = utils_1.getInjector(ctx);
+                const controller = utils_1.createInstance(target, ctx);
+                controller["$INTERNAL_INJECTOR"] = injector;
+                return controller;
             }
         };
+        Object.defineProperty(prototype, "$$injector", {
+            get() { return this["$INTERNAL_INJECTOR"]; },
+            configurable: false,
+            enumerable: false
+        });
+        const { routes = {} } = prototype["@router"];
+        Object.getOwnPropertyNames(prototype).forEach(name => {
+            if (name === "@router")
+                return;
+            if (name === "constructor")
+                return;
+            const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+            const { value, get } = descriptor;
+            if (get)
+                return;
+            if (name in routes && value && typeof value === "function") {
+                descriptor.value = function () {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        try {
+                            yield value.bind(this)();
+                        }
+                        catch (e) {
+                            throw e;
+                        }
+                        finally {
+                            const injector = this["$$injector"];
+                            if (!injector) {
+                                console.log(utils_1.setColor("red", "[astroboy.ts] warning: $$injector is lost, memory weak."));
+                                return;
+                            }
+                            injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
+                            const { mode } = injector.get(Configs_1.Configs).get(configs_1.ENV);
+                            if (mode !== "production" && mode !== "prod") {
+                                console.log(`${utils_1.setColor("blue", "[astroboy.ts]")} : scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(injector.scopeId))} is disposed [${utils_1.setColor("red", new Date().getTime())}].`);
+                            }
+                        }
+                    });
+                };
+                Object.defineProperty(prototype, name, descriptor);
+            }
+        });
         Object.getOwnPropertyNames(prototype).forEach(name => {
             Object.defineProperty(DI_CONTROLLER.prototype, name, Object.getOwnPropertyDescriptor(prototype, name));
         });
         // @ts-ignore
         DI_CONTROLLER.prototype.__proto__ = target.prototype.__proto__;
-        astroboy_router_1.Router(prefix)(target);
-        inject_server_1.GlobalImplements.set(DI_CONTROLLER, target);
+        // @ts-ignore
+        DI_CONTROLLER.__proto__ = target.__proto__;
+        utils_1.GlobalImplements.set(DI_CONTROLLER, target);
         return DI_CONTROLLER;
     };
 }

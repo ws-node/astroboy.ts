@@ -8,13 +8,28 @@ __export(require("./decorators/controller"));
 __export(require("./middlewares"));
 __export(require("./services/Context"));
 __export(require("./services/Injector"));
+__export(require("./services/Configs"));
 __export(require("./services/BaseClass"));
-__export(require("./inject-server"));
+__export(require("./services/AstroboyContext"));
+__export(require("./server"));
+__export(require("./configs"));
 __export(require("astroboy-router"));
 const astroboy_router_1 = require("astroboy-router");
-const inject_server_1 = require("./inject-server");
+const utils_1 = require("./utils");
+/**
+ * ## 构建路由
+ * * 等效astroboy-router的createRouter方法
+ * @description
+ * @author Big Mogician
+ * @export
+ * @template T
+ * @param {ControllerConstructor<T>} ctor
+ * @param {string} name
+ * @param {string} root
+ * @returns
+ */
 function buildRouter(ctor, name, root) {
-    return astroboy_router_1.createRouter(inject_server_1.GlobalImplements.get(ctor), name, root);
+    return astroboy_router_1.createRouter(utils_1.GlobalImplements.get(ctor), name, root);
 }
 exports.buildRouter = buildRouter;
 //# sourceMappingURL=index.js.map
