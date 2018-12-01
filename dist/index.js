@@ -1,19 +1,17 @@
 "use strict";
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(require("./decorators/injectable"));
-__export(require("./decorators/controller"));
-__export(require("./middlewares"));
-__export(require("./services/Context"));
-__export(require("./services/Injector"));
-__export(require("./services/Configs"));
-__export(require("./services/BaseClass"));
-__export(require("./services/AstroboyContext"));
-__export(require("./server"));
-__export(require("./configs"));
-__export(require("astroboy-router"));
+const tslib_1 = require("tslib");
+tslib_1.__exportStar(require("./decorators/injectable"), exports);
+tslib_1.__exportStar(require("./decorators/controller"), exports);
+tslib_1.__exportStar(require("./middlewares"), exports);
+tslib_1.__exportStar(require("./services/Context"), exports);
+tslib_1.__exportStar(require("./services/Injector"), exports);
+tslib_1.__exportStar(require("./services/Configs"), exports);
+tslib_1.__exportStar(require("./services/BaseClass"), exports);
+tslib_1.__exportStar(require("./services/AstroboyContext"), exports);
+tslib_1.__exportStar(require("./server"), exports);
+tslib_1.__exportStar(require("./configs"), exports);
+tslib_1.__exportStar(require("astroboy-router"), exports);
 const astroboy_router_1 = require("astroboy-router");
 const utils_1 = require("./utils");
 /**

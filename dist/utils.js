@@ -1,10 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const get_1 = __importDefault(require("lodash/get"));
-const v4_1 = __importDefault(require("uuid/v4"));
+const tslib_1 = require("tslib");
+const get_1 = tslib_1.__importDefault(require("lodash/get"));
+const v4_1 = tslib_1.__importDefault(require("uuid/v4"));
 const di_1 = require("@bonbons/di");
 const Injector_1 = require("./services/Injector");
 exports.Colors = {
