@@ -19,7 +19,7 @@ function Injectable(config) {
         const prototype = target.prototype;
         prototype.__valid = true;
         utils_1.GlobalDI.register(token || target, target, type);
-        return target;
+        return (token || target);
     };
 }
 exports.Injectable = Injectable;
