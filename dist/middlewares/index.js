@@ -17,8 +17,8 @@ exports.serverInit = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, func
     const scopeId = utils_1.setScopeId(ctx);
     utils_1.GlobalDI.createScope(scopeId, { ctx });
     const injector = utils_1.GlobalDI.get(Injector_1.InjectService, scopeId);
-    const { mode } = injector.get(Configs_1.Configs).get(configs_1.ENV);
-    if (mode !== "production" && mode !== "prod") {
+    const { showTrace } = injector.get(Configs_1.Configs).get(configs_1.ENV);
+    if (showTrace) {
         const scope = injector.get(Scope_1.Scope);
         scope.init(scopeId).begin();
         console.log(`${utils_1.setColor("blue", "[astroboy.ts]")} : scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(scopeId))} is init.`);

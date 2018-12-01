@@ -21,6 +21,8 @@ class Server {
         this.appConfigs = appConfigs;
         this.di = utils_1.GlobalDI;
         this.configs = new Configs_1.ConfigCollection();
+        this.preSingletons = [];
+        this.preScopeds = [];
     }
     /**
      * ### 创建一个新的应用
@@ -49,6 +51,14 @@ class Server {
         }
         return this;
     }
+    scoped(...args) {
+        this.preScopeds.push([args[0], args[1] || args[0]]);
+        return this;
+    }
+    singleton(...args) {
+        this.preSingletons.push([args[0], args[1] || args[0]]);
+        return this;
+    }
     /**
      * ### 启动app
      * @description
@@ -62,44 +72,50 @@ class Server {
         this.startApp(onStart);
     }
     initOptions() {
+        this.option(configs_1.ENV, configs_1.defaultEnv);
     }
     initInjections() {
         this.initConfigCollection();
         this.initInjectService();
         this.initContextProvider();
-        this.di.register(AstroboyContext_1.AstroboyContext, AstroboyContext_1.AstroboyContext, di_1.InjectScope.Scope);
-        this.di.register(Scope_1.Scope, Scope_1.Scope, di_1.InjectScope.Scope);
+        this.scoped(AstroboyContext_1.AstroboyContext);
+        this.scoped(Scope_1.Scope);
     }
     startApp(onStart) {
         new this.appBuilder(this.appConfigs || {}).on("start", (app) => {
-            this.option(configs_1.ENV, { mode: app["NODE_ENV"] });
+            this.option(configs_1.ENV, app["config"]["@astroboy.ts"] || {});
             this.option(configs_1.AST_BASE, { app, config: app["config"] || {} });
-            this.di.complete();
+            this.resolveInjections();
             onStart && onStart();
         }).on("error", (_, ctx) => {
             this.di.dispose(utils_1.getScopeId(ctx));
-            const { mode } = this.configs.get(configs_1.ENV);
-            if (mode !== "production" && mode !== "prod") {
+            const { showTrace } = this.configs.get(configs_1.ENV);
+            if (showTrace) {
                 console.log(`${utils_1.setColor("blue", "[astroboy.ts]")} : scope ${utils_1.setColor("cyan", utils_1.getScopeId(ctx, true))} is disposed (global error handler).`);
             }
         });
     }
+    resolveInjections() {
+        this.preSingletons.forEach(([token, srv]) => this.di.register(token, srv, di_1.InjectScope.Singleton));
+        this.preScopeds.forEach(([token, srv]) => this.di.register(token, srv, di_1.InjectScope.Scope));
+        this.di.complete();
+    }
     initContextProvider() {
-        this.di.register(Context_1.Context, (scopeId, { ctx = null } = {}) => {
+        this.scoped(Context_1.Context, (scopeId, { ctx = null } = {}) => {
             if (ctx === null)
                 throw new Error("invalid call, you can only call a context in request pipe scope.");
             return new Context_1.Context(ctx);
-        }, di_1.InjectScope.Scope);
+        });
     }
     initInjectService() {
-        this.di.register(Injector_1.InjectService, (scopeId) => ({
+        this.scoped(Injector_1.InjectService, (scopeId) => ({
             get: (token) => this.di.get(token, scopeId),
             INTERNAL_dispose: () => this.di.dispose(scopeId),
             scopeId
-        }), di_1.InjectScope.Scope);
+        }));
     }
     initConfigCollection() {
-        this.di.register(Configs_1.Configs, () => ({ get: this.configs.get.bind(this.configs) }), di_1.InjectScope.Singleton);
+        this.singleton(Configs_1.Configs, () => ({ get: this.configs.get.bind(this.configs) }));
     }
 }
 exports.Server = Server;

@@ -1,4 +1,4 @@
-import { Constructor } from "@bonbons/di";
+import { Constructor, AbstractType, ImplementFactory, ImplementType } from "@bonbons/di";
 import { ConfigEntry, ConfigToken } from "./services/Configs";
 /**
  * ## astroboy.ts服务
@@ -12,6 +12,8 @@ export declare class Server {
     private appConfigs?;
     private di;
     private configs;
+    private preSingletons;
+    private preScopeds;
     constructor(appBuilder: Constructor<any>, appConfigs?: any);
     /**
      * ### 创建一个新的应用
@@ -50,6 +52,165 @@ export declare class Server {
      */
     option<T>(token: ConfigToken<T>, value: Partial<T> | T): this;
     /**
+     * Set a scoped service
+     * ---
+     * * service should be decorated by @Injectable(...)
+     *
+     * Set a scoped service with constructor.
+     * All scoped services will be created new instance in different request pipe
+     *
+     * @description
+     * @author Big Mogician
+     * @template TInject
+     * @param {Constructor<TInject>} srv
+     * @returns {BonbonsServer}
+     * @memberof BonbonsServer
+     */
+    scoped<TInject>(srv: Constructor<TInject>): this;
+    /**
+     * Set a scoped service
+     * ---
+     * * service should be decorated by @Injectable(...)
+     *
+     * Set a scoped service with injectable token (such abstract class,
+     * but not the typescript interface because there's no interface in
+     * the javascript runtime) and implement service constructor. All
+     * scoped services will be created new instance in different request pipe.
+     *
+     * @description
+     * @author Big Mogician
+     * @template TToken
+     * @template TImplement
+     * @param {InjectableToken<TToken>} token
+     * @param {ImplementToken<TImplement>} srv
+     * @returns {BonbonsServer}
+     * @memberof BonbonsServer
+     */
+    scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementType<TImplement>): this;
+    /**
+     * Set a scoped service
+     * ---
+     * * service should be decorated by @Injectable(...)
+     *
+     * Set a scoped service with injectable token (such abstract class,
+     * but not the typescript interface because there's no interface in
+     * the javascript runtime) and implement service instance factory
+     * ( pure function with no side effects).
+     * All scoped services will be created new instance in different request pipe.
+     *
+     * @description
+     * @author Big Mogician
+     * @template TToken
+     * @template TImplement
+     * @param {InjectableToken<TToken>} token
+     * @param {InjectFactory<TImplement>} srv
+     * @returns {BonbonsServer}
+     * @memberof BonbonsServer
+     */
+    scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementFactory<TImplement>): this;
+    /**
+     * Set a scoped service
+     * ---
+     * * service should be decorated by @Injectable(...)
+     *
+     * Set a scoped service with injectable token (such abstract class,
+     * but not the typescript interface because there's no interface in
+     * the javascript runtime) and a well-created implement service instance.
+     * All scoped services will be created new
+     * instance in different request pipe (but injecting by instance means
+     * the instance may be changed in runtime, so please be careful. If you
+     * want to prevent this situation, use a service factory here).
+     *
+     * @description
+     * @author Big Mogician
+     * @template TInject
+     * @template TImplement
+     * @param {InjectableToken<TToken>} token
+     * @param {TImplement} srv
+     * @returns {BonbonsServer}
+     * @memberof BonbonsServer
+     */
+    scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: TImplement): this;
+    /**
+     * Set a singleton service
+     * ---
+     * * service should be decorated by @Injectable(...)
+     *
+     * Set a singleton service with constructor.
+     * All singleton services will use unique instance throught different request pipes.
+     *
+     * @description
+     * @author Big Mogician
+     * @template TInject
+     * @param {Constructor<TInject>} srv
+     * @returns {BonbonsServer}
+     * @memberof BonbonsServer
+     */
+    singleton<TInject>(srv: Constructor<TInject>): this;
+    /**
+     * Set a singleton service
+     * ---
+     * * service should be decorated by @Injectable(...)
+     *
+     * Set a singleton service with injectable token (such abstract class,
+     * but not the typescript interface because there's no interface in
+     * the javascript runtime) and implement service constructor.
+     * All singleton services will use unique
+     * instance throught different request pipes.
+     *
+     * @description
+     * @author Big Mogician
+     * @template TToken
+     * @template TImplement
+     * @param {InjectableToken<TToken>} token
+     * @param {ImplementToken<TImplement>} srv
+     * @returns {BonbonsServer}
+     * @memberof BonbonsServer
+     */
+    singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementType<TImplement>): this;
+    /**
+     * Set a singleton service
+     * ---
+     * * service should be decorated by @Injectable(...)
+     *
+     * Set a singleton service with injectable token (such abstract class,
+     * but not the typescript interface because there's no interface in
+     * the javascript runtime) and implement service factory ( pure function with no side effects).
+     * All singleton services will use unique
+     * instance throught different request pipes.
+     *
+     * @description
+     * @author Big Mogician
+     * @template TToken
+     * @template TImplement
+     * @param {InjectableToken<B>} token
+     * @param {InjectFactory<TImplement>} srv
+     * @returns {BonbonsServer}
+     * @memberof BonbonsServer
+     */
+    singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementFactory<TImplement>): this;
+    /**
+     * Set a singleton service
+     * ---
+     * * service should be decorated by @Injectable(...)
+     *
+     * Set a singleton service with injectable token (such abstract class,
+     * but not the typescript interface because there's no interface in
+     * the javascript runtime) and a well-created implement service instance.
+     * All singleton services will use unique
+     * instance throught different request pipes.
+     *
+     * @description
+     * @author Big Mogician
+     * @template TToken
+     * @template TImplement
+     * @param {InjectableToken<TToken>} token
+     * @param {TImplement} srv
+     * @returns {BonbonsServer}
+     * @memberof BonbonsServer
+     */
+    singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: TImplement): this;
+    /**
      * ### 启动app
      * @description
      * @author Big Mogician
@@ -60,6 +221,7 @@ export declare class Server {
     private initOptions;
     private initInjections;
     private startApp;
+    private resolveInjections;
     private initContextProvider;
     private initInjectService;
     private initConfigCollection;
