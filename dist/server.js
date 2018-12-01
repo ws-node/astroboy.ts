@@ -7,6 +7,7 @@ const Configs_1 = require("./services/Configs");
 const utils_1 = require("./utils");
 const configs_1 = require("./configs");
 const AstroboyContext_1 = require("./services/AstroboyContext");
+const Scope_1 = require("./services/Scope");
 /**
  * ## astroboy.ts服务
  * @description
@@ -67,6 +68,7 @@ class Server {
         this.initInjectService();
         this.initContextProvider();
         this.di.register(AstroboyContext_1.AstroboyContext, AstroboyContext_1.AstroboyContext, di_1.InjectScope.Scope);
+        this.di.register(Scope_1.Scope, Scope_1.Scope, di_1.InjectScope.Scope);
     }
     startApp(onStart) {
         new this.appBuilder(this.appConfigs || {}).on("start", (app) => {

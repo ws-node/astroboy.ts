@@ -34,11 +34,11 @@ let AstroboyContext = class AstroboyContext {
         return this.ctx.getService(...args);
     }
     callService(...args) {
-        // @ts-ignore
+        // @ts-ignore 参数定义override忽略
         return this.ctx.callService(...args);
     }
     invokeServiceMethod(...args) {
-        // @ts-ignore
+        // @ts-ignore 参数定义override忽略
         return this.ctx.invokeServiceMethod(...args);
     }
     getLib(...args) {

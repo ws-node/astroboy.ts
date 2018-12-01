@@ -5,6 +5,7 @@ const utils_1 = require("../utils");
 const Injector_1 = require("../services/Injector");
 const configs_1 = require("../configs");
 const Configs_1 = require("../services/Configs");
+const Scope_1 = require("../services/Scope");
 /**
  * ## astroboy.ts初始化中间件
  * * 请确保此中间件的优先级足够高
@@ -18,7 +19,9 @@ exports.serverInit = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, func
     const injector = utils_1.GlobalDI.get(Injector_1.InjectService, scopeId);
     const { mode } = injector.get(Configs_1.Configs).get(configs_1.ENV);
     if (mode !== "production" && mode !== "prod") {
-        console.log(`${utils_1.setColor("blue", "[astroboy.ts]")} : scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(scopeId))} is init [${utils_1.setColor("green", new Date().getTime())}].`);
+        const scope = injector.get(Scope_1.Scope);
+        scope.init(scopeId).begin();
+        console.log(`${utils_1.setColor("blue", "[astroboy.ts]")} : scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(scopeId))} is init.`);
     }
     yield next();
 });

@@ -9,7 +9,7 @@ import { IContext } from "../typings/IContext";
  * @class Context
  * @template T
  */
-export declare class Context<T = {}> {
+export declare class Context<T extends Partial<Koa.Context> = {}> {
     private _ctx;
     /**
      * ### Koa上下文对象

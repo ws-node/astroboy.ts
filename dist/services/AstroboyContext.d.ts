@@ -1,5 +1,6 @@
 /// <reference types="koa" />
 /// <reference types="koa-router" />
+import { IContext } from "../typings/IContext";
 import { Context } from "./Context";
 /**
  * ## Astroboy.ts基础上下文服务
@@ -12,10 +13,10 @@ import { Context } from "./Context";
  * @class AstroboyContext
  * @template T
  */
-export declare class AstroboyContext<T = {}> {
+export declare class AstroboyContext<T extends Partial<IContext> = {}> {
     context: Context<T>;
     /** BaseClass.ctx */
-    readonly ctx: import("../typings/IContext").IContext & T;
+    readonly ctx: IContext & T;
     /** BaseClass.app */
     readonly app: import("pplicatio");
     /** BaseClass.config */
