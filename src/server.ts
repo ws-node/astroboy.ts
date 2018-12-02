@@ -314,7 +314,7 @@ export class Server {
   /**
    * ## 按照配置设置DI的解析方式
    * * `native` : 原生模式
-   * * `proxu` : Proxy代理模式
+   * * `proxy` : Proxy代理模式
    * @description
    * @author Big Mogician
    * @private
