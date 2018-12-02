@@ -6,7 +6,8 @@ const path = require('path');
 module.exports = {
 
   "@astroboy.ts": {
-    showTrace: true
+    showTrace: true,
+    diType: "proxy"
   }
 
 };

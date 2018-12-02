@@ -221,9 +221,56 @@ export declare class Server {
     private initOptions;
     private initInjections;
     private readConfigs;
+    /**
+     * ## 启动app
+     * @description
+     * @author Big Mogician
+     * @private
+     * @param {() => void} onStart
+     * @memberof Server
+     */
     private startApp;
+    /**
+     * ## 按照配置设置DI的解析方式
+     * * `native` : 原生模式
+     * * `proxu` : Proxy代理模式
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
+    private resetDIResolver;
+    /**
+     * ## 完成DI容器初始化并锁定
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
     private resolveInjections;
+    /**
+     * ## 初始化上下文服务
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
     private initContextProvider;
+    /**
+     * ## 初始化手工注入服务
+     * * 可以自举
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
     private initInjectService;
+    /**
+     * ## 注入全局配置容器服务
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
     private initConfigCollection;
 }

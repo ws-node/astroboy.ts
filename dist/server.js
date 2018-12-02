@@ -89,9 +89,18 @@ class Server {
             }
         });
     }
+    /**
+     * ## 启动app
+     * @description
+     * @author Big Mogician
+     * @private
+     * @param {() => void} onStart
+     * @memberof Server
+     */
     startApp(onStart) {
         new this.appBuilder(this.appConfigs || {}).on("start", (app) => {
             this.readConfigs(app["config"]);
+            this.resetDIResolver();
             this.resolveInjections();
             onStart && onStart();
         }).on("error", (_, ctx) => {
@@ -102,11 +111,38 @@ class Server {
             }
         });
     }
+    /**
+     * ## 按照配置设置DI的解析方式
+     * * `native` : 原生模式
+     * * `proxu` : Proxy代理模式
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
+    resetDIResolver() {
+        const { diType } = this.configs.get(configs_1.ENV);
+        this.di.resetConfigs({ type: diType });
+    }
+    /**
+     * ## 完成DI容器初始化并锁定
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
     resolveInjections() {
         this.preSingletons.forEach(([token, srv]) => this.di.register(token, srv, di_1.InjectScope.Singleton));
         this.preScopeds.forEach(([token, srv]) => this.di.register(token, srv, di_1.InjectScope.Scope));
         this.di.complete();
     }
+    /**
+     * ## 初始化上下文服务
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
     initContextProvider() {
         this.scoped(Context_1.Context, (scopeId, { ctx = null } = {}) => {
             if (ctx === null)
@@ -114,6 +150,14 @@ class Server {
             return new Context_1.Context(ctx);
         });
     }
+    /**
+     * ## 初始化手工注入服务
+     * * 可以自举
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
     initInjectService() {
         this.scoped(Injector_1.InjectService, (scopeId) => ({
             get: (token) => this.di.get(token, scopeId),
@@ -121,6 +165,13 @@ class Server {
             scopeId
         }));
     }
+    /**
+     * ## 注入全局配置容器服务
+     * @description
+     * @author Big Mogician
+     * @private
+     * @memberof Server
+     */
     initConfigCollection() {
         this.singleton(Configs_1.Configs, () => ({ get: this.configs.get.bind(this.configs) }));
     }

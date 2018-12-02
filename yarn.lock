@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@bonbons/di@1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@bonbons/di/-/di-1.3.1.tgz#535799f7d9303cef504471e21f95e102971b41e3"
+"@bonbons/di@1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@bonbons/di/-/di-1.3.3.tgz#e89baaa03464f4ae50968607aa5c51f92ae135fc"
   dependencies:
     reflect-metadata "0.1.12"
 
