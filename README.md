@@ -1,7 +1,7 @@
 # astroboy.ts
 > astroboy在typescript语义中的优雅实现
 
-* Service依赖注入(实现：@bonbons/di)
+* 高性能依赖注入(实现：@bonbons/di)
 * 控制器声明式路由(实现：astroboy-router)
 * 可配置容器定义化
 * 配置容器对接astroboy标准configs模式
