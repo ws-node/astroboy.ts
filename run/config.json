@@ -8,6 +8,6 @@
   },
   "@astroboy.ts": {
     "showTrace": true,
-    "diType": "native"
+    "diType": "proxy"
   }
 }

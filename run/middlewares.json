@@ -13,6 +13,11 @@
     }
   },
   {
+    "priority": 5,
+    "name": "demo",
+    "enable": true
+  },
+  {
     "priority": 10,
     "name": "astroboy-security-cto",
     "enable": true,

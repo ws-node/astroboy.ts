@@ -25,6 +25,7 @@ class TestController {
     const env = this.configs.get(ENV);
     // console.log(env);
     // console.log(this.base);
+    // throw new Error("fuck");
     const { ctx } = this.base;
     ctx.type = "application/json";
     ctx.body = JSON.stringify({

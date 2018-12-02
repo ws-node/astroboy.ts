@@ -214,26 +214,24 @@ export declare class Server {
      * ### 启动app
      * @description
      * @author Big Mogician
-     * @param {() => void} [onStart] on('start') 回调
+     * @param {Partial<{
+     *     onStart: (app) => void;
+     *     onError: (error, ctx) => void;
+     *   }>} [events]
      * @memberof Server
      */
-    run(onStart?: () => void): void;
+    run(events?: Partial<{
+        onStart: (app: any) => void;
+        onError: (error: any, ctx: any) => void;
+    }>): void;
     private initOptions;
     private initInjections;
     private readConfigs;
-    /**
-     * ## 启动app
-     * @description
-     * @author Big Mogician
-     * @private
-     * @param {() => void} onStart
-     * @memberof Server
-     */
     private startApp;
     /**
      * ## 按照配置设置DI的解析方式
      * * `native` : 原生模式
-     * * `proxu` : Proxy代理模式
+     * * `proxy` : Proxy代理模式
      * @description
      * @author Big Mogician
      * @private

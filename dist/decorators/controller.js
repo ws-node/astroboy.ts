@@ -4,9 +4,6 @@ const tslib_1 = require("tslib");
 const astroboy_router_1 = require("astroboy-router");
 const utils_1 = require("../utils");
 const Context_1 = require("../services/Context");
-const Configs_1 = require("../services/Configs");
-const configs_1 = require("../configs");
-const Scope_1 = require("../services/Scope");
 const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
 const $$injector = "$$injector";
 /**
@@ -51,30 +48,11 @@ function Controller(prefix) {
                 descriptor.value = function () {
                     return tslib_1.__awaiter(this, void 0, void 0, function* () {
                         const injector = this[$$injector];
-                        try {
-                            const { ctx } = injector.get(Context_1.Context);
-                            const params = method === "GET" ?
-                                [ctx.query] :
-                                [ctx.body, ctx.query];
-                            yield value.bind(this)(...params);
-                        }
-                        catch (e) {
-                            throw e;
-                        }
-                        finally {
-                            if (!injector) {
-                                console.log(utils_1.setColor("red", "[astroboy.ts] warning: $$injector is lost, memory weak."));
-                                return;
-                            }
-                            const { showTrace } = injector.get(Configs_1.Configs).get(configs_1.ENV);
-                            if (showTrace) {
-                                const scope = injector.get(Scope_1.Scope);
-                                scope.end();
-                                const duration = scope.diration();
-                                console.log(`${utils_1.setColor("blue", "[astroboy.ts]")} : scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(injector.scopeId))} is [${utils_1.setColor(duration > 500 ? "red" : duration > 200 ? "yellow" : "green", duration)} ms] disposed.`);
-                            }
-                            injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
-                        }
+                        const { ctx } = injector.get(Context_1.Context);
+                        const params = method === "GET" ?
+                            [ctx.query] :
+                            [ctx.body, ctx.query];
+                        yield value.bind(this)(...params);
                     });
                 };
                 Object.defineProperty(prototype, name, descriptor);

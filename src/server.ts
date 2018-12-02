@@ -253,13 +253,19 @@ export class Server {
    * ### 启动app
    * @description
    * @author Big Mogician
-   * @param {() => void} [onStart] on('start') 回调
+   * @param {Partial<{
+   *     onStart: (app) => void;
+   *     onError: (error, ctx) => void;
+   *   }>} [events]
    * @memberof Server
    */
-  public run(onStart?: () => void) {
+  public run(events?: Partial<{
+    onStart: (app) => void;
+    onError: (error, ctx) => void;
+  }>) {
     this.initOptions();
     this.initInjections();
-    this.startApp(onStart);
+    this.startApp(events);
   }
 
   private initOptions() {
@@ -283,31 +289,21 @@ export class Server {
     });
   }
 
-  /**
-   * ## 启动app
-   * @description
-   * @author Big Mogician
-   * @private
-   * @param {() => void} onStart
-   * @memberof Server
-   */
-  private startApp(onStart: () => void) {
+  private startApp(events?: Partial<{
+    onStart: (app) => void;
+    onError: (error, ctx) => void;
+  }>) {
+    const {
+      onStart = undefined,
+      onError = undefined
+    } = events || {};
     new this.appBuilder(this.appConfigs || {}).on("start", (app: Koa) => {
       this.readConfigs(app["config"]);
       this.resetDIResolver();
       this.resolveInjections();
-      onStart && onStart();
-    }).on("error", (_, ctx) => {
-      this.di.dispose(getScopeId(ctx));
-      const { showTrace } = this.configs.get(ENV);
-      if (showTrace) {
-        console.log(`${
-          setColor("blue", "[astroboy.ts]")
-          } : scope ${
-          setColor("cyan", getScopeId(ctx, true))
-          } is disposed (global error handler).`
-        );
-      }
+      onStart && onStart(app);
+    }).on("error", (error, ctx) => {
+      onError && onError(error, ctx);
     });
   }
 

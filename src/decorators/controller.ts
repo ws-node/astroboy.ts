@@ -48,35 +48,11 @@ export function Controller(prefix: string) {
         const method = routes[name].method[0] || "GET";
         descriptor.value = async function () {
           const injector: InjectService = this[$$injector];
-          try {
-            const { ctx } = injector.get<Context<{}>>(Context);
-            const params = method === "GET" ?
-              [ctx.query] :
-              [ctx.body, ctx.query];
-            await value.bind(this)(...params);
-          } catch (e) {
-            throw e;
-          } finally {
-            if (!injector) {
-              console.log(setColor("red", "[astroboy.ts] warning: $$injector is lost, memory weak."));
-              return;
-            }
-            const { showTrace } = injector.get(Configs).get(ENV);
-            if (showTrace) {
-              const scope = injector.get(Scope);
-              scope.end();
-              const duration = scope.diration();
-              console.log(`${
-                setColor("blue", "[astroboy.ts]")
-                } : scope ${
-                setColor("cyan", getShortScopeId(injector.scopeId))
-                } is [${
-                setColor(duration > 500 ? "red" : duration > 200 ? "yellow" : "green", duration)
-                } ms] disposed.`
-              );
-            }
-            injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
-          }
+          const { ctx } = injector.get<Context<{}>>(Context);
+          const params = method === "GET" ?
+            [ctx.query] :
+            [ctx.body, ctx.query];
+          await value.bind(this)(...params);
         };
         Object.defineProperty(prototype, name, descriptor);
       }

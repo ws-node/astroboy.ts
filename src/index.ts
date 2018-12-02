@@ -8,6 +8,7 @@ export * from "./services/BaseClass";
 export * from "./services/AstroboyContext";
 export * from "./server";
 export * from "./configs";
+export * from "./typings/IContext";
 export * from "astroboy-router";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";
 import { createRouter } from "astroboy-router";

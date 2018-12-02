@@ -63,13 +63,16 @@ class Server {
      * ### 启动app
      * @description
      * @author Big Mogician
-     * @param {() => void} [onStart] on('start') 回调
+     * @param {Partial<{
+     *     onStart: (app) => void;
+     *     onError: (error, ctx) => void;
+     *   }>} [events]
      * @memberof Server
      */
-    run(onStart) {
+    run(events) {
         this.initOptions();
         this.initInjections();
-        this.startApp(onStart);
+        this.startApp(events);
     }
     initOptions() {
         this.option(configs_1.ENV, configs_1.defaultEnv);
@@ -89,32 +92,21 @@ class Server {
             }
         });
     }
-    /**
-     * ## 启动app
-     * @description
-     * @author Big Mogician
-     * @private
-     * @param {() => void} onStart
-     * @memberof Server
-     */
-    startApp(onStart) {
+    startApp(events) {
+        const { onStart = undefined, onError = undefined } = events || {};
         new this.appBuilder(this.appConfigs || {}).on("start", (app) => {
             this.readConfigs(app["config"]);
             this.resetDIResolver();
             this.resolveInjections();
-            onStart && onStart();
-        }).on("error", (_, ctx) => {
-            this.di.dispose(utils_1.getScopeId(ctx));
-            const { showTrace } = this.configs.get(configs_1.ENV);
-            if (showTrace) {
-                console.log(`${utils_1.setColor("blue", "[astroboy.ts]")} : scope ${utils_1.setColor("cyan", utils_1.getScopeId(ctx, true))} is disposed (global error handler).`);
-            }
+            onStart && onStart(app);
+        }).on("error", (error, ctx) => {
+            onError && onError(error, ctx);
         });
     }
     /**
      * ## 按照配置设置DI的解析方式
      * * `native` : 原生模式
-     * * `proxu` : Proxy代理模式
+     * * `proxy` : Proxy代理模式
      * @description
      * @author Big Mogician
      * @private
