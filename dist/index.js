@@ -1,17 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
+tslib_1.__exportStar(require("@bonbons/di"), exports);
+tslib_1.__exportStar(require("astroboy-router"), exports);
 tslib_1.__exportStar(require("./decorators/injectable"), exports);
 tslib_1.__exportStar(require("./decorators/controller"), exports);
 tslib_1.__exportStar(require("./middlewares"), exports);
-tslib_1.__exportStar(require("./services/Context"), exports);
 tslib_1.__exportStar(require("./services/Injector"), exports);
-tslib_1.__exportStar(require("./services/Configs"), exports);
+tslib_1.__exportStar(require("./services/Context"), exports);
 tslib_1.__exportStar(require("./services/BaseClass"), exports);
 tslib_1.__exportStar(require("./services/AstroboyContext"), exports);
 tslib_1.__exportStar(require("./server"), exports);
 tslib_1.__exportStar(require("./configs"), exports);
-tslib_1.__exportStar(require("astroboy-router"), exports);
+const Configs_1 = require("./services/Configs");
+exports.Configs = Configs_1.Configs;
 const astroboy_router_1 = require("astroboy-router");
 const utils_1 = require("./utils");
 /**

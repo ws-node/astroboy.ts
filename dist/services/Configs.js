@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createToken = (key) => ({ key: Symbol(key) });
-class ConfigCollection {
+class RealConfigCollection {
     constructor() {
         this.map = new Map();
     }
@@ -16,7 +16,7 @@ class ConfigCollection {
         return Array.from(this.map.entries()).map(([sb, { value }]) => ({ token: { key: sb }, value }));
     }
 }
-exports.ConfigCollection = ConfigCollection;
+exports.RealConfigCollection = RealConfigCollection;
 /**
  * ## 全局配置容器
  * @description

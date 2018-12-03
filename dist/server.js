@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const astroboy_1 = tslib_1.__importDefault(require("astroboy"));
 const di_1 = require("@bonbons/di");
 const Context_1 = require("./services/Context");
 const Injector_1 = require("./services/Injector");
@@ -16,24 +18,25 @@ const Scope_1 = require("./services/Scope");
  * @class Server
  */
 class Server {
-    constructor(appBuilder, appConfigs) {
-        this.appBuilder = appBuilder;
-        this.appConfigs = appConfigs;
+    constructor(...args) {
         this.di = utils_1.GlobalDI;
-        this.configs = new Configs_1.ConfigCollection();
+        this.configs = new Configs_1.RealConfigCollection();
         this.preSingletons = [];
         this.preScopeds = [];
+        const [ctor, configs] = args;
+        if (!ctor) {
+            this.appBuilder = astroboy_1.default;
+        }
+        else if (ctor.prototype === undefined) {
+            this.appBuilder = astroboy_1.default;
+            this.appConfigs = ctor;
+        }
+        else {
+            this.appBuilder = ctor;
+            this.appConfigs = configs;
+        }
+        this.init();
     }
-    /**
-     * ### 创建一个新的应用
-     * @description
-     * @author Big Mogician
-     * @static
-     * @param {Constructor<any>} ctor astroboy或者其继承
-     * @param {*} [configs] astroboy启动配置
-     * @returns
-     * @memberof Server
-     */
     static Create(ctor, configs) {
         return new Server(ctor, configs);
     }
@@ -70,19 +73,24 @@ class Server {
      * @memberof Server
      */
     run(events) {
+        this.finalInjectionsInit();
+        this.startApp(events);
+    }
+    init() {
         this.initOptions();
         this.initInjections();
-        this.startApp(events);
     }
     initOptions() {
         this.option(configs_1.ENV, configs_1.defaultEnv);
     }
     initInjections() {
+        this.scoped(AstroboyContext_1.AstroboyContext);
+        this.scoped(Scope_1.Scope);
+    }
+    finalInjectionsInit() {
         this.initConfigCollection();
         this.initInjectService();
         this.initContextProvider();
-        this.scoped(AstroboyContext_1.AstroboyContext);
-        this.scoped(Scope_1.Scope);
     }
     readConfigs(configs = {}) {
         this.configs.toArray().forEach(({ token }) => {
@@ -94,7 +102,7 @@ class Server {
     }
     startApp(events) {
         const { onStart = undefined, onError = undefined } = events || {};
-        new this.appBuilder(this.appConfigs || {}).on("start", (app) => {
+        new (this.appBuilder || astroboy_1.default)(this.appConfigs || {}).on("start", (app) => {
             this.readConfigs(app["config"]);
             this.resetDIResolver();
             this.resolveInjections();

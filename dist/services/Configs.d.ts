@@ -2,7 +2,7 @@ import { IToken, ITokenGenerator, IEntry, IConfigCollection, ConfigsCollection a
 export declare type ConfigToken<T> = IToken<T>;
 export declare type ConfigEntry<T> = IEntry<T>;
 export declare const createToken: ITokenGenerator;
-export declare class ConfigCollection implements IConfigCollection {
+export declare class RealConfigCollection implements IConfigCollection {
     private map;
     set<T>(token: ConfigToken<T>, entry: T): void;
     get<T>(token: ConfigToken<T>): T;

@@ -8,24 +8,30 @@ import { ConfigEntry, ConfigToken } from "./services/Configs";
  * @class Server
  */
 export declare class Server {
-    private appBuilder;
-    private appConfigs?;
     private di;
     private configs;
     private preSingletons;
     private preScopeds;
-    constructor(appBuilder: Constructor<any>, appConfigs?: any);
+    private appBuilder;
+    private appConfigs;
+    constructor();
+    constructor(appBuilder: Constructor<any>);
+    constructor(appConfigs: any);
+    constructor(appBuilder: Constructor<any>, appConfigs: any);
     /**
      * ### 创建一个新的应用
      * @description
      * @author Big Mogician
      * @static
-     * @param {Constructor<any>} ctor astroboy或者其继承
-     * @param {*} [configs] astroboy启动配置
+     * @param {Constructor<any>?} ctor astroboy或者其继承
+     * @param {*?} [configs] astroboy启动配置
      * @returns
      * @memberof Server
      */
-    static Create(ctor: Constructor<any>, configs?: any): Server;
+    static Create(): Server;
+    static Create(ctor: Constructor<any>): Server;
+    static Create(configs: any): Server;
+    static Create(ctor: Constructor<any>, configs: any): Server;
     /**
      * ### 注入一个配置项
      * Set an option with format entry{@ConfigEntry<T>}.
@@ -224,8 +230,10 @@ export declare class Server {
         onStart: (app: any) => void;
         onError: (error: any, ctx: any) => void;
     }>): void;
+    private init;
     private initOptions;
     private initInjections;
+    private finalInjectionsInit;
     private readConfigs;
     private startApp;
     /**

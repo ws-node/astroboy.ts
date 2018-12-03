@@ -33,7 +33,7 @@ function createMiddleware(middleware, ...args) {
         });
     });
 }
-exports.createMiddleware = createMiddleware;
+exports.injectScope = createMiddleware;
 /**
  * ## astroboy.ts初始化中间件
  * * 请确保此中间件的优先级足够高
