@@ -1,6 +1,6 @@
-import { createMiddleware, Context } from "../../src";
+import { injectScope } from "../../src";
 
-export = () => createMiddleware(async ({ injector, configs, ctx, next }) => {
+export = () => injectScope(async ({ injector, configs, ctx, next }) => {
   // console.log(injector);
   // console.log(configs);
   await next();

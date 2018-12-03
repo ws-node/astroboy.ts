@@ -9,7 +9,7 @@ export type ConfigEntry<T> = IEntry<T>;
 
 export const createToken: ITokenGenerator = (key: string) => ({ key: Symbol(key) });
 
-export class ConfigCollection implements IConfigCollection {
+export class RealConfigCollection implements IConfigCollection {
 
   private map = new Map<symbol, { value: any }>();
 

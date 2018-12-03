@@ -5,7 +5,7 @@ import { ENV } from "../configs";
 import { Configs } from "../services/Configs";
 import { Scope } from "../services/Scope";
 
-export interface IMiddlewaresScope<T> {
+export interface IMiddlewaresScope<T = IContext> {
   injector: InjectService;
   configs: Configs;
   ctx: T;
@@ -23,7 +23,7 @@ export interface IMiddlewaresScope<T> {
  * @param {...any[]} args
  * @returns
  */
-export function createMiddleware<T extends IContext = IContext>(
+function createMiddleware<T extends IContext = IContext>(
   middleware: (bunddle: IMiddlewaresScope<T>) => void | Promise<void>,
   ...args: any[]
 ) {
@@ -84,4 +84,8 @@ export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
     }
     injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
   }
+};
+
+export {
+  createMiddleware as injectScope
 };

@@ -1,8 +1,9 @@
 import Koa from "koa";
+import Astroboy from "astroboy";
 import { Constructor, InjectScope, ScopeID, InjectToken, AbstractType, ImplementFactory, ImplementType } from "@bonbons/di";
 import { Context } from "./services/Context";
 import { InjectService } from "./services/Injector";
-import { ConfigCollection, ConfigEntry, ConfigToken, Configs } from "./services/Configs";
+import { RealConfigCollection, ConfigEntry, ConfigToken, Configs } from "./services/Configs";
 import { GlobalDI, optionAssign, getScopeId, setColor } from "./utils";
 import { ENV, defaultEnv } from "./configs";
 import { AstroboyContext } from "./services/AstroboyContext";
@@ -20,24 +21,47 @@ type DIPair = [any, any];
 export class Server {
 
   private di = GlobalDI;
-  private configs = new ConfigCollection();
+  private configs = new RealConfigCollection();
 
   private preSingletons: DIPair[] = [];
   private preScopeds: DIPair[] = [];
 
-  constructor(private appBuilder: Constructor<any>, private appConfigs?: any) { }
+  private appBuilder!: Constructor<any>;
+  private appConfigs!: any;
+
+  constructor();
+  constructor(appBuilder: Constructor<any>);
+  constructor(appConfigs: any);
+  constructor(appBuilder: Constructor<any>, appConfigs: any);
+  constructor(...args: any[]) {
+    const [ctor, configs] = args;
+    if (!ctor) {
+      this.appBuilder = Astroboy;
+    } else if (ctor.prototype === undefined) {
+      this.appBuilder = Astroboy;
+      this.appConfigs = ctor;
+    } else {
+      this.appBuilder = ctor;
+      this.appConfigs = configs;
+    }
+    this.init();
+  }
 
   /**
    * ### 创建一个新的应用
    * @description
    * @author Big Mogician
    * @static
-   * @param {Constructor<any>} ctor astroboy或者其继承
-   * @param {*} [configs] astroboy启动配置
+   * @param {Constructor<any>?} ctor astroboy或者其继承
+   * @param {*?} [configs] astroboy启动配置
    * @returns
    * @memberof Server
    */
-  public static Create(ctor: Constructor<any>, configs?: any) {
+  public static Create(): Server;
+  public static Create(ctor: Constructor<any>): Server;
+  public static Create(configs: any): Server;
+  public static Create(ctor: Constructor<any>, configs: any): Server;
+  public static Create(ctor?: Constructor<any>, configs?: any) {
     return new Server(ctor, configs);
   }
 
@@ -263,9 +287,13 @@ export class Server {
     onStart: (app) => void;
     onError: (error, ctx) => void;
   }>) {
+    this.finalInjectionsInit();
+    this.startApp(events);
+  }
+
+  private init() {
     this.initOptions();
     this.initInjections();
-    this.startApp(events);
   }
 
   private initOptions() {
@@ -273,11 +301,14 @@ export class Server {
   }
 
   private initInjections() {
+    this.scoped(AstroboyContext);
+    this.scoped(Scope);
+  }
+
+  private finalInjectionsInit() {
     this.initConfigCollection();
     this.initInjectService();
     this.initContextProvider();
-    this.scoped(AstroboyContext);
-    this.scoped(Scope);
   }
 
   private readConfigs(configs: any = {}) {
@@ -297,7 +328,7 @@ export class Server {
       onStart = undefined,
       onError = undefined
     } = events || {};
-    new this.appBuilder(this.appConfigs || {}).on("start", (app: Koa) => {
+    new (this.appBuilder || Astroboy)(this.appConfigs || {}).on("start", (app: Koa) => {
       this.readConfigs(app["config"]);
       this.resetDIResolver();
       this.resolveInjections();

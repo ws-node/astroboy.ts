@@ -2,9 +2,33 @@
   [
     "GET",
     [
+      "/v1/api/jscode/get"
+    ],
+    "jscode",
+    "Get"
+  ],
+  [
+    "GET",
+    [
+      "/v1/api/old/get"
+    ],
+    "old",
+    "Get"
+  ],
+  [
+    "GET",
+    [
       "/v1/api/test/get"
     ],
     "test",
     "Get"
+  ],
+  [
+    "GET",
+    [
+      "/v1/api/test/get2"
+    ],
+    "test",
+    "GetMore"
   ]
 ]

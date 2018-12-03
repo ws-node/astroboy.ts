@@ -1,6 +1,6 @@
-import { Injectable } from "../../src";
+import { Injectable, InjectScope } from "../../src";
 
-@Injectable()
+@Injectable({ type: InjectScope.Singleton })
 class Test02Service {
 
   private value = 98765;

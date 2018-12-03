@@ -3,9 +3,6 @@ import { Router } from "astroboy-router";
 import { createInstance, GlobalImplements, getInjector, getShortScopeId, setColor } from "../utils";
 import { InjectService } from "../services/Injector";
 import { Context } from "../services/Context";
-import { Configs } from "../services/Configs";
-import { ENV } from "../configs";
-import { Scope } from "../services/Scope";
 
 const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
 const $$injector = "$$injector";
