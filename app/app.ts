@@ -1,6 +1,6 @@
 import path from "path";
 import Astroboy from "astroboy";
-import { Server } from "../src";
+import { Server, JSON_RESULT_OPTIONS, JsonResolvers } from "../src";
 
 // new Astroboy({
 //   ROOT_PATH: path.resolve(__dirname, "..")
@@ -12,7 +12,9 @@ import { Server } from "../src";
 
 Server.Create(Astroboy, {
   ROOT_PATH: path.resolve(__dirname, "..")
-}).run({
-  onStart: () => console.log("hello world!"),
-  onError: (err) => console.log(`fuck it : ${String(err)}`)
-});
+})
+  .option(JSON_RESULT_OPTIONS, { format: true, keyResolver: JsonResolvers.camelcase })
+  .run({
+    onStart: () => console.log("hello world!"),
+    onError: (err) => console.log(`fuck it : ${String(err)}`)
+  });

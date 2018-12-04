@@ -1,10 +1,16 @@
 import TestService from "../services/test";
 import Test02Service from "../services/test02";
 import BusinessContext from "../services/business-context";
-import { Controller, API, Configs, AstroboyContext, ENV } from "../../src";
+import { Controller, API, Configs, AstroboyContext, ENV, JsonResult } from "../../src";
 
 interface GetQuery {
   id: string;
+  name: string;
+  fuck: string;
+}
+
+interface PostData {
+  id: number;
   name: string;
 }
 
@@ -31,23 +37,29 @@ class TestController {
     });
   }
 
-  @API("GET", "get2")
-  public GetMore({ id, name }: GetQuery) {
+  @API("POST", "post/:type")
+  public async Post({ id, name }: PostData, { type, id: id2 }) {
+    return new JsonResult({
+      id, name, type, id2
+    });
+  }
+
+  @API("GET", "get2/:fuck")
+  public GetMore({ id, name, fuck }: GetQuery) {
     this.test02.add(345);
     this.test.reset(4534);
-    const env = this.configs.get(ENV);
+    // const env = this.configs.get(ENV);
     // console.log(env);
     // console.log(this.base);
     // throw new Error("fuck");
-    const { ctx } = this.base;
-    ctx.type = "application/json";
-    ctx.body = JSON.stringify({
+    return new JsonResult({
       status: this.test.demoMethod2(),
       // config: this.base.getConfig(),
       // haha: this.notMethod(),
       // env,
-      type: ctx.type,
-      id, name,
+      query_id: id,
+      query_name: name,
+      query_fuck: fuck,
       ctx: this.business.ctx02 === this.base.ctx,
       t05: this.test.t05 === this.test.t02.t05,
       t08: this.test.t08 === this.test.t06.t08

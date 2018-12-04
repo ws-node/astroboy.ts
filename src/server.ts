@@ -1,13 +1,32 @@
 import Koa from "koa";
 import Astroboy from "astroboy";
-import { Constructor, InjectScope, ScopeID, InjectToken, AbstractType, ImplementFactory, ImplementType } from "@bonbons/di";
 import { Context } from "./services/Context";
 import { InjectService } from "./services/Injector";
-import { RealConfigCollection, ConfigEntry, ConfigToken, Configs } from "./services/Configs";
-import { GlobalDI, optionAssign, getScopeId, setColor } from "./utils";
-import { ENV, defaultEnv } from "./configs";
 import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
+import {
+  GlobalDI,
+  optionAssign
+} from "./utils";
+import {
+  Constructor,
+  InjectScope, ScopeID,
+  InjectToken,
+  AbstractType,
+  ImplementFactory,
+  ImplementType
+} from "@bonbons/di";
+import {
+  ENV, defaultEnv,
+  defaultJsonResultOptions,
+  JSON_RESULT_OPTIONS
+} from "./configs";
+import {
+  RealConfigCollection,
+  ConfigEntry,
+  ConfigToken,
+  Configs
+} from "./services/Configs";
 
 type DIPair = [any, any];
 
@@ -298,6 +317,7 @@ export class Server {
 
   private initOptions() {
     this.option(ENV, defaultEnv);
+    this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
   }
 
   private initInjections() {

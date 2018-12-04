@@ -28,6 +28,10 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/camelcase@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@types/camelcase/-/camelcase-4.1.0.tgz#e054f7986f31658d49936261b5cd4588ef29d1ee"
+
 "@types/connect@*":
   version "3.4.32"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.32.tgz#aa0e9616b9435ccad02bc52b5b454ffc2c70ba28"
@@ -119,7 +123,7 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
-"@types/uuid@^3.4.4":
+"@types/uuid@3.4.4":
   version "3.4.4"
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-3.4.4.tgz#7af69360fa65ef0decb41fd150bf4ca5c0cefdf5"
   dependencies:
@@ -258,7 +262,7 @@ astroboy-cli@^0.0.8:
     ts-node "^7.0.0"
     tsconfig-paths "^3.4.2"
 
-astroboy-router@^1.0.0-rc.26:
+astroboy-router@1.0.0-rc.26:
   version "1.0.0-rc.26"
   resolved "https://registry.yarnpkg.com/astroboy-router/-/astroboy-router-1.0.0-rc.26.tgz#dae6cec1055838e0e130b1bea7f4efbebc136957"
   dependencies:
@@ -268,7 +272,7 @@ astroboy-router@^1.0.0-rc.26:
     lodash "^4.17.11"
     reflect-metadata "^0.1.12"
 
-astroboy@^0.0.35:
+astroboy@0.0.35:
   version "0.0.35"
   resolved "https://registry.yarnpkg.com/astroboy/-/astroboy-0.0.35.tgz#9f3428a3464e4e03dc5cd170576a54efbab9d629"
   dependencies:
@@ -437,7 +441,7 @@ call-me-maybe@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/call-me-maybe/-/call-me-maybe-1.0.1.tgz#26d208ea89e37b5cbde60250a15f031c16a4d66b"
 
-camelcase@^4.0.0:
+camelcase@4.1.0, camelcase@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
@@ -2687,7 +2691,7 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
-uuid@^3.3.2:
+uuid@3.3.2, uuid@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
 

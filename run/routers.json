@@ -24,9 +24,17 @@
     "Get"
   ],
   [
+    "POST",
+    [
+      "/v1/api/test/post/:type"
+    ],
+    "test",
+    "Post"
+  ],
+  [
     "GET",
     [
-      "/v1/api/test/get2"
+      "/v1/api/test/get2/:fuck"
     ],
     "test",
     "GetMore"

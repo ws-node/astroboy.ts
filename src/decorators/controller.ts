@@ -3,6 +3,9 @@ import { Router } from "astroboy-router";
 import { createInstance, GlobalImplements, getInjector, getShortScopeId, setColor } from "../utils";
 import { InjectService } from "../services/Injector";
 import { Context } from "../services/Context";
+import { ICommonResultType, IResult } from "../typings/IResult";
+import { IContext } from "../typings/IContext";
+import { Configs } from "..";
 
 const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
 const $$injector = "$$injector";
@@ -46,10 +49,9 @@ export function Controller(prefix: string) {
         descriptor.value = async function () {
           const injector: InjectService = this[$$injector];
           const { ctx } = injector.get<Context<{}>>(Context);
-          const params = method === "GET" ?
-            [ctx.query] :
-            [ctx.body, ctx.query];
-          await value.bind(this)(...params);
+          const params = resolveMethodParams(method, ctx);
+          const result: ICommonResultType = await value.bind(this)(...params);
+          if (result) resolveMethodResult(result, ctx, injector);
         };
         Object.defineProperty(prototype, name, descriptor);
       }
@@ -68,4 +70,29 @@ export function Controller(prefix: string) {
     GlobalImplements.set(DI_CONTROLLER, target);
     return <Constructor<T>>DI_CONTROLLER;
   };
+}
+
+async function resolveMethodResult(result: string | IResult, ctx: IContext, injector: InjectService) {
+  if ((<IResult>result).toResult) {
+    ctx.body = await (<IResult>result).toResult({ injector, configs: injector.get(Configs) });
+  } else {
+    ctx.body = <string>result;
+  }
+}
+
+function resolveMethodParams(method: string, ctx: IContext) {
+  let params: any[];
+  switch (method) {
+    case "POST":
+    case "PUT":
+    case "PATCH":
+      // @ts-ignore koa-bodyparser 定义不想搞了
+      params = [ctx.request.body || {}, { ...ctx.query, ...ctx.params }];
+      break;
+    case "GET":
+    case "DELETE":
+    case "OPTION":
+    default: params = [{ ...ctx.query, ...ctx.params }];
+  }
+  return params;
 }
