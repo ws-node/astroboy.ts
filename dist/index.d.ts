@@ -10,6 +10,8 @@ export * from "./services/AstroboyContext";
 export * from "./server";
 export * from "./configs";
 export * from "./typings/IContext";
+export * from "./typings/IResult";
+export * from "./results/json";
 import { Configs } from "./services/Configs";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";
 /**

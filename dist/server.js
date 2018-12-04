@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const astroboy_1 = tslib_1.__importDefault(require("astroboy"));
-const di_1 = require("@bonbons/di");
 const Context_1 = require("./services/Context");
 const Injector_1 = require("./services/Injector");
-const Configs_1 = require("./services/Configs");
-const utils_1 = require("./utils");
-const configs_1 = require("./configs");
 const AstroboyContext_1 = require("./services/AstroboyContext");
 const Scope_1 = require("./services/Scope");
+const utils_1 = require("./utils");
+const di_1 = require("@bonbons/di");
+const configs_1 = require("./configs");
+const Configs_1 = require("./services/Configs");
 /**
  * ## astroboy.ts服务
  * @description
@@ -82,6 +82,7 @@ class Server {
     }
     initOptions() {
         this.option(configs_1.ENV, configs_1.defaultEnv);
+        this.option(configs_1.JSON_RESULT_OPTIONS, configs_1.defaultJsonResultOptions);
     }
     initInjections() {
         this.scoped(AstroboyContext_1.AstroboyContext);
