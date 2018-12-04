@@ -8,6 +8,15 @@ export class JsonResult implements IResult {
 
   constructor(private value: any, private configs?: Partial<JsonResultOptions>) { }
 
+  /**
+   * ### 将json对象序列化写入body
+   * * @框架调用方法，请勿手动调用
+   * @description
+   * @author Big Mogician
+   * @param {IResultScope} { configs }
+   * @returns {string}
+   * @memberof JsonResult
+   */
   toResult({ configs }: IResultScope): string {
     const { format, whiteSpace: b, keyResolver: r } = {
       ...configs.get(JSON_RESULT_OPTIONS),
