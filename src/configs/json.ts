@@ -11,7 +11,7 @@ export interface JsonResultOptions {
   /** 是否进行格式化 - 默认：`false` */
   format: boolean;
   /** 格式化空格数量 - 默认：`2` */
-  whiteSpace: 0 | 1 | 2;
+  whiteSpace: 0 | 1 | 2 | 4;
   /** 对象键值处理函数 - 默认：`undefined` */
   keyResolver?: (key: string) => string;
 }

@@ -25,10 +25,21 @@ export class JsonResult implements IResult {
     return JSON.stringify(
       !r ? (this.value || {}) : resolveKeys(r, this.value || {}),
       null,
-      (!format || b === 0) ? "" : b === 1 ? " " : "  "
+      decideWhiteSpace(format, b)
     );
   }
 
+}
+
+function decideWhiteSpace(format: boolean, b: 0 | 1 | 2 | 4) {
+  if (!format) return "";
+  switch (b) {
+    case 4: return "    ";
+    case 2: return "  ";
+    case 1: return " ";
+    case 0: return "";
+    default: return "";
+  }
 }
 
 function resolveKeys(resolver: (k: string) => string, value: any, deep = true) {
