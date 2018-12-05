@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createToken = (key) => ({ key: Symbol(key) });
+exports.createOptions = (key) => ({ key: Symbol(key) });
+exports.createConfig = (key) => ({ key: Symbol(`config::${key}`) });
 class RealConfigCollection {
     constructor() {
         this.map = new Map();

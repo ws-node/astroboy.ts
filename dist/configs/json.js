@@ -6,5 +6,5 @@ exports.defaultJsonResultOptions = {
     whiteSpace: 2,
     keyResolver: undefined
 };
-exports.JSON_RESULT_OPTIONS = Configs_1.createToken("json-result-options");
+exports.JSON_RESULT_OPTIONS = Configs_1.createOptions("json-result-options");
 //# sourceMappingURL=json.js.map

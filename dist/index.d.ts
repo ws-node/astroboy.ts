@@ -12,7 +12,7 @@ export * from "./configs";
 export * from "./typings/IContext";
 export * from "./typings/IResult";
 export * from "./results/json";
-import { Configs, createToken } from "./services/Configs";
+import { Configs, createOptions, createConfig } from "./services/Configs";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";
 /**
  * ## 构建路由
@@ -27,4 +27,4 @@ import { ControllerConstructor } from "astroboy-router/dist/metadata";
  * @returns
  */
 export declare function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string): (string | string[])[][];
-export { Configs, createToken };
+export { Configs, createOptions, createConfig };

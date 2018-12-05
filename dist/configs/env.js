@@ -6,5 +6,5 @@ exports.defaultEnv = {
     diType: "native"
 };
 /** astroboy.ts环境变量 */
-exports.ENV = Configs_1.createToken("config::@astroboy.ts");
+exports.ENV = Configs_1.createConfig("@astroboy.ts");
 //# sourceMappingURL=env.js.map

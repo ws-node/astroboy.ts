@@ -15,7 +15,8 @@ tslib_1.__exportStar(require("./configs"), exports);
 tslib_1.__exportStar(require("./results/json"), exports);
 const Configs_1 = require("./services/Configs");
 exports.Configs = Configs_1.Configs;
-exports.createToken = Configs_1.createToken;
+exports.createOptions = Configs_1.createOptions;
+exports.createConfig = Configs_1.createConfig;
 const astroboy_router_1 = require("astroboy-router");
 const utils_1 = require("./utils");
 /**

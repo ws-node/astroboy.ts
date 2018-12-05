@@ -1,5 +1,5 @@
 import { Constructor, AbstractType, ImplementFactory, ImplementType } from "@bonbons/di";
-import { ConfigEntry, ConfigToken } from "./services/Configs";
+import { ConfigToken } from "./services/Configs";
 /**
  * ## astroboy.ts服务
  * @description
@@ -33,21 +33,19 @@ export declare class Server {
     static Create(configs: any): Server;
     static Create(ctor: Constructor<any>, configs: any): Server;
     /**
-     * ### 注入一个配置项
-     * Set an option with format entry{@ConfigEntry<T>}.
-     *
+     * ### 声明一个配置项
+     * * 仅声明，不设置默认值
      * @description
      * @author Big Mogician
      * @template T
-     * @param {ConfigEntry<Partial<T>|T>} entry ConfigEntry<T>
+     * @param {token: ConfigToken<T>} token
      * @returns {BonbonsServer}
      * @memberof BonbonsServer
      */
-    option<T>(entry: ConfigEntry<Partial<T> | T>): this;
+    option<T>(token: ConfigToken<T>): this;
     /**
      * ### 注入一个配置项
-     * Set an option with token and provided value.
-     *
+     * * 需要设置默认值
      * @description
      * @author Big Mogician
      * @template T
@@ -56,7 +54,7 @@ export declare class Server {
      * @returns {BonbonsServer}
      * @memberof BonbonsServer
      */
-    option<T>(token: ConfigToken<T>, value: Partial<T> | T): this;
+    option<T>(token: ConfigToken<T>, value: Partial<T>): this;
     /**
      * Set a scoped service
      * ---

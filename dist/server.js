@@ -45,13 +45,7 @@ class Server {
         if (!e1) {
             throw new Error("DI token or entry is empty, you shouldn't call BonbonsServer.use<T>(...) without any param.");
         }
-        if (!e2 || args.length === 2) {
-            this.configs.set(e1, utils_1.optionAssign(this.configs, e1, e2));
-        }
-        else {
-            const { token, value } = e1;
-            this.configs.set(token, utils_1.optionAssign(this.configs, token, value));
-        }
+        this.configs.set(e1, utils_1.optionAssign(this.configs, e1, e2 || {}));
         return this;
     }
     scoped(...args) {

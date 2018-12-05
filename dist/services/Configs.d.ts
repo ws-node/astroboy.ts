@@ -1,7 +1,8 @@
 import { IToken, ITokenGenerator, IEntry, IConfigCollection, ConfigsCollection as ReadonlyConfigs } from "@bonbons/di";
 export declare type ConfigToken<T> = IToken<T>;
 export declare type ConfigEntry<T> = IEntry<T>;
-export declare const createToken: ITokenGenerator;
+export declare const createOptions: ITokenGenerator;
+export declare const createConfig: ITokenGenerator;
 export declare class RealConfigCollection implements IConfigCollection {
     private map;
     set<T>(token: ConfigToken<T>, entry: T): void;
