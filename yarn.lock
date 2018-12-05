@@ -262,9 +262,9 @@ astroboy-cli@^0.0.8:
     ts-node "^7.0.0"
     tsconfig-paths "^3.4.2"
 
-astroboy-router@1.0.0-rc.26:
-  version "1.0.0-rc.26"
-  resolved "https://registry.yarnpkg.com/astroboy-router/-/astroboy-router-1.0.0-rc.26.tgz#dae6cec1055838e0e130b1bea7f4efbebc136957"
+astroboy-router@1.2.0-rc.1:
+  version "1.2.0-rc.1"
+  resolved "https://registry.yarnpkg.com/astroboy-router/-/astroboy-router-1.2.0-rc.1.tgz#a11221862400526c4f314a8af83fbae1555dee23"
   dependencies:
     "@types/koa" "^2.0.46"
     "@types/koa-router" "^7.0.31"

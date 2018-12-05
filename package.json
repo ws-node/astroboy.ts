@@ -30,7 +30,7 @@
     "@types/node": "^10.12.10",
     "@types/uuid": "3.4.4",
     "astroboy": "0.0.35",
-    "astroboy-router": "1.0.0-rc.26",
+    "astroboy-router": "1.2.0-rc.1",
     "camelcase": "4.1.0",
     "lodash": "^4.17.11",
     "tslib": "^1.9.3",
