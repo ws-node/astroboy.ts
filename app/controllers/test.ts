@@ -45,13 +45,15 @@ class TestController {
   }
 
   @API("GET", "get2/:fuck")
-  public GetMore({ id, name, fuck }: GetQuery) {
+  public async GetMore({ id, name, fuck }: GetQuery) {
     this.test02.add(345);
     this.test.reset(4534);
     // const env = this.configs.get(ENV);
     // console.log(env);
     // console.log(this.base);
     // throw new Error("fuck");
+    // await this.delay(250);
+    // console.log(this.base.config);
     return new JsonResult({
       status: this.test.demoMethod2(),
       // config: this.base.getConfig(),
@@ -68,6 +70,10 @@ class TestController {
 
   private notMethod() {
     return "hahaha";
+  }
+
+  private delay(time = 100) {
+    return new Promise(resolve => setTimeout(resolve, time));
   }
 
 }
