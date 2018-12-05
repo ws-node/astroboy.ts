@@ -9,7 +9,7 @@ import Koa from "koa";
  * @export
  * @class BaseClass
  */
-export class BaseClass {
+declare class BaseClass {
   public ctx: Koa.Context;
   public app: Koa;
   public config: any;
@@ -21,3 +21,8 @@ export class BaseClass {
   invokeServiceMethod(...args): any;
   getLib(...args): any;
 }
+
+import { BaseClass } from "astroboy";
+export {
+  BaseClass
+};

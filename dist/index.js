@@ -12,6 +12,8 @@ tslib_1.__exportStar(require("./services/BaseClass"), exports);
 tslib_1.__exportStar(require("./services/AstroboyContext"), exports);
 tslib_1.__exportStar(require("./server"), exports);
 tslib_1.__exportStar(require("./configs"), exports);
+const astroboy_1 = tslib_1.__importDefault(require("astroboy"));
+exports.Astroboy = astroboy_1.default;
 tslib_1.__exportStar(require("./results/json"), exports);
 const Configs_1 = require("./services/Configs");
 exports.Configs = Configs_1.Configs;

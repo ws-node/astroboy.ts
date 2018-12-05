@@ -10,6 +10,7 @@ export * from "./services/AstroboyContext";
 export * from "./server";
 export * from "./configs";
 export * from "./typings/IContext";
+import Astroboy from "astroboy";
 export * from "./typings/IResult";
 export * from "./results/json";
 import { Configs, createOptions, createConfig } from "./services/Configs";
@@ -27,4 +28,4 @@ import { ControllerConstructor } from "astroboy-router/dist/metadata";
  * @returns
  */
 export declare function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string): (string | string[])[][];
-export { Configs, createOptions, createConfig };
+export { Astroboy, Configs, createOptions, createConfig };

@@ -21,10 +21,21 @@ class JsonResult {
      */
     toResult({ configs }) {
         const { format, whiteSpace: b, keyResolver: r } = Object.assign({}, configs.get(json_1.JSON_RESULT_OPTIONS), this.configs);
-        return JSON.stringify(!r ? (this.value || {}) : resolveKeys(r, this.value || {}), null, (!format || b === 0) ? "" : b === 1 ? " " : "  ");
+        return JSON.stringify(!r ? (this.value || {}) : resolveKeys(r, this.value || {}), null, decideWhiteSpace(format, b));
     }
 }
 exports.JsonResult = JsonResult;
+function decideWhiteSpace(format, b) {
+    if (!format)
+        return "";
+    switch (b) {
+        case 4: return "    ";
+        case 2: return "  ";
+        case 1: return " ";
+        case 0: return "";
+        default: return "";
+    }
+}
 function resolveKeys(resolver, value, deep = true) {
     let res;
     if (Array.isArray(value) && value.length > 0) {
