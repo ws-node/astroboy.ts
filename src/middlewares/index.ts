@@ -10,8 +10,9 @@ export interface IMiddlewaresScope<T = IContext> {
   configs: Configs;
   ctx: T;
   next: () => Promise<void>;
-  args: any[];
 }
+
+type ProvideInvoker<T extends IContext = IContext> = (bunddle: IMiddlewaresScope<T>) => void | Promise<void>;
 
 /**
  * 创建具有依赖注入能力的中间件
@@ -20,27 +21,14 @@ export interface IMiddlewaresScope<T = IContext> {
  * @export
  * @template T extends IContext
  * @param {((bunddle: IMiddlewaresScope, ctx: T, next: () => Promise<void>) => void | Promise<void>)} middleware
- * @param {...any[]} args
  * @returns
  */
-function createMiddleware<T extends IContext = IContext>(
-  middleware: (bunddle: IMiddlewaresScope<T>) => void | Promise<void>,
-  ...args: any[]
-) {
+function createMiddleware<T extends IContext = IContext>(middleware: ProvideInvoker<T>) {
   return async (ctx: T, next: () => Promise<void>) => {
     const scopeId = getScopeId(ctx);
     const configs = GlobalDI.get(Configs, scopeId);
-    await middleware({
-      injector: <any>({
-        get: (token) => GlobalDI.get(token, scopeId),
-        INTERNAL_dispose: () => GlobalDI.dispose(scopeId),
-        scopeId
-      }),
-      configs,
-      args,
-      ctx,
-      next
-    });
+    const injector = GlobalDI.get(InjectService, scopeId);
+    await middleware({ injector, configs, ctx, next });
   };
 }
 
