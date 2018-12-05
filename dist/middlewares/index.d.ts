@@ -6,8 +6,8 @@ export interface IMiddlewaresScope<T = IContext> {
     configs: Configs;
     ctx: T;
     next: () => Promise<void>;
-    args: any[];
 }
+declare type ProvideInvoker<T extends IContext = IContext> = (bunddle: IMiddlewaresScope<T>) => void | Promise<void>;
 /**
  * 创建具有依赖注入能力的中间件
  * @description
@@ -15,10 +15,9 @@ export interface IMiddlewaresScope<T = IContext> {
  * @export
  * @template T extends IContext
  * @param {((bunddle: IMiddlewaresScope, ctx: T, next: () => Promise<void>) => void | Promise<void>)} middleware
- * @param {...any[]} args
  * @returns
  */
-declare function createMiddleware<T extends IContext = IContext>(middleware: (bunddle: IMiddlewaresScope<T>) => void | Promise<void>, ...args: any[]): (ctx: T, next: () => Promise<void>) => Promise<void>;
+declare function createMiddleware<T extends IContext = IContext>(middleware: ProvideInvoker<T>): (ctx: T, next: () => Promise<void>) => Promise<void>;
 /**
  * ## astroboy.ts初始化中间件
  * * 请确保此中间件的优先级足够高

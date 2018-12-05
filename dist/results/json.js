@@ -10,6 +10,15 @@ class JsonResult {
         this.value = value;
         this.configs = configs;
     }
+    /**
+     * ### 将json对象序列化写入body
+     * * @框架调用方法，请勿手动调用
+     * @description
+     * @author Big Mogician
+     * @param {IResultScope} { configs }
+     * @returns {string}
+     * @memberof JsonResult
+     */
     toResult({ configs }) {
         const { format, whiteSpace: b, keyResolver: r } = Object.assign({}, configs.get(json_1.JSON_RESULT_OPTIONS), this.configs);
         return JSON.stringify(!r ? (this.value || {}) : resolveKeys(r, this.value || {}), null, (!format || b === 0) ? "" : b === 1 ? " " : "  ");

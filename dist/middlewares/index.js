@@ -13,24 +13,14 @@ const Scope_1 = require("../services/Scope");
  * @export
  * @template T extends IContext
  * @param {((bunddle: IMiddlewaresScope, ctx: T, next: () => Promise<void>) => void | Promise<void>)} middleware
- * @param {...any[]} args
  * @returns
  */
-function createMiddleware(middleware, ...args) {
+function createMiddleware(middleware) {
     return (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, function* () {
         const scopeId = utils_1.getScopeId(ctx);
         const configs = utils_1.GlobalDI.get(Configs_1.Configs, scopeId);
-        yield middleware({
-            injector: ({
-                get: (token) => utils_1.GlobalDI.get(token, scopeId),
-                INTERNAL_dispose: () => utils_1.GlobalDI.dispose(scopeId),
-                scopeId
-            }),
-            configs,
-            args,
-            ctx,
-            next
-        });
+        const injector = utils_1.GlobalDI.get(Injector_1.InjectService, scopeId);
+        yield middleware({ injector, configs, ctx, next });
     });
 }
 exports.injectScope = createMiddleware;
