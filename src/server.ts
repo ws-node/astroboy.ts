@@ -27,6 +27,8 @@ import {
   ConfigToken,
   Configs
 } from "./services/Configs";
+import { STATIC_RESOLVER } from "./configs/typed-serialize.options";
+import { TypedSerializer } from "./plugins/typed-serializer";
 
 type DIPair = [any, any];
 
@@ -311,6 +313,7 @@ export class Server {
   private initOptions() {
     this.option(ENV, defaultEnv);
     this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
+    this.option(STATIC_RESOLVER, TypedSerializer);
   }
 
   private initInjections() {

@@ -2,7 +2,7 @@ import camel from "camelcase";
 import reduce from "lodash/reduce";
 import isPlainObject from "lodash/isPlainObject";
 import { IResult, IResultScope } from "../typings/IResult";
-import { JsonResultOptions, JSON_RESULT_OPTIONS } from "../configs/json";
+import { JsonResultOptions, JSON_RESULT_OPTIONS } from "../configs/json.options";
 
 export class JsonResult implements IResult {
 

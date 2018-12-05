@@ -32,6 +32,7 @@
     "astroboy": "0.0.35",
     "astroboy-router": "1.2.0-rc.1",
     "camelcase": "4.1.0",
+    "cerialize": "0.1.18",
     "lodash": "^4.17.11",
     "tslib": "^1.9.3",
     "uuid": "3.3.2"

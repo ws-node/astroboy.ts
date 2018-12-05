@@ -22,4 +22,4 @@ export const defaultJsonResultOptions: JsonResultOptions = {
   keyResolver: undefined
 };
 
-export const JSON_RESULT_OPTIONS = createOptions<JsonResultOptions>("json-result-options");
+export const JSON_RESULT_OPTIONS = createOptions<JsonResultOptions>("JSON_RESULT_OPTIONS");

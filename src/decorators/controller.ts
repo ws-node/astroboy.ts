@@ -5,7 +5,8 @@ import { InjectService } from "../services/Injector";
 import { Context } from "../services/Context";
 import { ICommonResultType, IResult } from "../typings/IResult";
 import { IContext } from "../typings/IContext";
-import { Configs } from "..";
+import { Configs } from "../services/Configs";
+import { tryGetRouterMagic } from "./route";
 
 const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
 const $$injector = "$$injector";
@@ -38,6 +39,8 @@ export function Controller(prefix: string) {
       enumerable: false
     });
     const { routes = {} } = prototype["@router"];
+    const magic = tryGetRouterMagic(prototype);
+    console.log(magic);
     Object.getOwnPropertyNames(prototype).forEach(name => {
       if (name === "@router") return;
       if (name === "constructor") return;
