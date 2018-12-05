@@ -10,9 +10,9 @@ export * from "./services/AstroboyContext";
 export * from "./server";
 export * from "./configs";
 export * from "./typings/IContext";
-import Astroboy from "astroboy";
 export * from "./typings/IResult";
 export * from "./results/json";
+import Astroboy from "astroboy";
 import { Configs, createOptions, createConfig } from "./services/Configs";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";
 /**

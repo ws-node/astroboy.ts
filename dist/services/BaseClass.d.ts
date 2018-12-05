@@ -21,5 +21,5 @@ declare class BaseClass {
     invokeServiceMethod(...args: any[]): any;
     getLib(...args: any[]): any;
 }
-import { BaseClass } from "astroboy";
-export { BaseClass };
+declare const BC: typeof BaseClass;
+export { BC as BaseClass };

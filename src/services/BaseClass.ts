@@ -1,4 +1,7 @@
 import Koa from "koa";
+import { BaseClass as C } from "astroboy";
+
+console.log(BaseClass || "2222");
 
 /**
  * ## 基础astroboy类
@@ -22,7 +25,8 @@ declare class BaseClass {
   getLib(...args): any;
 }
 
-import { BaseClass } from "astroboy";
+const BC: typeof BaseClass = C;
+
 export {
-  BaseClass
+  BC as BaseClass
 };
