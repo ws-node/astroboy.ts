@@ -52,9 +52,7 @@ function resolveKeys(resolver: (k: string) => string, value: any, deep = true) {
     return value;
   }
   return reduce(value, (result, val, key) => {
-    if (deep) {
-      val = resolveKeys(resolver, val);
-    }
+    if (deep) { val = resolveKeys(resolver, val); }
     const newKey = typeof key === "string" ? resolver(key) : key;
     result[newKey] = val;
     return result;
