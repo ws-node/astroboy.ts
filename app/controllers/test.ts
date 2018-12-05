@@ -60,7 +60,7 @@ class TestController {
       query_id: id,
       query_name: name,
       query_fuck: fuck,
-      ctx: this.business.ctx02 === this.base.ctx,
+      ctx: this.business.ctx === this.base.ctx,
       t05: this.test.t05 === this.test.t02.t05,
       t08: this.test.t08 === this.test.t06.t08
     });
