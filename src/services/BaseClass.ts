@@ -1,8 +1,6 @@
 import Koa from "koa";
 import { BaseClass as C } from "astroboy";
 
-console.log(BaseClass || "2222");
-
 /**
  * ## 基础astroboy类
  * * 不建议在astroboy.ts的体系中使用
