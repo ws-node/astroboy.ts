@@ -85,21 +85,19 @@ export class Server {
   }
 
   /**
-   * ### 注入一个配置项
-   * Set an option with format entry{@ConfigEntry<T>}.
-   *
+   * ### 声明一个配置项
+   * * 仅声明，不设置默认值
    * @description
    * @author Big Mogician
    * @template T
-   * @param {ConfigEntry<Partial<T>|T>} entry ConfigEntry<T>
+   * @param {token: ConfigToken<T>} token
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public option<T>(entry: ConfigEntry<Partial<T> | T>): this;
+  public option<T>(token: ConfigToken<T>): this;
   /**
    * ### 注入一个配置项
-   * Set an option with token and provided value.
-   *
+   * * 需要设置默认值
    * @description
    * @author Big Mogician
    * @template T
@@ -108,18 +106,13 @@ export class Server {
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public option<T>(token: ConfigToken<T>, value: Partial<T> | T): this;
+  public option<T>(token: ConfigToken<T>, value: Partial<T>): this;
   public option(...args: any[]): this {
     const [e1, e2] = args;
     if (!e1) {
       throw new Error("DI token or entry is empty, you shouldn't call BonbonsServer.use<T>(...) without any param.");
     }
-    if (!e2 || args.length === 2) {
-      this.configs.set(e1, optionAssign(this.configs, e1, e2));
-    } else {
-      const { token, value } = <ConfigEntry<any>>e1;
-      this.configs.set(token, optionAssign(this.configs, token, value));
-    }
+    this.configs.set(e1, optionAssign(this.configs, e1, e2 || {}));
     return this;
   }
 

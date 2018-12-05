@@ -7,7 +7,8 @@ import {
 export type ConfigToken<T> = IToken<T>;
 export type ConfigEntry<T> = IEntry<T>;
 
-export const createToken: ITokenGenerator = (key: string) => ({ key: Symbol(key) });
+export const createOptions: ITokenGenerator = (key: string) => ({ key: Symbol(key) });
+export const createConfig: ITokenGenerator = (key: string) => ({ key: Symbol(`config::${key}`) });
 
 export class RealConfigCollection implements IConfigCollection {
 

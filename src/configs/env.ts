@@ -1,4 +1,4 @@
-import { createToken } from "../services/Configs";
+import { createConfig } from "../services/Configs";
 
 interface IENV {
   /** 是否打印astroboy.ts的记录日志 */
@@ -12,4 +12,4 @@ export const defaultEnv: IENV = {
 };
 
 /** astroboy.ts环境变量 */
-export const ENV = createToken<IENV>("config::@astroboy.ts");
+export const ENV = createConfig<IENV>("@astroboy.ts");

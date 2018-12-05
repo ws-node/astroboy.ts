@@ -2,6 +2,8 @@ import TestService from "../services/test";
 import Test02Service from "../services/test02";
 import BusinessContext from "../services/business-context";
 import { Controller, API, Configs, AstroboyContext, ENV, JsonResult } from "../../src";
+import { STR_OPT } from "../../config/options/strOpt";
+import { DEMO_OPTIONS } from "../../config/options/demo";
 
 interface GetQuery {
   id: string;
@@ -40,7 +42,14 @@ class TestController {
   @API("POST", "post/:type")
   public async Post({ id, name }: PostData, { type, id: id2 }) {
     return new JsonResult({
-      id, name, type, id2
+      id,
+      name,
+      type,
+      id2,
+      config: {
+        str_opt: this.configs.get(STR_OPT),
+        demo_options: this.configs.get(DEMO_OPTIONS)
+      }
     });
   }
 

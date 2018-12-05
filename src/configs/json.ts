@@ -1,4 +1,4 @@
-import { createToken } from "../services/Configs";
+import { createOptions } from "../services/Configs";
 
 /**
  * ## 配置JsonResult的解析方式
@@ -22,4 +22,4 @@ export const defaultJsonResultOptions: JsonResultOptions = {
   keyResolver: undefined
 };
 
-export const JSON_RESULT_OPTIONS = createToken<JsonResultOptions>("json-result-options");
+export const JSON_RESULT_OPTIONS = createOptions<JsonResultOptions>("json-result-options");

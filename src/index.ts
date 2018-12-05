@@ -12,7 +12,7 @@ export * from "./configs";
 export * from "./typings/IContext";
 export * from "./typings/IResult";
 export * from "./results/json";
-import { Configs } from "./services/Configs";
+import { Configs, createOptions, createConfig } from "./services/Configs";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";
 import { createRouter } from "astroboy-router";
 import { GlobalImplements } from "./utils";
@@ -34,5 +34,7 @@ export function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, roo
 }
 
 export {
-  Configs
+  Configs,
+  createOptions,
+  createConfig
 };
