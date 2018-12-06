@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const route_factory_1 = require("astroboy-router/dist/decorators/route.factory");
 const utils_1 = require("astroboy-router/dist/decorators/utils");
+const utils_2 = require("../utils");
 const MAGIC_CONTENT = new Map();
 function tryGetRouteMagic(prototype, key) {
     const router = tryGetRouterMagic(prototype);
@@ -26,24 +27,37 @@ function tryGetRouterMagic(prototype) {
     return found;
 }
 exports.tryGetRouterMagic = tryGetRouterMagic;
-function FromParams() {
-    return function route_query(prototype, propKey, index) {
-        tryGetRouteMagic(prototype, propKey).params.push({
-            type: "params",
-            index
-        });
+function FromParams(options) {
+    const { transform = undefined, useStatic = undefined } = options || {};
+    return function dynamic_params(prototype, propKey, index) {
+        route_query({ prototype, propKey, index, transform, useStatic, type: "params" });
     };
 }
 exports.FromParams = FromParams;
-function FromBody() {
-    return function route_query(prototype, propKey, index) {
-        tryGetRouteMagic(prototype, propKey).params.push({
-            type: "body",
-            index
-        });
+function FromBody(options) {
+    const { transform = undefined, useStatic = undefined } = options || {};
+    return function dynamic_params(prototype, propKey, index) {
+        route_query({ prototype, propKey, index, transform, useStatic, type: "body" });
     };
 }
 exports.FromBody = FromBody;
+function route_query({ type, prototype, propKey, index, transform, useStatic }) {
+    const types = utils_2.getMethodParamsType(prototype, propKey);
+    tryGetRouteMagic(prototype, propKey).params.push({
+        constructor: resolveParamType(types[index]),
+        resolver: transform,
+        static: useStatic,
+        type,
+        index
+    });
+}
+function resolveParamType(type) {
+    if (!type)
+        return undefined;
+    if (type === Object)
+        return undefined;
+    return type;
+}
 function addMagicForRoute(method, path) {
     return function route_magic(prototype, propKey, descriptor) {
         route_factory_1.APIFactory(method, path)(prototype, propKey, descriptor);

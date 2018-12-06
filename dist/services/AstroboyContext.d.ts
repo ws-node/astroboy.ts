@@ -1,5 +1,6 @@
+/// <reference path="../decorators/controller.d.ts" />
+/// <reference path="../../node_modules/@types/koa-router/index.d.ts" />
 /// <reference types="koa" />
-/// <reference types="koa-router" />
 import { IContext } from "../typings/IContext";
 import { Context } from "./Context";
 /**

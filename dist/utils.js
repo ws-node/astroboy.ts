@@ -65,4 +65,12 @@ function getPrototypeConstructor(obj) {
     return proto && proto.constructor;
 }
 exports.getPrototypeConstructor = getPrototypeConstructor;
+function getMethodParamsType(prototype, propertyKey) {
+    return Reflect.getMetadata(di_1.PARAMS_META_KEY, prototype, propertyKey) || [];
+}
+exports.getMethodParamsType = getMethodParamsType;
+function getPropertyType(prototype, propertyKey) {
+    return Reflect.getMetadata(di_1.TYPE_META_KEY, prototype, propertyKey) || undefined;
+}
+exports.getPropertyType = getPropertyType;
 //# sourceMappingURL=utils.js.map

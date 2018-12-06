@@ -6,6 +6,7 @@ const utils_1 = require("../utils");
 const Context_1 = require("../services/Context");
 const Configs_1 = require("../services/Configs");
 const route_1 = require("./route");
+const typed_serialize_options_1 = require("../configs/typed-serialize.options");
 const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
 const $$injector = "$$injector";
 /**
@@ -46,13 +47,13 @@ function Controller(prefix) {
             if (get)
                 return;
             if (name in routes && value && typeof value === "function") {
-                const method = routes[name].method[0] || "GET";
                 const { params: routeParams } = route_1.tryGetRouteMagic(prototype, name);
                 descriptor.value = function () {
                     return tslib_1.__awaiter(this, void 0, void 0, function* () {
                         const injector = this[$$injector];
                         const { ctx } = injector.get(Context_1.Context);
-                        const params = resolveRouteMethodParams(routeParams, ctx);
+                        const staticResolver = injector.get(Configs_1.Configs).get(typed_serialize_options_1.STATIC_RESOLVER);
+                        const params = resolveRouteMethodParams(routeParams, ctx, staticResolver);
                         const result = yield value.bind(this)(...params);
                         if (result)
                             resolveMethodResult(result, ctx, injector);
@@ -71,12 +72,27 @@ function Controller(prefix) {
         utils_1.GlobalImplements.set(DI_CONTROLLER, target);
         return DI_CONTROLLER;
     };
-    function resolveRouteMethodParams(routeParams, ctx) {
+    function resolveRouteMethodParams(routeParams, ctx, staticResolver) {
         const params = [];
-        routeParams.forEach(i => params[i.index] = i.type === "body" ?
-            // @ts-ignore koa-bodyparser 定义不想搞了
-            ctx.request.body || {} : Object.assign({}, ctx.query, ctx.params));
+        routeParams.forEach(i => {
+            const { index, type, resolver, constructor } = i;
+            let final;
+            if (type === "body") {
+                const value = resolveStaticType(constructor, ctx.request.body, staticResolver);
+                final = !resolver ? value : resolver(value);
+            }
+            else {
+                const value = resolveStaticType(constructor, Object.assign({}, ctx.query, ctx.params), staticResolver);
+                final = !resolver ? value : resolver(value);
+            }
+            params[index] = final;
+        });
         return params;
+    }
+    function resolveStaticType(constructor, value, staticResolver) {
+        return !constructor ?
+            (value || {}) :
+            staticResolver.FromObject(value || {}, constructor);
     }
 }
 exports.Controller = Controller;

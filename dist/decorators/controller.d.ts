@@ -1,4 +1,9 @@
 import { Constructor } from "@bonbons/di";
+declare module "koa" {
+    interface Request {
+        body: any;
+    }
+}
 /**
  * ## 定义控制器
  * * routes部分由astroboy-router实现

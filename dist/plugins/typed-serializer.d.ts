@@ -9,12 +9,12 @@ export declare class TypedSerializerCreator implements IStaticTypedResolver {
 }
 /** Bonbons built-in static type contract serialization tool (based on cerialize) */
 export declare const TypedSerializer: TypedSerializerCreator;
-declare function SerializeDefine<T>(): any;
-declare function SerializeDefine<T>(name: string): any;
+declare function SerializeDefine(): any;
+declare function SerializeDefine(name: string): any;
 declare function SerializeDefine<T>(name: string, type: Constructor<T>): any;
 declare function SerializeDefine<T>(type: Constructor<T>): any;
-declare function DeserializeDefine<T>(): any;
-declare function DeserializeDefine<T>(name: string): any;
+declare function DeserializeDefine(): any;
+declare function DeserializeDefine(name: string): any;
 declare function DeserializeDefine<T>(name: string, type: Constructor<T>): any;
 declare function DeserializeDefine<T>(type: Constructor<T>): any;
 export { SerializeDefine as Serialize, DeserializeDefine as Deserialize, inheritSerialization as Extends };

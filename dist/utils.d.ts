@@ -23,3 +23,5 @@ export declare function createInstance<T>(target: Constructor<T>, ctx: IContext)
 export declare function optionAssign(configs: ConfigsCollection, token: any, newValue: any): any;
 export declare function isCustomClassInstance(obj: any, type?: any): boolean;
 export declare function getPrototypeConstructor(obj: any): any;
+export declare function getMethodParamsType(prototype: any, propertyKey: string): any;
+export declare function getPropertyType(prototype: any, propertyKey: string): any;
