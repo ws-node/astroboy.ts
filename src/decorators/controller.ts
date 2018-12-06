@@ -46,7 +46,6 @@ export function Controller(prefix: string) {
       const { value, get } = descriptor;
       if (get) return;
       if (name in routes && value && typeof value === "function") {
-        const method = routes[name].method[0] || "GET";
         const { params: routeParams } = tryGetRouteMagic(prototype, name);
         descriptor.value = async function () {
           const injector: InjectService = this[$$injector];
@@ -77,8 +76,8 @@ export function Controller(prefix: string) {
     const params: any[] = [];
     routeParams.forEach(i => params[i.index] = i.type === "body" ?
       // @ts-ignore koa-bodyparser 定义不想搞了
-      ctx.request.body || {} :
-      { ...ctx.query, ...ctx.params }
+      !i.resolver ? ctx.request.body || {} : i.resolver(ctx.request.body || {}) :
+      !i.resolver ? { ...ctx.query, ...ctx.params } : i.resolver({ ...ctx.query, ...ctx.params })
     );
     return params;
   }

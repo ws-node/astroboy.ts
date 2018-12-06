@@ -4,9 +4,19 @@ import { tryGetRouter } from "astroboy-router/dist/decorators/utils";
 
 const MAGIC_CONTENT = new Map<any, IRouterMagic<any>>();
 
+type ParamsFactory<T = any> = (target: T, propertyKey: string, index: number) => void;
+type ParamsResolver<T = any, R = any> = ((source: T) => R);
+
+interface ParamsOptions {
+  transform: ParamsResolver;
+  useStatic: boolean;
+}
+
 export interface RouteArgument {
   type: "params" | "body";
   index: number;
+  resolver: ParamsResolver | undefined;
+  static: boolean | undefined;
 }
 
 export interface IRouterMagic<T> {
@@ -42,19 +52,29 @@ export function tryGetRouterMagic<T>(prototype: T) {
   return found;
 }
 
-export function FromParams() {
+export function FromParams(): ParamsFactory;
+export function FromParams(options: Partial<ParamsOptions>): ParamsFactory;
+export function FromParams(options?: Partial<ParamsOptions>) {
+  const { transform = undefined, useStatic = undefined } = options || {};
   return function route_query<T>(prototype: T, propKey: string, index: number) {
     tryGetRouteMagic(prototype, propKey).params.push({
       type: "params",
+      static: useStatic,
+      resolver: transform,
       index
     });
   };
 }
 
-export function FromBody() {
+export function FromBody(): ParamsFactory;
+export function FromBody(options: Partial<ParamsOptions>): ParamsFactory;
+export function FromBody(options?: Partial<ParamsOptions>) {
+  const { transform = undefined, useStatic = undefined } = options || {};
   return function route_query<T>(prototype: T, propKey: string, index: number) {
     tryGetRouteMagic(prototype, propKey).params.push({
       type: "body",
+      static: useStatic,
+      resolver: transform,
       index
     });
   };
