@@ -36,11 +36,11 @@ export class TypedSerializerCreator implements IStaticTypedResolver {
 /** Bonbons built-in static type contract serialization tool (based on cerialize) */
 export const TypedSerializer = new TypedSerializerCreator();
 
-function SerializeDefine<T>();
-function SerializeDefine<T>(name: string);
+function SerializeDefine();
+function SerializeDefine(name: string);
 function SerializeDefine<T>(name: string, type: Constructor<T>);
 function SerializeDefine<T>(type: Constructor<T>);
-function SerializeDefine<T>(...args: any[]) {
+function SerializeDefine(...args: any[]) {
   return function serialize_define<M>(target: M, propKey: string, descriptor?: PropertyDescriptor) {
     const type = getPropertyType(target, propKey);
     const [r1, r2] = args;
@@ -56,11 +56,11 @@ function SerializeDefine<T>(...args: any[]) {
   };
 }
 
-function DeserializeDefine<T>();
-function DeserializeDefine<T>(name: string);
+function DeserializeDefine();
+function DeserializeDefine(name: string);
 function DeserializeDefine<T>(name: string, type: Constructor<T>);
 function DeserializeDefine<T>(type: Constructor<T>);
-function DeserializeDefine<T>(...args: any[]) {
+function DeserializeDefine(...args: any[]) {
   return function deserialize_define<M>(target: M, propKey: string, descriptor?: PropertyDescriptor) {
     const type = getPropertyType(target, propKey);
     const [r1, r2] = args;
