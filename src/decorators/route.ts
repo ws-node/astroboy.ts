@@ -18,7 +18,7 @@ export interface RouteArgument {
   index: number;
   resolver: ParamsResolver | undefined;
   static: boolean | undefined;
-  constructor: any | undefined;
+  ctor: any | undefined;
 }
 
 export interface IRouterMagic<T> {
@@ -82,7 +82,7 @@ function route_query<T>({ type, prototype, propKey, index, transform, useStatic 
 }) {
   const types = getMethodParamsType(prototype, propKey);
   tryGetRouteMagic(prototype, propKey).params.push({
-    constructor: resolveParamType(types[index]),
+    ctor: resolveParamType(types[index]),
     resolver: transform,
     static: useStatic,
     type,

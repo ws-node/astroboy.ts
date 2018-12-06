@@ -84,14 +84,18 @@ export function Controller(prefix: string) {
   function resolveRouteMethodParams(routeParams: RouteArgument[], ctx: IContext, staticResolver: IStaticTypedResolver) {
     const params: any[] = [];
     routeParams.forEach(i => {
-      const { index, type, resolver, constructor } = i;
+      const { index, type, resolver, ctor, static: stac } = i;
       let final: any;
       if (type === "body") {
-        const value = resolveStaticType(constructor, ctx.request.body, staticResolver);
-        final = !resolver ? value : resolver(value);
+        const v = !resolver ?
+          ctx.request.body :
+          resolver(ctx.request.body || {});
+        final = resolveStaticType(stac, ctor, v, staticResolver);
       } else {
-        const value = resolveStaticType(constructor, { ...ctx.query, ...ctx.params }, staticResolver);
-        final = !resolver ? value : resolver(value);
+        const v = !resolver ?
+          { ...ctx.query, ...ctx.params } :
+          resolver({ ...ctx.query, ...ctx.params });
+        final = resolveStaticType(stac, ctor, v, staticResolver);
       }
       params[index] = final;
     }
@@ -99,10 +103,21 @@ export function Controller(prefix: string) {
     return params;
   }
 
-  function resolveStaticType(constructor: any, value: any, staticResolver: IStaticTypedResolver) {
-    return !constructor ?
+  function resolveStaticType(stac: boolean | undefined, ctor: any, value: any, staticResolver: IStaticTypedResolver) {
+    console.log([ctor, value]);
+    return !ctor || stac === false ?
       (value || {}) :
-      staticResolver.FromObject(value || {}, constructor);
+      typeTransform(staticResolver, value, ctor);
+  }
+}
+
+function typeTransform(staticResolver: IStaticTypedResolver, value: any, ctor: any) {
+  switch (ctor) {
+    case Number:
+    case String: return ctor(value);
+    case Boolean: return String(value || "") === "true";
+    case Object: return value || {};
+    default: staticResolver.FromObject(value || {}, ctor);
   }
 }
 
