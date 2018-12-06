@@ -104,8 +104,7 @@ export function Controller(prefix: string) {
   }
 
   function resolveStaticType(stac: boolean | undefined, ctor: any, value: any, staticResolver: IStaticTypedResolver) {
-    console.log([ctor, value]);
-    return !ctor || stac === false ?
+    return !ctor || (stac === false) ?
       (value || {}) :
       typeTransform(staticResolver, value, ctor);
   }
@@ -117,7 +116,7 @@ function typeTransform(staticResolver: IStaticTypedResolver, value: any, ctor: a
     case String: return ctor(value);
     case Boolean: return String(value || "") === "true";
     case Object: return value || {};
-    default: staticResolver.FromObject(value || {}, ctor);
+    default: return staticResolver.FromObject(value || {}, ctor);
   }
 }
 
