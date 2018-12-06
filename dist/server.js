@@ -10,6 +10,8 @@ const utils_1 = require("./utils");
 const di_1 = require("@bonbons/di");
 const configs_1 = require("./configs");
 const Configs_1 = require("./services/Configs");
+const typed_serialize_options_1 = require("./configs/typed-serialize.options");
+const typed_serializer_1 = require("./plugins/typed-serializer");
 /**
  * ## astroboy.ts服务
  * @description
@@ -77,6 +79,7 @@ class Server {
     initOptions() {
         this.option(configs_1.ENV, configs_1.defaultEnv);
         this.option(configs_1.JSON_RESULT_OPTIONS, configs_1.defaultJsonResultOptions);
+        this.option(typed_serialize_options_1.STATIC_RESOLVER, typed_serializer_1.TypedSerializer);
     }
     initInjections() {
         this.scoped(AstroboyContext_1.AstroboyContext);

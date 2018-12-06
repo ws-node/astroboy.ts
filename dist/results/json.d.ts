@@ -1,5 +1,5 @@
 import { IResult, IResultScope } from "../typings/IResult";
-import { JsonResultOptions } from "../configs/json";
+import { JsonResultOptions } from "../configs/json.options";
 export declare class JsonResult implements IResult {
     private value;
     private configs?;
@@ -16,7 +16,9 @@ export declare class JsonResult implements IResult {
     toResult({ configs }: IResultScope): string;
 }
 declare function camelCase(key: string): string;
+declare function snakeCase(key: string): string;
 export declare const JsonResolvers: {
     camelcase: typeof camelCase;
+    snakecase: typeof snakeCase;
 };
 export {};

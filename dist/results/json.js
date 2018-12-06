@@ -2,9 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const camelcase_1 = tslib_1.__importDefault(require("camelcase"));
+const decamelize_1 = tslib_1.__importDefault(require("decamelize"));
 const reduce_1 = tslib_1.__importDefault(require("lodash/reduce"));
 const isPlainObject_1 = tslib_1.__importDefault(require("lodash/isPlainObject"));
-const json_1 = require("../configs/json");
+const json_options_1 = require("../configs/json.options");
 class JsonResult {
     constructor(value, configs) {
         this.value = value;
@@ -20,7 +21,7 @@ class JsonResult {
      * @memberof JsonResult
      */
     toResult({ configs }) {
-        const { format, whiteSpace: b, keyResolver: r } = Object.assign({}, configs.get(json_1.JSON_RESULT_OPTIONS), this.configs);
+        const { format, whiteSpace: b, keyResolver: r } = Object.assign({}, configs.get(json_options_1.JSON_RESULT_OPTIONS), this.configs);
         return JSON.stringify(!r ? (this.value || {}) : resolveKeys(r, this.value || {}), null, decideWhiteSpace(format, b));
     }
 }
@@ -59,7 +60,11 @@ function resolveKeys(resolver, value, deep = true) {
 function camelCase(key) {
     return camelcase_1.default(key);
 }
+function snakeCase(key) {
+    return decamelize_1.default(key, "_");
+}
 exports.JsonResolvers = {
-    camelcase: camelCase
+    camelcase: camelCase,
+    snakecase: snakeCase
 };
 //# sourceMappingURL=json.js.map

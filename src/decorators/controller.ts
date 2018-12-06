@@ -6,7 +6,7 @@ import { Context } from "../services/Context";
 import { ICommonResultType, IResult } from "../typings/IResult";
 import { IContext } from "../typings/IContext";
 import { Configs } from "../services/Configs";
-import { tryGetRouterMagic } from "./route";
+import { tryGetRouteMagic, RouteArgument } from "./route";
 
 const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
 const $$injector = "$$injector";
@@ -39,8 +39,6 @@ export function Controller(prefix: string) {
       enumerable: false
     });
     const { routes = {} } = prototype["@router"];
-    const magic = tryGetRouterMagic(prototype);
-    console.log(magic);
     Object.getOwnPropertyNames(prototype).forEach(name => {
       if (name === "@router") return;
       if (name === "constructor") return;
@@ -49,10 +47,11 @@ export function Controller(prefix: string) {
       if (get) return;
       if (name in routes && value && typeof value === "function") {
         const method = routes[name].method[0] || "GET";
+        const { params: routeParams } = tryGetRouteMagic(prototype, name);
         descriptor.value = async function () {
           const injector: InjectService = this[$$injector];
           const { ctx } = injector.get<Context<{}>>(Context);
-          const params = resolveMethodParams(method, ctx);
+          const params = resolveRouteMethodParams(routeParams, ctx);
           const result: ICommonResultType = await value.bind(this)(...params);
           if (result) resolveMethodResult(result, ctx, injector);
         };
@@ -73,6 +72,16 @@ export function Controller(prefix: string) {
     GlobalImplements.set(DI_CONTROLLER, target);
     return <Constructor<T>>DI_CONTROLLER;
   };
+
+  function resolveRouteMethodParams(routeParams: RouteArgument[], ctx: IContext) {
+    const params: any[] = [];
+    routeParams.forEach(i => params[i.index] = i.type === "body" ?
+      // @ts-ignore koa-bodyparser 定义不想搞了
+      ctx.request.body || {} :
+      { ...ctx.query, ...ctx.params }
+    );
+    return params;
+  }
 }
 
 async function resolveMethodResult(result: string | IResult, ctx: IContext, injector: InjectService) {
@@ -81,21 +90,4 @@ async function resolveMethodResult(result: string | IResult, ctx: IContext, inje
   } else {
     ctx.body = <string>result;
   }
-}
-
-function resolveMethodParams(method: string, ctx: IContext) {
-  let params: any[];
-  switch (method) {
-    case "POST":
-    case "PUT":
-    case "PATCH":
-      // @ts-ignore koa-bodyparser 定义不想搞了
-      params = [ctx.request.body || {}, { ...ctx.query, ...ctx.params }];
-      break;
-    case "GET":
-    case "DELETE":
-    case "OPTION":
-    default: params = [{ ...ctx.query, ...ctx.params }];
-  }
-  return params;
 }

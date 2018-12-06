@@ -1,4 +1,5 @@
 import camel from "camelcase";
+import decamel from "decamelize";
 import reduce from "lodash/reduce";
 import isPlainObject from "lodash/isPlainObject";
 import { IResult, IResultScope } from "../typings/IResult";
@@ -63,6 +64,11 @@ function camelCase(key: string) {
   return camel(key);
 }
 
+function snakeCase(key: string) {
+  return decamel(key, "_");
+}
+
 export const JsonResolvers = {
-  camelcase: camelCase
+  camelcase: camelCase,
+  snakecase: snakeCase
 };
