@@ -1,6 +1,7 @@
 import { APIFactory } from "astroboy-router/dist/decorators/route.factory";
 import { METHOD, IRouteFactory, IRouter } from "astroboy-router/dist/metadata";
 import { tryGetRouter } from "astroboy-router/dist/decorators/utils";
+import { getMethodParamsType } from "../utils";
 
 const MAGIC_CONTENT = new Map<any, IRouterMagic<any>>();
 
@@ -17,6 +18,7 @@ export interface RouteArgument {
   index: number;
   resolver: ParamsResolver | undefined;
   static: boolean | undefined;
+  constructor: any | undefined;
 }
 
 export interface IRouterMagic<T> {
@@ -56,13 +58,8 @@ export function FromParams(): ParamsFactory;
 export function FromParams(options: Partial<ParamsOptions>): ParamsFactory;
 export function FromParams(options?: Partial<ParamsOptions>) {
   const { transform = undefined, useStatic = undefined } = options || {};
-  return function route_query<T>(prototype: T, propKey: string, index: number) {
-    tryGetRouteMagic(prototype, propKey).params.push({
-      type: "params",
-      static: useStatic,
-      resolver: transform,
-      index
-    });
+  return function dynamic_params<T>(prototype: T, propKey: string, index: number) {
+    route_query({ prototype, propKey, index, transform, useStatic, type: "params" });
   };
 }
 
@@ -70,14 +67,33 @@ export function FromBody(): ParamsFactory;
 export function FromBody(options: Partial<ParamsOptions>): ParamsFactory;
 export function FromBody(options?: Partial<ParamsOptions>) {
   const { transform = undefined, useStatic = undefined } = options || {};
-  return function route_query<T>(prototype: T, propKey: string, index: number) {
-    tryGetRouteMagic(prototype, propKey).params.push({
-      type: "body",
-      static: useStatic,
-      resolver: transform,
-      index
-    });
+  return function dynamic_params<T>(prototype: T, propKey: string, index: number) {
+    route_query({ prototype, propKey, index, transform, useStatic, type: "body" });
   };
+}
+
+function route_query<T>({ type, prototype, propKey, index, transform, useStatic }: {
+  type: "params" | "body";
+  prototype: T;
+  propKey: string;
+  index: number;
+  transform?: any,
+  useStatic?: boolean;
+}) {
+  const types = getMethodParamsType(prototype, propKey);
+  tryGetRouteMagic(prototype, propKey).params.push({
+    constructor: resolveParamType(types[index]),
+    resolver: transform,
+    static: useStatic,
+    type,
+    index
+  });
+}
+
+function resolveParamType(type?: any) {
+  if (!type) return undefined;
+  if (type === Object) return undefined;
+  return type;
 }
 
 function addMagicForRoute(method: METHOD, path: string): IRouteFactory {

@@ -7,6 +7,14 @@ import { ICommonResultType, IResult } from "../typings/IResult";
 import { IContext } from "../typings/IContext";
 import { Configs } from "../services/Configs";
 import { tryGetRouteMagic, RouteArgument } from "./route";
+import { STATIC_RESOLVER } from "../configs/typed-serialize.options";
+import { IStaticTypedResolver } from "../typings/IStaticTypeResolver";
+
+declare module "koa" {
+  interface Request {
+    body: any;
+  }
+}
 
 const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
 const $$injector = "$$injector";
@@ -50,7 +58,8 @@ export function Controller(prefix: string) {
         descriptor.value = async function () {
           const injector: InjectService = this[$$injector];
           const { ctx } = injector.get<Context<{}>>(Context);
-          const params = resolveRouteMethodParams(routeParams, ctx);
+          const staticResolver = injector.get(Configs).get(STATIC_RESOLVER);
+          const params = resolveRouteMethodParams(routeParams, ctx, staticResolver);
           const result: ICommonResultType = await value.bind(this)(...params);
           if (result) resolveMethodResult(result, ctx, injector);
         };
@@ -72,14 +81,28 @@ export function Controller(prefix: string) {
     return <Constructor<T>>DI_CONTROLLER;
   };
 
-  function resolveRouteMethodParams(routeParams: RouteArgument[], ctx: IContext) {
+  function resolveRouteMethodParams(routeParams: RouteArgument[], ctx: IContext, staticResolver: IStaticTypedResolver) {
     const params: any[] = [];
-    routeParams.forEach(i => params[i.index] = i.type === "body" ?
-      // @ts-ignore koa-bodyparser 定义不想搞了
-      !i.resolver ? ctx.request.body || {} : i.resolver(ctx.request.body || {}) :
-      !i.resolver ? { ...ctx.query, ...ctx.params } : i.resolver({ ...ctx.query, ...ctx.params })
+    routeParams.forEach(i => {
+      const { index, type, resolver, constructor } = i;
+      let final: any;
+      if (type === "body") {
+        const value = resolveStaticType(constructor, ctx.request.body, staticResolver);
+        final = !resolver ? value : resolver(value);
+      } else {
+        const value = resolveStaticType(constructor, { ...ctx.query, ...ctx.params }, staticResolver);
+        final = !resolver ? value : resolver(value);
+      }
+      params[index] = final;
+    }
     );
     return params;
+  }
+
+  function resolveStaticType(constructor: any, value: any, staticResolver: IStaticTypedResolver) {
+    return !constructor ?
+      (value || {}) :
+      staticResolver.FromObject(value || {}, constructor);
   }
 }
 

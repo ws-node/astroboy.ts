@@ -5,6 +5,7 @@ import {
 } from "cerialize";
 import { Constructor } from "@bonbons/di";
 import { IStaticTypedResolver, IStaticSerializeOptions } from "../typings/IStaticTypeResolver";
+import { getPropertyType } from "../utils";
 
 export class TypedSerializerCreator implements IStaticTypedResolver {
 
@@ -41,6 +42,7 @@ function SerializeDefine<T>(name: string, type: Constructor<T>);
 function SerializeDefine<T>(type: Constructor<T>);
 function SerializeDefine<T>(...args: any[]) {
   return function serialize_define<M>(target: M, propKey: string, descriptor?: PropertyDescriptor) {
+    const type = getPropertyType(target, propKey);
     const [r1, r2] = args;
     if (!r1) {
       serializeAs(propKey)(target, propKey, descriptor);
@@ -49,7 +51,7 @@ function SerializeDefine<T>(...args: any[]) {
     } else if (!r2) {
       serializeAs(r1)(target, propKey, descriptor);
     } else {
-      serializeAs(r2, r1)(target, propKey, descriptor);
+      serializeAs(r2 || type, r1)(target, propKey, descriptor);
     }
   };
 }
@@ -60,15 +62,16 @@ function DeserializeDefine<T>(name: string, type: Constructor<T>);
 function DeserializeDefine<T>(type: Constructor<T>);
 function DeserializeDefine<T>(...args: any[]) {
   return function deserialize_define<M>(target: M, propKey: string, descriptor?: PropertyDescriptor) {
+    const type = getPropertyType(target, propKey);
     const [r1, r2] = args;
     if (!r1) {
-      deserializeAs(propKey)(target, propKey, descriptor);
+      deserializeAs(type || String, propKey)(target, propKey, descriptor);
     } else if (typeof r1 !== "string") {
       deserializeAs(r1, propKey)(target, propKey, descriptor);
     } else if (!r2) {
-      deserializeAs(r1)(target, propKey, descriptor);
+      deserializeAs(type || String, r1)(target, propKey, descriptor);
     } else {
-      deserializeAs(r2, r1)(target, propKey, descriptor);
+      deserializeAs(r2 || type || String, r1)(target, propKey, descriptor);
     }
   };
 }

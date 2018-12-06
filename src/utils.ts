@@ -1,6 +1,6 @@
 import get from "lodash/get";
 import uuid from "uuid/v4";
-import { Constructor, getDependencies, DIContainer, ConfigsCollection, ScopeID } from "@bonbons/di";
+import { Constructor, getDependencies, DIContainer, ConfigsCollection, ScopeID, PARAMS_META_KEY, TYPE_META_KEY } from "@bonbons/di";
 import { InjectService } from "./services/Injector";
 import { IContext } from "./typings/IContext";
 
@@ -63,4 +63,12 @@ export function isCustomClassInstance(obj: any, type?: any) {
 export function getPrototypeConstructor(obj) {
   const proto = Object.getPrototypeOf(obj);
   return proto && proto.constructor;
+}
+
+export function getMethodParamsType(prototype: any, propertyKey: string) {
+  return Reflect.getMetadata(PARAMS_META_KEY, prototype, propertyKey) || [];
+}
+
+export function getPropertyType(prototype: any, propertyKey: string) {
+  return Reflect.getMetadata(TYPE_META_KEY, prototype, propertyKey) || undefined;
 }
