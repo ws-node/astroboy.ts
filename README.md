@@ -13,8 +13,9 @@
 
 > 😨更多功能正在开发中...
 
-### Wiki
+### Wiki + Demo
 * [API列表](https://github.com/ws-node/astroboy.ts/wiki/API%E5%88%97%E8%A1%A8)
+* [Demo](https://github.com/ws-node/demo.astroboy.ts)
 
 ### 迭代记录
 
