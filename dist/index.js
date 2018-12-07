@@ -20,8 +20,8 @@ const controller_1 = require("./decorators/controller");
  */
 function buildRouter(ctor, name, root) {
     const sourceCtor = utils_1.GlobalImplements.get(ctor);
-    const result = astroboy_router_1.createRouter(utils_1.GlobalImplements.get(ctor), name, root);
-    controller_1.copyPrototype(sourceCtor, ctor);
+    const result = astroboy_router_1.createRouter(sourceCtor, name, root);
+    controller_1.copyPrototype(ctor, sourceCtor);
     return result;
 }
 exports.buildRouter = buildRouter;

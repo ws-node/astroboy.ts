@@ -18,8 +18,8 @@ import { copyPrototype } from "./decorators/controller";
  */
 export function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string) {
   const sourceCtor = GlobalImplements.get(ctor);
-  const result = createRouter(GlobalImplements.get(ctor), name, root);
-  copyPrototype(sourceCtor, <any>ctor);
+  const result = createRouter(sourceCtor, name, root);
+  copyPrototype(<any>ctor, sourceCtor);
   return result;
 }
 
