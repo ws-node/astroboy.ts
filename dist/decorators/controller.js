@@ -75,27 +75,39 @@ function Controller(prefix) {
     function resolveRouteMethodParams(routeParams, ctx, staticResolver) {
         const params = [];
         routeParams.forEach(i => {
-            const { index, type, resolver, constructor } = i;
+            const { index, type, resolver, ctor, static: stac } = i;
             let final;
             if (type === "body") {
-                const value = resolveStaticType(constructor, ctx.request.body, staticResolver);
-                final = !resolver ? value : resolver(value);
+                const v = !resolver ?
+                    ctx.request.body :
+                    resolver(ctx.request.body || {});
+                final = resolveStaticType(stac, ctor, v, staticResolver);
             }
             else {
-                const value = resolveStaticType(constructor, Object.assign({}, ctx.query, ctx.params), staticResolver);
-                final = !resolver ? value : resolver(value);
+                const v = !resolver ? Object.assign({}, ctx.query, ctx.params) :
+                    resolver(Object.assign({}, ctx.query, ctx.params));
+                final = resolveStaticType(stac, ctor, v, staticResolver);
             }
             params[index] = final;
         });
         return params;
     }
-    function resolveStaticType(constructor, value, staticResolver) {
-        return !constructor ?
+    function resolveStaticType(stac, ctor, value, staticResolver) {
+        return !ctor || (stac === false) ?
             (value || {}) :
-            staticResolver.FromObject(value || {}, constructor);
+            typeTransform(staticResolver, value, ctor);
     }
 }
 exports.Controller = Controller;
+function typeTransform(staticResolver, value, ctor) {
+    switch (ctor) {
+        case Number:
+        case String: return ctor(value);
+        case Boolean: return String(value || "") === "true";
+        case Object: return value || {};
+        default: return staticResolver.FromObject(value || {}, ctor);
+    }
+}
 function resolveMethodResult(result, ctx, injector) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         if (result.toResult) {

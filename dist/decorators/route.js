@@ -44,7 +44,7 @@ exports.FromBody = FromBody;
 function route_query({ type, prototype, propKey, index, transform, useStatic }) {
     const types = utils_2.getMethodParamsType(prototype, propKey);
     tryGetRouteMagic(prototype, propKey).params.push({
-        constructor: resolveParamType(types[index]),
+        ctor: resolveParamType(types[index]),
         resolver: transform,
         static: useStatic,
         type,

@@ -10,7 +10,7 @@ export interface RouteArgument {
     index: number;
     resolver: ParamsResolver | undefined;
     static: boolean | undefined;
-    constructor: any | undefined;
+    ctor: any | undefined;
 }
 export interface IRouterMagic<T> {
     prototype: T;
