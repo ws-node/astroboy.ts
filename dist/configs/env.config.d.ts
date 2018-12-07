@@ -5,5 +5,5 @@ interface IENV {
 }
 export declare const defaultEnv: IENV;
 /** astroboy.ts环境变量 */
-export declare const ENV: import("@bonbons/di/dist/src/core/declares").IToken<IENV>;
+export declare const ENV: import("../services/Configs").ConfigToken<IENV>;
 export {};

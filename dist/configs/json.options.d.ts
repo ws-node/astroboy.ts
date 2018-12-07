@@ -14,4 +14,4 @@ export interface JsonResultOptions {
     keyResolver?: (key: string) => string;
 }
 export declare const defaultJsonResultOptions: JsonResultOptions;
-export declare const JSON_RESULT_OPTIONS: import("@bonbons/di/dist/src/core/declares").IToken<JsonResultOptions>;
+export declare const JSON_RESULT_OPTIONS: import("../services/Configs").ConfigToken<JsonResultOptions>;

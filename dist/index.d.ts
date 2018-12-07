@@ -13,7 +13,6 @@ import { ControllerConstructor } from "astroboy-router/dist/metadata";
  * @returns
  */
 export declare function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string): (string | string[])[][];
-export * from "@bonbons/di";
 export * from "astroboy-router";
 export * from "./decorators";
 export * from "./middlewares";
@@ -28,5 +27,5 @@ export * from "./typings/IResult";
 export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
 export * from "./plugins/typed-serializer";
-export { Configs, createOptions, createConfig } from "./services/Configs";
+export { Configs, ConfigToken, ConfigEntry, createOptions, createConfig, TokenGenerator, InjectScope } from "./services/Configs";
 export { Astroboy };

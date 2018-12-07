@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var di_1 = require("@bonbons/di");
+exports.InjectScope = di_1.InjectScope;
 exports.createOptions = (key) => ({ key: Symbol(key) });
 exports.createConfig = (key) => ({ key: Symbol(`config::${key}`) });
 class RealConfigCollection {

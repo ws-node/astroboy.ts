@@ -21,7 +21,6 @@ function buildRouter(ctor, name, root) {
     return astroboy_router_1.createRouter(utils_1.GlobalImplements.get(ctor), name, root);
 }
 exports.buildRouter = buildRouter;
-tslib_1.__exportStar(require("@bonbons/di"), exports);
 tslib_1.__exportStar(require("astroboy-router"), exports);
 tslib_1.__exportStar(require("./decorators"), exports);
 tslib_1.__exportStar(require("./middlewares"), exports);
@@ -37,4 +36,5 @@ var Configs_1 = require("./services/Configs");
 exports.Configs = Configs_1.Configs;
 exports.createOptions = Configs_1.createOptions;
 exports.createConfig = Configs_1.createConfig;
+exports.InjectScope = Configs_1.InjectScope;
 //# sourceMappingURL=index.js.map
