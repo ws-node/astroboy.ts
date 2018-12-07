@@ -42,9 +42,7 @@ yarn add astroboy.ts
 
 ```typescript
 import path from "path";
-import { Server, Astroboy, JSON_RESULT_OPTIONS, JsonResolvers } from "astroboy.ts";
-import { DEMO_OPTIONS } from "../config/options/demo";
-import { STR_OPT } from "../config/options/strOpt";
+import { Server, Astroboy } from "astroboy.ts";
 
 Server.Create(Astroboy, {
   ROOT_PATH: path.resolve(__dirname, "..")
