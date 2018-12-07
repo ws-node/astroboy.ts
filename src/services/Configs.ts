@@ -3,6 +3,8 @@ import {
   ConfigsCollection as ReadonlyConfigs
 } from "@bonbons/di";
 
+export { InjectScope } from "@bonbons/di";
+
 export interface ConfigToken<T> {
   key: symbol;
 }

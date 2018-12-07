@@ -39,7 +39,8 @@ export {
   ConfigEntry,
   createOptions,
   createConfig,
-  TokenGenerator
+  TokenGenerator,
+  InjectScope
 } from "./services/Configs";
 
 export {
