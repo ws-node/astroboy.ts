@@ -19,7 +19,6 @@ export function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, roo
   return createRouter(GlobalImplements.get(ctor), name, root);
 }
 
-export * from "@bonbons/di";
 export * from "astroboy-router";
 export * from "./decorators";
 export * from "./middlewares";
@@ -34,7 +33,14 @@ export * from "./typings/IResult";
 export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
 export * from "./plugins/typed-serializer";
-export { Configs, createOptions, createConfig } from "./services/Configs";
+export {
+  Configs,
+  ConfigToken,
+  ConfigEntry,
+  createOptions,
+  createConfig,
+  TokenGenerator
+} from "./services/Configs";
 
 export {
   Astroboy

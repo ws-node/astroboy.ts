@@ -13,7 +13,13 @@
 
 > 😨更多功能正在开发中...
 
+### Wiki
+* [API列表](https://github.com/ws-node/astroboy.ts/wiki/API%E5%88%97%E8%A1%A8)
+
 ### 迭代记录
+
+#### 1.0.1-rc.17 pending
+* 移除@bonbons/di的定义输出，并修复ConfigToken接口
 
 #### 1.0.1-rc.15
 * 实现路由参数注入和类型安全映射

@@ -1,14 +1,21 @@
 import {
-  IToken, ITokenGenerator,
-  IEntry, IConfigCollection,
+  IConfigCollection,
   ConfigsCollection as ReadonlyConfigs
 } from "@bonbons/di";
 
-export type ConfigToken<T> = IToken<T>;
-export type ConfigEntry<T> = IEntry<T>;
+export interface ConfigToken<T> {
+  key: symbol;
+}
 
-export const createOptions: ITokenGenerator = (key: string) => ({ key: Symbol(key) });
-export const createConfig: ITokenGenerator = (key: string) => ({ key: Symbol(`config::${key}`) });
+export interface ConfigEntry<T> {
+  token: ConfigToken<T>;
+  value: T;
+}
+
+export type TokenGenerator = <T>(key: string) => ConfigToken<T>;
+
+export const createOptions: TokenGenerator = (key: string) => ({ key: Symbol(key) });
+export const createConfig: TokenGenerator = (key: string) => ({ key: Symbol(`config::${key}`) });
 
 export class RealConfigCollection implements IConfigCollection {
 
