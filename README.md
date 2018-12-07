@@ -1,8 +1,8 @@
-# astroboy.ts
-> astroboy在typescript语义中的优雅实现
+# Astroboy.ts
+> [astroboy](https://github.com/astroboy-lab/astroboy) 在typescript语义中的优雅实现
 
-* 高性能依赖注入(实现：@bonbons/di)
-* 控制器声明式路由(实现：astroboy-router)
+* 高性能依赖注入[ 实现：[@bonbons/di](https://www.npmjs.com/package/@bonbons/di) ]
+* 控制器声明式路由[ 实现：[astroboy-router](https://www.npmjs.com/package/astroboy-router) ]
 * 可配置容器定义化
 * 配置容器对接astroboy标准configs模式
 * 完整兼容astroboy原始语义，支持任意扩展
