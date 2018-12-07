@@ -14,13 +14,13 @@
 > 😨更多功能正在开发中...
 
 ### Wiki + Demo
-* [Demo](https://github.com/ws-node/demo.astroboy.ts)
-* [Core](https://github.com/ws-node/astroboy.ts/wiki/Core)
-* [Services](https://github.com/ws-node/astroboy.ts/wiki/Services)
-* [Configs/Options](https://github.com/ws-node/astroboy.ts/wiki/Configs-Options)
-* [Decorators](https://github.com/ws-node/astroboy.ts/wiki/Decorators)
-* [Functions](https://github.com/ws-node/astroboy.ts/wiki/Functions)
-* [Interfaces](https://github.com/ws-node/astroboy.ts/wiki/Interfaces)
+* [Demo](https://github.com/ws-node/demo.astroboy.ts) - astroboy.ts 最小可用预览(可以切换本地和npm导包方式)
+* [Core](https://github.com/ws-node/astroboy.ts/wiki/Core) - 核心组件
+* [Services](https://github.com/ws-node/astroboy.ts/wiki/Services) - 内置服务列表
+* [Configs/Options](https://github.com/ws-node/astroboy.ts/wiki/Configs-Options) - 配置列表
+* [Decorators](https://github.com/ws-node/astroboy.ts/wiki/Decorators) - 装饰器列表
+* [Functions](https://github.com/ws-node/astroboy.ts/wiki/Functions) - 功能函数
+* [Interfaces](https://github.com/ws-node/astroboy.ts/wiki/Interfaces) - 公开接口列表
 
 ### 迭代记录
 
