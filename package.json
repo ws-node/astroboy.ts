@@ -4,7 +4,7 @@
   "description": "rt",
   "main": "./dist/index.js",
   "scripts": {
-    "start": "ast dev --ts --inspect=64001 --tsconfig app/tsconfig.json"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
