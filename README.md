@@ -16,6 +16,7 @@
 ### Wiki + Demo
 * [Demo](https://github.com/ws-node/demo.astroboy.ts)
 * [Core](https://github.com/ws-node/astroboy.ts/wiki/Core)
+* [Services](https://github.com/ws-node/astroboy.ts/wiki/Services)
 * [Decorators](https://github.com/ws-node/astroboy.ts/wiki/Decorators)
 * [Functions](https://github.com/ws-node/astroboy.ts/wiki/Functions)
 * [Interfaces](https://github.com/ws-node/astroboy.ts/wiki/Interfaces)
