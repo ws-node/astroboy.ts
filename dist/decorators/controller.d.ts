@@ -14,3 +14,4 @@ declare module "koa" {
  * @returns
  */
 export declare function Controller(prefix: string): <T>(target: Constructor<T>) => Constructor<T>;
+export declare function copyPrototype<T>(DI_CONTROLLER: Constructor<any>, target: Constructor<T>): void;

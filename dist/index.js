@@ -5,6 +5,7 @@ const astroboy_1 = tslib_1.__importDefault(require("astroboy"));
 exports.Astroboy = astroboy_1.default;
 const astroboy_router_1 = require("astroboy-router");
 const utils_1 = require("./utils");
+const controller_1 = require("./decorators/controller");
 /**
  * ## 构建路由
  * * 等效astroboy-router的createRouter方法
@@ -18,7 +19,10 @@ const utils_1 = require("./utils");
  * @returns
  */
 function buildRouter(ctor, name, root) {
-    return astroboy_router_1.createRouter(utils_1.GlobalImplements.get(ctor), name, root);
+    const sourceCtor = utils_1.GlobalImplements.get(ctor);
+    const result = astroboy_router_1.createRouter(utils_1.GlobalImplements.get(ctor), name, root);
+    controller_1.copyPrototype(sourceCtor, ctor);
+    return result;
 }
 exports.buildRouter = buildRouter;
 tslib_1.__exportStar(require("astroboy-router"), exports);

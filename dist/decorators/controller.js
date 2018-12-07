@@ -62,43 +62,47 @@ function Controller(prefix) {
                 Object.defineProperty(prototype, name, descriptor);
             }
         });
-        Object.getOwnPropertyNames(prototype).forEach(name => {
-            Object.defineProperty(DI_CONTROLLER.prototype, name, Object.getOwnPropertyDescriptor(prototype, name));
-        });
-        // @ts-ignore
-        DI_CONTROLLER.prototype.__proto__ = target.prototype.__proto__;
-        // @ts-ignore
-        DI_CONTROLLER.__proto__ = target.__proto__;
+        copyPrototype(DI_CONTROLLER, target);
         utils_1.GlobalImplements.set(DI_CONTROLLER, target);
         return DI_CONTROLLER;
     };
-    function resolveRouteMethodParams(routeParams, ctx, staticResolver) {
-        const params = [];
-        routeParams.forEach(i => {
-            const { index, type, resolver, ctor, static: stac } = i;
-            let final;
-            if (type === "body") {
-                const v = !resolver ?
-                    ctx.request.body :
-                    resolver(ctx.request.body || {});
-                final = resolveStaticType(stac, ctor, v, staticResolver);
-            }
-            else {
-                const v = !resolver ? Object.assign({}, ctx.query, ctx.params) :
-                    resolver(Object.assign({}, ctx.query, ctx.params));
-                final = resolveStaticType(stac, ctor, v, staticResolver);
-            }
-            params[index] = final;
-        });
-        return params;
-    }
-    function resolveStaticType(stac, ctor, value, staticResolver) {
-        return !ctor || (stac === false) ?
-            (value || {}) :
-            typeTransform(staticResolver, value, ctor);
-    }
 }
 exports.Controller = Controller;
+function copyPrototype(DI_CONTROLLER, target) {
+    Object.getOwnPropertyNames(target.prototype).forEach(name => {
+        Object.defineProperty(DI_CONTROLLER.prototype, name, Object.getOwnPropertyDescriptor(target.prototype, name));
+    });
+    // @ts-ignore
+    DI_CONTROLLER.prototype.__proto__ = target.prototype.__proto__;
+    // @ts-ignore
+    DI_CONTROLLER.__proto__ = target.__proto__;
+}
+exports.copyPrototype = copyPrototype;
+function resolveRouteMethodParams(routeParams, ctx, staticResolver) {
+    const params = [];
+    routeParams.forEach(i => {
+        const { index, type, resolver, ctor, static: stac } = i;
+        let final;
+        if (type === "body") {
+            const v = !resolver ?
+                ctx.request.body :
+                resolver(ctx.request.body || {});
+            final = resolveStaticType(stac, ctor, v, staticResolver);
+        }
+        else {
+            const v = !resolver ? Object.assign({}, ctx.query, ctx.params) :
+                resolver(Object.assign({}, ctx.query, ctx.params));
+            final = resolveStaticType(stac, ctor, v, staticResolver);
+        }
+        params[index] = final;
+    });
+    return params;
+}
+function resolveStaticType(stac, ctor, value, staticResolver) {
+    return !ctor || (stac === false) ?
+        (value || {}) :
+        typeTransform(staticResolver, value, ctor);
+}
 function typeTransform(staticResolver, value, ctor) {
     switch (ctor) {
         case Number:

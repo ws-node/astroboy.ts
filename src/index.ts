@@ -2,6 +2,7 @@ import Astroboy from "astroboy";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";
 import { createRouter } from "astroboy-router";
 import { GlobalImplements } from "./utils";
+import { copyPrototype } from "./decorators/controller";
 
 /**
  * ## 构建路由
@@ -16,7 +17,10 @@ import { GlobalImplements } from "./utils";
  * @returns
  */
 export function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string) {
-  return createRouter(GlobalImplements.get(ctor), name, root);
+  const sourceCtor = GlobalImplements.get(ctor);
+  const result = createRouter(GlobalImplements.get(ctor), name, root);
+  copyPrototype(sourceCtor, <any>ctor);
+  return result;
 }
 
 export * from "astroboy-router";

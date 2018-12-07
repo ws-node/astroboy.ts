@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 tslib_1.__exportStar(require("./injectable"), exports);
-tslib_1.__exportStar(require("./controller"), exports);
+var controller_1 = require("./controller");
+exports.Controller = controller_1.Controller;
 var route_1 = require("./route");
 exports.GET = route_1.GET;
 exports.POST = route_1.POST;

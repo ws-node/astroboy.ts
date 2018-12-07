@@ -66,48 +66,48 @@ export function Controller(prefix: string) {
         Object.defineProperty(prototype, name, descriptor);
       }
     });
-    Object.getOwnPropertyNames(prototype).forEach(name => {
-      Object.defineProperty(
-        DI_CONTROLLER.prototype,
-        name,
-        Object.getOwnPropertyDescriptor(prototype, name)
-      );
-    });
-    // @ts-ignore
-    DI_CONTROLLER.prototype.__proto__ = target.prototype.__proto__;
-    // @ts-ignore
-    DI_CONTROLLER.__proto__ = target.__proto__;
+    copyPrototype<T>(DI_CONTROLLER, target);
     GlobalImplements.set(DI_CONTROLLER, target);
     return <Constructor<T>>DI_CONTROLLER;
   };
+}
 
-  function resolveRouteMethodParams(routeParams: RouteArgument[], ctx: IContext, staticResolver: IStaticTypedResolver) {
-    const params: any[] = [];
-    routeParams.forEach(i => {
-      const { index, type, resolver, ctor, static: stac } = i;
-      let final: any;
-      if (type === "body") {
-        const v = !resolver ?
-          ctx.request.body :
-          resolver(ctx.request.body || {});
-        final = resolveStaticType(stac, ctor, v, staticResolver);
-      } else {
-        const v = !resolver ?
-          { ...ctx.query, ...ctx.params } :
-          resolver({ ...ctx.query, ...ctx.params });
-        final = resolveStaticType(stac, ctor, v, staticResolver);
-      }
-      params[index] = final;
+export function copyPrototype<T>(DI_CONTROLLER: Constructor<any>, target: Constructor<T>) {
+  Object.getOwnPropertyNames(target.prototype).forEach(name => {
+    Object.defineProperty(DI_CONTROLLER.prototype, name, Object.getOwnPropertyDescriptor(target.prototype, name));
+  });
+  // @ts-ignore
+  DI_CONTROLLER.prototype.__proto__ = target.prototype.__proto__;
+  // @ts-ignore
+  DI_CONTROLLER.__proto__ = target.__proto__;
+}
+
+function resolveRouteMethodParams(routeParams: RouteArgument[], ctx: IContext, staticResolver: IStaticTypedResolver) {
+  const params: any[] = [];
+  routeParams.forEach(i => {
+    const { index, type, resolver, ctor, static: stac } = i;
+    let final: any;
+    if (type === "body") {
+      const v = !resolver ?
+        ctx.request.body :
+        resolver(ctx.request.body || {});
+      final = resolveStaticType(stac, ctor, v, staticResolver);
+    } else {
+      const v = !resolver ?
+        { ...ctx.query, ...ctx.params } :
+        resolver({ ...ctx.query, ...ctx.params });
+      final = resolveStaticType(stac, ctor, v, staticResolver);
     }
-    );
-    return params;
+    params[index] = final;
   }
+  );
+  return params;
+}
 
-  function resolveStaticType(stac: boolean | undefined, ctor: any, value: any, staticResolver: IStaticTypedResolver) {
-    return !ctor || (stac === false) ?
-      (value || {}) :
-      typeTransform(staticResolver, value, ctor);
-  }
+function resolveStaticType(stac: boolean | undefined, ctor: any, value: any, staticResolver: IStaticTypedResolver) {
+  return !ctor || (stac === false) ?
+    (value || {}) :
+    typeTransform(staticResolver, value, ctor);
 }
 
 function typeTransform(staticResolver: IStaticTypedResolver, value: any, ctor: any) {
