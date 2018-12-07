@@ -1,7 +1,7 @@
-# Astroboy.ts
-> [astroboy](https://github.com/astroboy-lab/astroboy) 在typescript语义中的优雅实现
+# 🌟astroboy.ts
+> 基于[astroboy](https://github.com/astroboy-lab/astroboy)的DI版本，TypeScript3.2信仰加成
 
-### 实现的功能
+### 已经实现的功能
 
 * 高性能依赖注入[ 实现：[@bonbons/di](https://www.npmjs.com/package/@bonbons/di) ]
 * 控制器声明式路由[ 实现：[astroboy-router](https://www.npmjs.com/package/astroboy-router) ]
