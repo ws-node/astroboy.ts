@@ -46,11 +46,10 @@ import { Server, Astroboy } from "astroboy.ts";
 
 Server.Create(Astroboy, {
   ROOT_PATH: path.resolve(__dirname, "..")
-})
-  .run({
-    onStart: () => console.log("hello world!"),
-    onError: (err) => console.log(`oh shit : ${String(err)}`)
-  });
+}).run({
+  onStart: () => console.log("hello world!"),
+  onError: (err) => console.log(`oh shit : ${String(err)}`)
+});
 
 ```
 
