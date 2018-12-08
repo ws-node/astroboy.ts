@@ -1,4 +1,4 @@
-# 🌟astroboy.ts
+# 🌟astroboy.ts
 > 基于[astroboy](https://github.com/astroboy-lab/astroboy)的DI版本，TypeScript3.2信仰加成
 
 ### 已经实现的功能
@@ -113,3 +113,5 @@ module.exports = {
 ```
 ast dev --ts --inspect --tsconfig ./tsconfig.json
 ```
+
+> 文档完善中...
