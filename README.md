@@ -6,6 +6,7 @@
 * 高性能依赖注入[ 实现：[@bonbons/di](https://www.npmjs.com/package/@bonbons/di) ]
 * 控制器声明式路由[ 实现：[astroboy-router](https://www.npmjs.com/package/astroboy-router) ]
 * 可配置容器定义化
+* DI可注入依赖实现多重继承
 * 配置容器对接astroboy标准configs模式
 * 完整兼容astroboy原始语义，支持任意扩展
 * 支持完整依赖注入能力的高级中间件
@@ -23,6 +24,9 @@
 * [Interfaces](https://github.com/ws-node/astroboy.ts/wiki/Interfaces) - 公开接口列表
 
 ### 迭代记录
+
+#### 1.0.1-rc.20
+* 支持DI多重继承的能力
 
 #### 1.0.1-rc.18
 * 修复astroboy-router的一个兼容问题
