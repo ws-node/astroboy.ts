@@ -22,7 +22,7 @@ export class AstroboyContext<T = IContext, A = Koa, C = any> {
   /** BaseClass.ctx */
   public get ctx(): T { return <any>this.context.ctx || {}; }
   /** BaseClass.app */
-  public get app(): A { return (<any>(this.ctx && this.ctx)).app || {}; }
+  public get app(): A { return (this.ctx && (<any>this.ctx).app) || {}; }
   /** BaseClass.config */
   public get config(): C { return (this.app && this.app)["config"] || {}; }
 
