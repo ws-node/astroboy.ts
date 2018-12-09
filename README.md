@@ -298,7 +298,7 @@ module.exports = {
 ```typescript
 // 注入Configs服务，然后获取配置
 // opts变量将会被正确的绑定上类型信息
-const opts = this.configs.get(STR_OPT);
+const opts = this.configs.get(DEMO_OPTIONS);
 ```
 
 #### 4.在中间件中使用依赖注入
