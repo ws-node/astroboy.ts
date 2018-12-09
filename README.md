@@ -147,7 +147,7 @@ interface PostData {
 @Controller("test")
 class TestController {
 
-   // 构造函数注入能力
+  // 构造函数注入能力
   constructor(
     private configs: Configs,
     private base: AstroboyContext<IContext>) {
@@ -193,7 +193,7 @@ export = TestController;
 
 ```
 
-到此一个业务路由层级的构建并没有完成，和原声astroboy开发类似，相应的需要一个router文件来创建astroboy的router数组定义。
+到此一个业务路由层级的构建并没有完成，和原生astroboy开发类似，相应的需要一个router文件来创建astroboy的router数组定义。
 
 > app/routers/test.ts
 ```typescript
