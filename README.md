@@ -293,7 +293,7 @@ module.exports = {
 
 ```
 
-这样既可以更好的描述原本混乱的config文件，同时可以在对config访问的时候提供定义支持。
+这样既可以更好的描述原本混乱的config文件，同时可以在对config访问的时候提供定义支持。
 
 ```typescript
 // 注入Configs服务，然后获取配置
