@@ -116,7 +116,7 @@ module.exports = {
 
 #### 4. 启动
 ```
-ast dev --ts --inspect --tsconfig ./tsconfig.json
+ast dev --ts --inspect --tsconfig tsconfig.json
 ```
 
 ### 开发姿势
