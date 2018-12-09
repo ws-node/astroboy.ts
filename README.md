@@ -301,4 +301,21 @@ module.exports = {
 const opts = this.configs.get(STR_OPT);
 ```
 
+#### 4.在中间件中使用依赖注入
+
+过程比较轻量，废话不多，直接上demo：
+> app/middlewares/demo.ts
+```typescript
+import { injectScope, ENV, Context } from "astroboy.ts";
+import DataService from "../services/Data";
+
+export = () => injectScope(async ({ injector, configs, ctx, next }) => {
+  // console.log(configs.get(ENV).showTrace);
+  const data = injector.get(DataService);
+  data.setStamp(new Date().getTime());
+  await next();
+  // console.log("fuck");
+});
+```
+
 > 文档完善中...
