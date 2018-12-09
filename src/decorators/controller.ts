@@ -57,7 +57,7 @@ export function Controller(prefix: string) {
         const { params: routeParams } = tryGetRouteMagic(prototype, name);
         descriptor.value = async function () {
           const injector: InjectService = this[$$injector];
-          const { ctx } = injector.get<Context<{}>>(Context);
+          const { ctx } = injector.get<Context>(Context);
           const staticResolver = injector.get(Configs).get(STATIC_RESOLVER);
           const params = resolveRouteMethodParams(routeParams, ctx, staticResolver);
           const result: ICommonResultType = await value.bind(this)(...params);
