@@ -119,4 +119,136 @@ module.exports = {
 ast dev --ts --inspect --tsconfig ./tsconfig.json
 ```
 
+### 开发姿势
+
+#### 1.编写路由控制器
+
+控制器方面使用装饰器来定制Router的业务层级，确定Route的url和method，提供params和body的注入获取能力，并抽象了响应中body的写入能力。
+
+> app/controllers/test.ts
+```typescript
+import {
+  Controller, Configs, AstroboyContext,
+  ENV, JsonResult, GET, POST, FromParams,
+  FromBody, Deserialize, IContext
+} from "astroboy.ts";
+
+interface GetQuery {
+  id: string;
+  name: string;
+  type: string;
+}
+
+interface PostData {
+  id: number;
+  name: string;
+}
+
+@Controller("test")
+class TestController {
+
+   // 构造函数注入能力
+  constructor(
+    private configs: Configs,
+    private base: AstroboyContext<IContext>) {
+
+  }
+
+  // GET: {项目前缀}/api/test/testGet/:type?id=xxxx&name=xxxx
+  @GET("testGet/:type")
+  // 显式进行params参数前提，作为路由方法参数
+  // 使用接口为了更好的类型描述，不会进行任何运行时类型处理
+  public methodGet(@FromParams() params: GetQuery) {
+    const { ctx } = this.base;
+    const { id, name, type } = params;
+    ctx.type = "application/json";
+    // JsonResult实现了IResult接口，提供将json内容编程化写入body的能力，同时提供了Configs容器的配置化支持
+    // 你可以自己实现自定义逻辑，只要实现IResult接口即可
+    return new JsonResult({
+      id,
+      name,
+      type,
+      url: ctx.url,
+    });
+  }
+
+  // POST: {项目前缀}/api/post/:type?id=xxxx&name=xxxx
+  @POST("post/:type")
+  // body也能进行相似的流程实现参数前提
+  // 你仍然可以进行直接解构
+  public async methodPost(@FromParams() params: GetQuery, @FromBody() { id, name }: PostData) {
+    const { name, id: id2, type } = params;
+    return new JsonResult({
+      id,
+      name,
+      type,
+      id2,
+      name
+    });
+  }
+
+}
+
+export = TestController;
+
+```
+
+到此一个业务路由层级的构建并没有完成，和原声astroboy开发类似，相应的需要一个router文件来创建astroboy的router数组定义。
+
+> app/routers/test.ts
+```typescript
+import TEST from "../controllers/test";
+import { buildRouter } from "astroboy.ts";
+
+// “test”代表controllers内的文件级别
+// “/v1”代表应用的路由前缀，这里只作为示例
+export = buildRouter(TEST, "test", "/v1");
+
+```
+
+到此一个完整的业务级别的router构造完成了。
+
+#### 2.编写可注入服务
+
+astroboy.ts按照IoC模式的指导思路进行设计，所有的服务都应该按照DI的方式（无论是手动还是自动）获取、组装和构造逻辑层级。
+
+> app/services/test.ts
+```typescript
+import { Injectable } from "astroboy.ts";
+
+@Injectable()
+class TestService {
+
+  private value = 98765;
+
+  public add(v: number) {
+    this.value += v;
+  }
+
+  public showValue() {
+    return this.value;
+  }
+
+}
+
+export = TestService;
+```
+
+astroboy.ts服务的默认行为是范围单例（scoped），简单的描述来说，一个服务在同一个请求流程中总是保持单例状态，并在请求结束后释放。scoped服务可以在请求流程中的任意位置获取，并承担数据传输载体的职责。
+
+你当然可以手动改变这一默认行为：
+```typescript
+// 请确保你了解type的含义，以免服务出现不符合预期的行为
+@Injectable({ type: InjectScope.Singleton })
+class Test02Service {
+  ...
+}
+```
+
+其他行为：
+* new（每次获取总是创建一个全新的对象）
+* singleton（在整个应用中保持唯一并积累副作用）
+
+服务还具有其他高级功能（包括依赖注入分离和实现多重继承），这里不一一展开了。
+
 > 文档完善中...
