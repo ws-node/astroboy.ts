@@ -15,7 +15,7 @@ import { Context } from "./Context";
  * @template C typeof `config` 类型
  */
 export declare class AstroboyContext<T = IContext, A = Koa, C = any> {
-    context: Context<T>;
+    protected context: Context<T>;
     /** BaseClass.ctx */
     readonly ctx: T;
     /** BaseClass.app */

@@ -23,9 +23,9 @@ let AstroboyContext = class AstroboyContext {
     /** BaseClass.ctx */
     get ctx() { return this.context.ctx || {}; }
     /** BaseClass.app */
-    get app() { return (this.ctx && this.ctx).app || {}; }
+    get app() { return (this.ctx && this.ctx.app) || {}; }
     /** BaseClass.config */
-    get config() { return (this.app && this.app)["config"] || {}; }
+    get config() { return (this.app && this.app["config"]) || {}; }
     getConfig(...args) {
         // @ts-ignore 参数定义override忽略
         return this.ctx.getConfig(...args);

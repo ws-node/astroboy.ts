@@ -26,7 +26,7 @@ export class AstroboyContext<T = IContext, A = Koa, C = any> {
   /** BaseClass.config */
   public get config(): C { return (this.app && this.app["config"]) || {}; }
 
-  constructor(public context: Context<T>) { }
+  constructor(protected context: Context<T>) { }
 
   getConfig(...args: any[]) {
     // @ts-ignore 参数定义override忽略
