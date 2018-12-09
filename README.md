@@ -251,4 +251,54 @@ class Test02Service {
 
 服务还具有其他高级功能（包括依赖注入分离和实现多重继承），这里不一一展开了。
 
+#### 3.对接astroboy的配置
+
+创建接口来描述astroboy的配置中的各个业务部分：
+> config/options/demo.ts
+```typescript
+
+import { createConfig } from "astroboy.ts";
+
+interface DemoOptions {
+  /** ccccc */
+  key01: number;
+  key02: string;
+}
+
+export const DEMO_OPTIONS = createConfig<DemoOptions>("demo");
+
+```
+> config/config.default.js
+```javascript
+/**
+ * 默认配置文件
+ */
+const path = require('path');
+
+module.exports = {
+
+  "@astroboy.ts": {
+    showTrace: true,
+    diType: "proxy"
+  },
+
+  demo: {
+    key01: 12345,
+    key02: "woshinidie"
+  },
+
+  strOpt: "test_string_config"
+
+};
+
+```
+
+这样既可以更好的描述原本混乱的config文件，同时可以在对config访问的时候提供定义支持。
+
+```typescript
+// 注入Configs服务，然后获取配置
+// opts变量将会被正确的绑定上类型信息
+const opts = this.configs.get(STR_OPT);
+```
+
 > 文档完善中...
