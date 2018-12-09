@@ -25,9 +25,10 @@
 
 ### 迭代记录
 
-#### 1.0.1-rc.21
+#### 1.0.1-rc.22
 * 重新调整`Context`和`AstroboyContext`对于`ctx`类型复写的行为
 * `AstroboyContext`现在支持复写`app`和`config`字段的类型
+* `Context`取消在`AstroboyContext`中公开，只在继承链路中可见
 
 #### 1.0.1-rc.20
 * 支持DI多重继承的能力
