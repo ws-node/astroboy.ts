@@ -7,18 +7,18 @@ import { IContext } from "../typings/IContext";
  * @author Big Mogician
  * @export
  * @class Context
- * @template T
+ * @template T typeof `ctx` 类型
  */
-export declare class Context<T extends Partial<Koa.Context> = {}> {
+export declare class Context<T = IContext> {
     private _ctx;
     /**
      * ### Koa上下文对象
      * * 有可能被astroboy和后续框架扩展
      * @description
      * @readonly
-     * @type {(KIContext & T)} 聚合类型
+     * @type {T} 聚合类型
      * @memberof Context
      */
-    readonly ctx: IContext & T;
+    readonly ctx: T;
     constructor(_ctx: Koa.Context);
 }

@@ -1,27 +1,27 @@
-/// <reference path="../decorators/controller.d.ts" />
-/// <reference path="../../node_modules/@types/koa-router/index.d.ts" />
-/// <reference types="koa" />
+import Koa from "koa";
 import { IContext } from "../typings/IContext";
 import { Context } from "./Context";
 /**
  * ## Astroboy.ts基础上下文服务
- * * `ctx` 承载Koa.Context
- * * `app` 承载Koa.Application
- * * `config` 承载业务config
+ * * `ctx` 承载Koa.Context，可定制类型
+ * * `app` 承载Koa.Application，可定制类型
+ * * `config` 承载业务config，可定制类型
  * @description
  * @author Big Mogician
  * @export
  * @class AstroboyContext
- * @template T
+ * @template T typeof `ctx` 类型
+ * @template A typeof `app` 类型
+ * @template C typeof `config` 类型
  */
-export declare class AstroboyContext<T extends Partial<IContext> = {}> {
+export declare class AstroboyContext<T = IContext, A = Koa, C = any> {
     context: Context<T>;
     /** BaseClass.ctx */
-    readonly ctx: IContext & T;
+    readonly ctx: T;
     /** BaseClass.app */
-    readonly app: import("pplicatio");
+    readonly app: A;
     /** BaseClass.config */
-    readonly config: any;
+    readonly config: C;
     constructor(context: Context<T>);
     getConfig(...args: any[]): any;
     getServiceClass(...args: any[]): any;

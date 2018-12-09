@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @author Big Mogician
  * @export
  * @class Context
- * @template T
+ * @template T typeof `ctx` 类型
  */
 class Context {
     constructor(_ctx) {
@@ -17,7 +17,7 @@ class Context {
      * * 有可能被astroboy和后续框架扩展
      * @description
      * @readonly
-     * @type {(KIContext & T)} 聚合类型
+     * @type {T} 聚合类型
      * @memberof Context
      */
     get ctx() { return this._ctx; }
