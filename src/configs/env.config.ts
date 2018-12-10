@@ -1,6 +1,6 @@
 import { createConfig } from "../services/Configs";
 
-interface IENV {
+export interface IENV {
   /** 是否打印astroboy.ts的记录日志 */
   showTrace: boolean;
   diType: "native" | "proxy";
