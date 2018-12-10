@@ -6,8 +6,7 @@ import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
 import {
   GlobalDI,
-  optionAssign,
-  GlobalImplements
+  optionAssign
 } from "./utils";
 import {
   Constructor,
