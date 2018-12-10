@@ -57,8 +57,8 @@ function createTsRouterFile(baseRouter: string, ctorPath: string, routerPath: st
       `${routerPath.replace(`${baseRouter}/`, "").replace("/", ".")}.${path.replace(".ts", "")}`;
     const file: string[] = [
       "// [astroboy.ts]自动生成的代码",
-      `const CTOR = require('${`${ctorPath}/${path.replace(".ts", "")}`}')`,
-      `const { buildRouter } = require("astroboy.ts")`,
+      `const CTOR = require('${`${ctorPath}/${path.replace(".ts", "")}`}');`,
+      `const { buildRouter } = require("astroboy.ts");`,
       `module.exports = buildRouter(CTOR, "${controllerName}", "${urlRoot}");`
     ];
     const _PATH = `${routerPath}/${path.replace(".ts", ".js")}`;
