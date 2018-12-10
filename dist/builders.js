@@ -23,36 +23,38 @@ function checkRouterFolders(baseRouter, folders, ctorPath, routerPath, root) {
             checkRouterFolders(baseRouter, fs_1.default.readdirSync(ctorFolder), ctorFolder, routerFolder, root);
         }
         else {
-            if (!checkIfTsFile(path))
+            if (checkIfOnlyDeclares(path))
                 return;
             createTsRouterFile(baseRouter, ctorPath, routerPath, path, root);
         }
     });
 }
-function checkIfTsFile(p) {
-    return p.endsWith(".ts") && !p.includes(".d.ts");
+function checkIfOnlyDeclares(p) {
+    return p.endsWith(".d.ts");
 }
 function createTsRouterFile(baseRouter, ctorPath, routerPath, path, urlRoot) {
     try {
         // 存在手动配置的router.ts，则不做处理直接退出
-        if (fs_1.default.existsSync(`${routerPath}/${path}`))
+        if (path.endsWith(".ts") && fs_1.default.existsSync(`${routerPath}/${path}`))
             return;
         // 尝试按照新版逻辑解析Controller
-        const controller = require(`${ctorPath}/${path.replace(".ts", "")}`);
-        // 找不到router源定义，抛错
+        const commonName = path.split(".")[0];
+        console.log(`${ctorPath}/${commonName}`);
+        const controller = require(`${ctorPath}/${commonName}`);
+        // 找不到router源定义，静默退出
         if (!controller.prototype["@router"])
-            throw new Error("invalid router controller.");
+            return;
         const sourceCtor = utils_1.GlobalImplements.get(controller);
         // 无法解析控制器数据，则判断是老版本的Router
         if (!sourceCtor)
             return;
         const controllerName = routerPath === baseRouter ?
-            path.replace(".ts", "") :
-            `${routerPath.replace(`${baseRouter}/`, "").replace("/", ".")}.${path.replace(".ts", "")}`;
+            commonName :
+            `${routerPath.replace(`${baseRouter}/`, "").replace(/\//g, ".")}.${commonName}`;
         const file = [
             "// [astroboy.ts] 自动生成的代码",
             "",
-            `const CTOR = require('${`${ctorPath}/${path.replace(".ts", "")}`}');`,
+            `const CTOR = require('${`${ctorPath}/${commonName}`}');`,
             `const { buildRouter } = require("astroboy.ts");`,
             `module.exports = buildRouter(CTOR, "${controllerName}", "${urlRoot}");`
         ];
@@ -64,7 +66,7 @@ function createTsRouterFile(baseRouter, ctorPath, routerPath, path, urlRoot) {
                 return;
         }
         // 复写router.js文件
-        fs_1.default.appendFileSync(`${routerPath}/${path.replace(".ts", ".js")}`, file.join("\n"), { flag: "w" });
+        fs_1.default.appendFileSync(_PATH, file.join("\n"), { flag: "w" });
     }
     catch (e) {
         throw e;
