@@ -13,7 +13,7 @@ interface IENV {
 export const defaultEnv: IENV = {
   showTrace: false,
   diType: "native",
-  routerAutoBuild: false,
+  routerAutoBuild: true,
   ctorFolder: "app/controllers",
   routerFolder: "app/routers",
   routerRoot: ""
