@@ -1,12 +1,15 @@
 import Koa from "koa";
 import Astroboy from "astroboy";
+import fs from "fs";
+import path from "path";
 import { Context } from "./services/Context";
 import { InjectService } from "./services/Injector";
 import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
 import {
   GlobalDI,
-  optionAssign
+  optionAssign,
+  GlobalImplements
 } from "./utils";
 import {
   Constructor,
@@ -29,6 +32,7 @@ import {
 } from "./services/Configs";
 import { STATIC_RESOLVER } from "./configs/typed-serialize.options";
 import { TypedSerializer } from "./plugins/typed-serializer";
+import { buildRouter } from ".";
 
 type DIPair = [any, any];
 
@@ -65,7 +69,7 @@ export class Server {
       this.appBuilder = ctor;
       this.appConfigs = configs;
     }
-    this.init();
+    this.preInit();
   }
 
   /**
@@ -301,13 +305,18 @@ export class Server {
     onStart: (app) => void;
     onError: (error, ctx) => void;
   }>) {
+    this.init();
     this.finalInjectionsInit();
     this.startApp(events);
   }
 
-  private init() {
+  private preInit() {
     this.initOptions();
     this.initInjections();
+  }
+
+  private init() {
+    this.initRouters();
   }
 
   private initOptions() {
@@ -319,6 +328,27 @@ export class Server {
   private initInjections() {
     this.scoped(AstroboyContext);
     this.scoped(Scope);
+  }
+
+  private initRouters() {
+    const {
+      ctorFolder: base,
+      routerFolder: routerBase,
+      routerAutoBuild: open,
+      routerRoot: root
+    } = this.configs.get(ENV);
+    if (open) {
+      const ctorPath = path.resolve(base);
+      const routerPath = path.resolve(routerBase);
+      checkRouterFolders(
+        routerPath,
+        fs.readdirSync(ctorPath),
+        ctorPath,
+        routerPath,
+        root
+      );
+    }
+    return this;
   }
 
   private finalInjectionsInit() {
@@ -431,4 +461,51 @@ export class Server {
     );
   }
 
+}
+
+function checkRouterFolders(baseRouter: string, folders: string[], ctorPath: string, routerPath: string, root: string) {
+  folders.forEach(path => {
+    if (path.indexOf(".") === -1) {
+      const routerFolder = `${routerPath}/${path}`;
+      const ctorFolder = `${ctorPath}/${path}`;
+      if (!fs.existsSync(routerFolder)) { fs.mkdirSync(routerFolder); }
+      checkRouterFolders(
+        baseRouter,
+        fs.readdirSync(ctorFolder),
+        ctorFolder,
+        routerFolder,
+        root
+      );
+    }
+    else {
+      if (!checkIfTsFile(path)) return;
+      createTsRouterFile(baseRouter, ctorPath, routerPath, path, root);
+    }
+  });
+}
+
+function checkIfTsFile(p: string): any {
+  return p.endsWith(".ts") && !p.includes(".d.ts");
+}
+
+function createTsRouterFile(baseRouter: string, ctorPath: string, routerPath: string, path: string, urlRoot: string) {
+  try {
+    const controller = require(`${ctorPath}/${path.replace(".ts", "")}`);
+    const sourceCtor = GlobalImplements.get(controller);
+    if (!sourceCtor) return;
+    const controllerName = routerPath === baseRouter ?
+      path.replace(".ts", "") :
+      `${routerPath.replace(`${baseRouter}/`, "").replace("/", ".")}.${path.replace(".ts", "")}`;
+    fs.appendFileSync(
+      `${routerPath}/${path.replace(".ts", ".js")}`,
+      `${"// [astroboy.ts]自动生成的代码\n"}module.exports=${JSON.stringify(
+        buildRouter(controller, controllerName, urlRoot),
+        null,
+        "  "
+      )};`,
+      { flag: "w" }
+    );
+  } catch (e) {
+    throw e;
+  }
 }
