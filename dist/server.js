@@ -12,6 +12,7 @@ const configs_1 = require("./configs");
 const Configs_1 = require("./services/Configs");
 const typed_serialize_options_1 = require("./configs/typed-serialize.options");
 const typed_serializer_1 = require("./plugins/typed-serializer");
+const builders_1 = require("./builders");
 /**
  * ## astroboy.ts服务
  * @description
@@ -37,7 +38,7 @@ class Server {
             this.appBuilder = ctor;
             this.appConfigs = configs;
         }
-        this.init();
+        this.preInit();
     }
     static Create(ctor, configs) {
         return new Server(ctor, configs);
@@ -69,12 +70,16 @@ class Server {
      * @memberof Server
      */
     run(events) {
+        this.init();
         this.finalInjectionsInit();
         this.startApp(events);
     }
-    init() {
+    preInit() {
         this.initOptions();
         this.initInjections();
+    }
+    init() {
+        this.initRouters();
     }
     initOptions() {
         this.option(configs_1.ENV, configs_1.defaultEnv);
@@ -84,6 +89,10 @@ class Server {
     initInjections() {
         this.scoped(AstroboyContext_1.AstroboyContext);
         this.scoped(Scope_1.Scope);
+    }
+    initRouters() {
+        builders_1.initRouters(this.configs.get(configs_1.ENV));
+        return this;
     }
     finalInjectionsInit() {
         this.initConfigCollection();

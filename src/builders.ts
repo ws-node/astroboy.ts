@@ -49,8 +49,14 @@ function checkIfTsFile(p: string): any {
 
 function createTsRouterFile(baseRouter: string, ctorPath: string, routerPath: string, path: string, urlRoot: string) {
   try {
+    // 存在手动配置的router.ts，则不做处理直接退出
+    if (fs.existsSync(`${routerPath}/${path}`)) return;
+    // 尝试按照新版逻辑解析Controller
     const controller = require(`${ctorPath}/${path.replace(".ts", "")}`);
+    // 找不到router源定义，抛错
+    if (!controller.prototype["@router"]) throw new Error("invalid router controller.");
     const sourceCtor = GlobalImplements.get(controller);
+    // 无法解析控制器数据，则判断是老版本的Router
     if (!sourceCtor) return;
     const controllerName = routerPath === baseRouter ?
       path.replace(".ts", "") :
@@ -65,8 +71,10 @@ function createTsRouterFile(baseRouter: string, ctorPath: string, routerPath: st
     const _PATH = `${routerPath}/${path.replace(".ts", ".js")}`;
     if (fs.existsSync(_PATH)) {
       const oldFile = fs.readFileSync(_PATH, { flag: "r" });
+      // 存在router.js文件，且内容一致，不做处理直接退出
       if (oldFile.toString() === file.join("\n")) return;
     }
+    // 复写router.js文件
     fs.appendFileSync(
       `${routerPath}/${path.replace(".ts", ".js")}`,
       file.join("\n"),

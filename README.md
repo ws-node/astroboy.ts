@@ -8,6 +8,7 @@
 * 可配置容器定义化
 * DI可注入依赖实现多重继承
 * 配置容器对接astroboy标准configs模式
+* 自动化生成astroboy的routers规范
 * 完整兼容astroboy原始语义，支持任意扩展
 * 支持完整依赖注入能力的高级中间件
 * 路由方法返回配置接口化
@@ -24,6 +25,9 @@
 * [Interfaces](https://github.com/ws-node/astroboy.ts/wiki/Interfaces) - 公开接口列表
 
 ### 迭代记录
+
+#### 1.0.1-rc.23
+* 针对`@Controller`修饰过的ts控制器，将自动生成对应的router.js文件
 
 #### 1.0.1-rc.22
 * 重新调整`Context`和`AstroboyContext`对于`ctx`类型复写的行为
@@ -205,6 +209,8 @@ import { buildRouter } from "astroboy.ts";
 export = buildRouter(TEST, "test", "/v1");
 
 ```
+
+> 注：rc.23版本以后已经支持自动生成router，不需再要上述步骤
 
 到此一个完整的业务级别的router构造完成了。
 

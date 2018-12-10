@@ -228,9 +228,11 @@ export declare class Server {
         onStart: (app: any) => void;
         onError: (error: any, ctx: any) => void;
     }>): void;
+    private preInit;
     private init;
     private initOptions;
     private initInjections;
+    private initRouters;
     private finalInjectionsInit;
     private readConfigs;
     private startApp;
