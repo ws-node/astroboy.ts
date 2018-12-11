@@ -5,6 +5,6 @@ branches:
   only:
     - master
 before_script:
-  - yarn update
+  - make update
 script:
   - yarn run build
