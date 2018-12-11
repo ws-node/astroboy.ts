@@ -126,9 +126,9 @@ function createFile(routerPath: string, baseRouter: string, commonName: string, 
     `${turnLod.join("/")}/controllers/${routerPath.replace(`${baseRouter}/`, "")}/${commonName}`;
   const file: string[] = [
     "// [astroboy.ts] 自动生成的代码",
-    `const CTOR = require("${turnStr}");`,
-    `const { buildRouter } = require("astroboy.ts");`,
-    `module.exports = buildRouter(CTOR, "${controllerName}", "${urlRoot}");`
+    `import CTOR from "${turnStr}";`,
+    `import { buildRouter } from "astroboy.ts";`,
+    `export = buildRouter(CTOR, "${controllerName}", "${urlRoot}");`
   ];
   return file;
 }
