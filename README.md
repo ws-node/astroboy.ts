@@ -1,6 +1,10 @@
 # 🌟astroboy.ts
 > 基于[astroboy](https://github.com/astroboy-lab/astroboy)的DI版本，TypeScript3.2信仰加成
 
+[![Build Status](https://travis-ci.org/ws-node/astroboy.ts.svg?branch=master)](https://travis-ci.org/ws-node/astroboy.ts)
+[![package version](https://badge.fury.io/js/astroboy.ts.svg)](https://badge.fury.io/js/astroboy.ts.svg)
+
+
 ### 已经实现的功能
 
 * 高性能依赖注入[ 实现：[@bonbons/di](https://www.npmjs.com/package/@bonbons/di) ]
