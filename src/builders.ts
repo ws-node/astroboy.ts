@@ -4,6 +4,20 @@ import rimraf from "rimraf";
 import { InnerENV, defaultEnv } from "./configs/env.config";
 import { GlobalImplements } from "./utils";
 
+/**
+ * ## astroboy.ts 预处理函数
+ * * 硬核初始化routers
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {Partial<InnerENV>} {
+ *   ctorFolder: base = defaultEnv.ctorFolder,
+ *   routerFolder: routerBase = defaultEnv.routerFolder,
+ *   routerAutoBuild: open = defaultEnv.routerAutoBuild,
+ *   routerAlwaysBuild: always = defaultEnv.routerAlwaysBuild,
+ *   routerRoot: root = defaultEnv.routerRoot
+ * }
+ */
 export function initRouters({
   ctorFolder: base = defaultEnv.ctorFolder,
   routerFolder: routerBase = defaultEnv.routerFolder,
@@ -15,6 +29,7 @@ export function initRouters({
     const ctorPath = path.resolve(base);
     const routerPath = path.resolve(routerBase);
     if (always) {
+      // 硬核开关，强撸routers文件夹
       rimraf.sync(routerPath);
       fs.mkdirSync(routerPath);
     } else if (!fs.existsSync(routerPath)) {
@@ -84,7 +99,7 @@ function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, urlR
     // 无法解析控制器数据，则判断是老版本的Router
     if (!sourceCtor) return;
     const file = createFile(routerPath, baseRouter, commonName, turn, urlRoot);
-    const _PATH = `${routerPath}/${path.replace(".ts", ".js")}`;
+    const _PATH = `${routerPath}/${commonName}.ts`;
     if (fs.existsSync(_PATH)) {
       const oldFile = fs.readFileSync(_PATH, { flag: "r" });
       const content = (oldFile.toString() || "").split("\n");

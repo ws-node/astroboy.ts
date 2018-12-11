@@ -6,11 +6,26 @@ const path_1 = tslib_1.__importDefault(require("path"));
 const rimraf_1 = tslib_1.__importDefault(require("rimraf"));
 const env_config_1 = require("./configs/env.config");
 const utils_1 = require("./utils");
+/**
+ * ## astroboy.ts 预处理函数
+ * * 硬核初始化routers
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {Partial<InnerENV>} {
+ *   ctorFolder: base = defaultEnv.ctorFolder,
+ *   routerFolder: routerBase = defaultEnv.routerFolder,
+ *   routerAutoBuild: open = defaultEnv.routerAutoBuild,
+ *   routerAlwaysBuild: always = defaultEnv.routerAlwaysBuild,
+ *   routerRoot: root = defaultEnv.routerRoot
+ * }
+ */
 function initRouters({ ctorFolder: base = env_config_1.defaultEnv.ctorFolder, routerFolder: routerBase = env_config_1.defaultEnv.routerFolder, routerAutoBuild: open = env_config_1.defaultEnv.routerAutoBuild, routerAlwaysBuild: always = env_config_1.defaultEnv.routerAlwaysBuild, routerRoot: root = env_config_1.defaultEnv.routerRoot }) {
     if (open) {
         const ctorPath = path_1.default.resolve(base);
         const routerPath = path_1.default.resolve(routerBase);
         if (always) {
+            // 硬核开关，强撸routers文件夹
             rimraf_1.default.sync(routerPath);
             fs_1.default.mkdirSync(routerPath);
         }
@@ -71,7 +86,7 @@ function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, urlR
         if (!sourceCtor)
             return;
         const file = createFile(routerPath, baseRouter, commonName, turn, urlRoot);
-        const _PATH = `${routerPath}/${path.replace(".ts", ".js")}`;
+        const _PATH = `${routerPath}/${commonName}.ts`;
         if (fs_1.default.existsSync(_PATH)) {
             const oldFile = fs_1.default.readFileSync(_PATH, { flag: "r" });
             const content = (oldFile.toString() || "").split("\n");
