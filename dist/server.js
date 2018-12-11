@@ -91,7 +91,7 @@ class Server {
         this.scoped(Scope_1.Scope);
     }
     initRouters() {
-        builders_1.initRouters(this.configs.get(configs_1.ENV));
+        builders_1.initRouters(this.configs.get(configs_1.ROUTER_OPTIONS));
         return this;
     }
     finalInjectionsInit() {

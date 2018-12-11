@@ -231,7 +231,8 @@ preInitFn({
   // 项目路由前缀，自己控制吧
   routerRoot: "/v1",
   // 打开强制更新(默认`false`)，每次启动都会删掉routers重建，自己控制吧
-  routerAlwaysBuild: true
+  routerAlwaysBuild: true,
+  fileType: "ts"
 });
 ```
 - 调整启动命令
@@ -248,7 +249,7 @@ preInitFn({
 Server.Create(..., {
   ...
 })
-  .option(ENV, { routerAutoBuild: true, routerRoot: "/v1" })
+  .option(ROUTER_OPTIONS, { routerRoot: "/v1", routerAutoBuild: true })
   ...
 ```
 

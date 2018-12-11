@@ -20,6 +20,8 @@ interface IPreProcess {
     routerAlwaysBuild: boolean;
     /** 整个项目的url前缀，默认：`'/'` */
     routerRoot: string;
+    /** 生成router文件的文件类型，默认：`'js'` */
+    fileType: "js" | "ts";
 }
 /**
  * ## astroboy.ts 预处理函数

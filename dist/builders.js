@@ -4,9 +4,9 @@ const tslib_1 = require("tslib");
 const fs_1 = tslib_1.__importDefault(require("fs"));
 const path_1 = tslib_1.__importDefault(require("path"));
 const rimraf_1 = tslib_1.__importDefault(require("rimraf"));
-const env_config_1 = require("./configs/env.config");
 const utils_1 = require("./utils");
-function initRouters({ ctorFolder: base = env_config_1.defaultEnv.ctorFolder, routerFolder: routerBase = env_config_1.defaultEnv.routerFolder, routerAutoBuild: open = env_config_1.defaultEnv.routerAutoBuild, routerAlwaysBuild: always = env_config_1.defaultEnv.routerAlwaysBuild, routerRoot: root = env_config_1.defaultEnv.routerRoot }) {
+const router_options_1 = require("./configs/router.options");
+function initRouters({ ctorFolder: base = router_options_1.defaultRouterOptions.ctorFolder, routerFolder: routerBase = router_options_1.defaultRouterOptions.routerFolder, routerAutoBuild: open = router_options_1.defaultRouterOptions.routerAutoBuild, routerAlwaysBuild: always = router_options_1.defaultRouterOptions.routerAlwaysBuild, routerRoot: root = router_options_1.defaultRouterOptions.routerRoot, fileType = router_options_1.defaultRouterOptions.fileType }) {
     if (open) {
         const ctorPath = path_1.default.resolve(base);
         const routerPath = path_1.default.resolve(routerBase);
@@ -24,12 +24,13 @@ function initRouters({ ctorFolder: base = env_config_1.defaultEnv.ctorFolder, ro
             folders: fs_1.default.readdirSync(ctorPath),
             ctorPath,
             routerPath,
+            fileType,
             root
         });
     }
 }
 exports.initRouters = initRouters;
-function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, root }) {
+function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, fileType, root }) {
     folders.forEach(path => {
         if (path.indexOf(".") === -1) {
             const routerFolder = `${routerPath}/${path}`;
@@ -43,24 +44,22 @@ function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, r
                 folders: fs_1.default.readdirSync(ctorFolder),
                 ctorPath: ctorFolder,
                 routerPath: routerFolder,
+                fileType,
                 root
             });
         }
         else {
             if (checkIfOnlyDeclares(path))
                 return;
-            createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, urlRoot: root });
+            createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot: root });
         }
     });
 }
 function checkIfOnlyDeclares(p) {
     return p.endsWith(".d.ts");
 }
-function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, urlRoot }) {
+function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot }) {
     try {
-        // 存在手动配置的router.ts，则不做处理直接退出
-        if (path.endsWith(".ts") && fs_1.default.existsSync(`${routerPath}/${path}`))
-            return;
         // 尝试按照新版逻辑解析Controller
         const commonName = path.split(".")[0];
         const controller = require(`${ctorPath}/${commonName}`);
@@ -71,8 +70,8 @@ function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, urlR
         // 无法解析控制器数据，则判断是老版本的Router
         if (!sourceCtor)
             return;
-        const file = createFile(routerPath, baseRouter, commonName, turn, urlRoot);
-        const _PATH = `${routerPath}/${commonName}.ts`;
+        const file = createFile(routerPath, baseRouter, commonName, turn, fileType, urlRoot);
+        const _PATH = `${routerPath}/${commonName}.${fileType}`;
         if (fs_1.default.existsSync(_PATH)) {
             const oldFile = fs_1.default.readFileSync(_PATH, { flag: "r" });
             const content = (oldFile.toString() || "").split("\n");
@@ -87,7 +86,7 @@ function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, urlR
         throw e;
     }
 }
-function createFile(routerPath, baseRouter, commonName, turn, urlRoot) {
+function createFile(routerPath, baseRouter, commonName, turn, fileType, urlRoot) {
     const controllerName = routerPath === baseRouter ?
         commonName :
         `${routerPath.replace(`${baseRouter}/`, "").replace(/\//g, ".")}.${commonName}`;
@@ -98,12 +97,25 @@ function createFile(routerPath, baseRouter, commonName, turn, urlRoot) {
     const turnStr = routerPath === baseRouter ?
         `${turnLod.join("/")}/controllers/${commonName}` :
         `${turnLod.join("/")}/controllers/${routerPath.replace(`${baseRouter}/`, "")}/${commonName}`;
-    const file = [
+    const file = fileType === "ts" ?
+        createTsFile(turnStr, controllerName, urlRoot) :
+        createJsFile(turnStr, controllerName, urlRoot);
+    return file;
+}
+function createTsFile(turnStr, controllerName, urlRoot) {
+    return [
         "// [astroboy.ts] 自动生成的代码",
         `import CTOR from "${turnStr}";`,
         `import { buildRouter } from "astroboy.ts";`,
         `export = buildRouter(CTOR, "${controllerName}", "${urlRoot}");`
     ];
-    return file;
+}
+function createJsFile(turnStr, controllerName, urlRoot) {
+    return [
+        "// [astroboy.ts] 自动生成的代码",
+        `const CTOR = require("${turnStr}");`,
+        `const { buildRouter } = require("astroboy.ts");`,
+        `module.exports = buildRouter(CTOR, "${controllerName}", "${urlRoot}");`
+    ];
 }
 //# sourceMappingURL=builders.js.map

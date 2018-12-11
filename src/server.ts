@@ -20,7 +20,8 @@ import {
   ENV, defaultEnv,
   defaultJsonResultOptions,
   JSON_RESULT_OPTIONS,
-  InnerENV
+  InnerRouterOptions,
+  ROUTER_OPTIONS
 } from "./configs";
 import {
   RealConfigCollection,
@@ -328,7 +329,7 @@ export class Server {
   }
 
   private initRouters() {
-    initRouters(<InnerENV>this.configs.get(ENV));
+    initRouters(<InnerRouterOptions>this.configs.get(ROUTER_OPTIONS));
     return this;
   }
 
