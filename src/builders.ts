@@ -12,6 +12,7 @@ export function initRouters({
   if (open) {
     const ctorPath = path.resolve(base);
     const routerPath = path.resolve(routerBase);
+    if (!fs.existsSync(routerPath)) fs.mkdirSync(routerPath);
     checkRouterFolders({
       turn: 0,
       baseRouter: routerPath,
