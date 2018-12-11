@@ -4,20 +4,6 @@ import rimraf from "rimraf";
 import { InnerENV, defaultEnv } from "./configs/env.config";
 import { GlobalImplements } from "./utils";
 
-/**
- * ## astroboy.ts 预处理函数
- * * 硬核初始化routers
- * @description
- * @author Big Mogician
- * @export
- * @param {Partial<InnerENV>} {
- *   ctorFolder: base = defaultEnv.ctorFolder,
- *   routerFolder: routerBase = defaultEnv.routerFolder,
- *   routerAutoBuild: open = defaultEnv.routerAutoBuild,
- *   routerAlwaysBuild: always = defaultEnv.routerAlwaysBuild,
- *   routerRoot: root = defaultEnv.routerRoot
- * }
- */
 export function initRouters({
   ctorFolder: base = defaultEnv.ctorFolder,
   routerFolder: routerBase = defaultEnv.routerFolder,

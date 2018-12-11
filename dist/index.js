@@ -6,6 +6,7 @@ exports.Astroboy = astroboy_1.default;
 const astroboy_router_1 = require("astroboy-router");
 const utils_1 = require("./utils");
 const controller_1 = require("./decorators/controller");
+const builders_1 = require("./builders");
 /**
  * ## 构建路由
  * * 等效astroboy-router的createRouter方法
@@ -25,6 +26,22 @@ function buildRouter(ctor, name, root) {
     return result;
 }
 exports.buildRouter = buildRouter;
+/**
+ * ## astroboy.ts 预处理函数
+ * * 硬核初始化routers
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {Partial<IPreProcess>} {
+ *   routerAutoBuild: open = defaultEnv.routerAutoBuild,
+ *   routerAlwaysBuild: always = defaultEnv.routerAlwaysBuild,
+ *   routerRoot: root = defaultEnv.routerRoot
+ * }
+ */
+function preInitFn(configs) {
+    return builders_1.initRouters(configs);
+}
+exports.preInitFn = preInitFn;
 tslib_1.__exportStar(require("astroboy-router"), exports);
 tslib_1.__exportStar(require("./decorators"), exports);
 tslib_1.__exportStar(require("./middlewares"), exports);
@@ -41,6 +58,4 @@ exports.Configs = Configs_1.Configs;
 exports.createOptions = Configs_1.createOptions;
 exports.createConfig = Configs_1.createConfig;
 exports.InjectScope = Configs_1.InjectScope;
-var builders_1 = require("./builders");
-exports.preInitFn = builders_1.initRouters;
 //# sourceMappingURL=index.js.map

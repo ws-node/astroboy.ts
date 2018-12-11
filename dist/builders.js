@@ -6,20 +6,6 @@ const path_1 = tslib_1.__importDefault(require("path"));
 const rimraf_1 = tslib_1.__importDefault(require("rimraf"));
 const env_config_1 = require("./configs/env.config");
 const utils_1 = require("./utils");
-/**
- * ## astroboy.ts 预处理函数
- * * 硬核初始化routers
- * @description
- * @author Big Mogician
- * @export
- * @param {Partial<InnerENV>} {
- *   ctorFolder: base = defaultEnv.ctorFolder,
- *   routerFolder: routerBase = defaultEnv.routerFolder,
- *   routerAutoBuild: open = defaultEnv.routerAutoBuild,
- *   routerAlwaysBuild: always = defaultEnv.routerAlwaysBuild,
- *   routerRoot: root = defaultEnv.routerRoot
- * }
- */
 function initRouters({ ctorFolder: base = env_config_1.defaultEnv.ctorFolder, routerFolder: routerBase = env_config_1.defaultEnv.routerFolder, routerAutoBuild: open = env_config_1.defaultEnv.routerAutoBuild, routerAlwaysBuild: always = env_config_1.defaultEnv.routerAlwaysBuild, routerRoot: root = env_config_1.defaultEnv.routerRoot }) {
     if (open) {
         const ctorPath = path_1.default.resolve(base);
