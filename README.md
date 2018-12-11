@@ -214,9 +214,9 @@ export = buildRouter(TEST, "test", "/v1");
 ```
 
 > 注：rc.27版本以后已经支持自动生成router，不需再要上述步骤，操作如下：
-##### 1. 配置 `init.ts`
+##### 1. 配置根目录的 `init.ts` 文件
 ```typescript
-const { preInitFn } = require("astroboy.ts");
+import { preInitFn } from "astroboy.ts";
 
 preInitFn({
   // 项目路由前缀，自己控制吧
