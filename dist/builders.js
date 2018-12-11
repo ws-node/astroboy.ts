@@ -3,13 +3,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const fs_1 = tslib_1.__importDefault(require("fs"));
 const path_1 = tslib_1.__importDefault(require("path"));
+const rimraf_1 = tslib_1.__importDefault(require("rimraf"));
+const env_config_1 = require("./configs/env.config");
 const utils_1 = require("./utils");
-function initRouters({ ctorFolder: base, routerFolder: routerBase, routerAutoBuild: open, routerRoot: root }) {
+function initRouters({ ctorFolder: base = env_config_1.defaultEnv.ctorFolder, routerFolder: routerBase = env_config_1.defaultEnv.routerFolder, routerAutoBuild: open = env_config_1.defaultEnv.routerAutoBuild, routerAlwaysBuild: always = env_config_1.defaultEnv.routerAlwaysBuild, routerRoot: root = env_config_1.defaultEnv.routerRoot }) {
     if (open) {
         const ctorPath = path_1.default.resolve(base);
         const routerPath = path_1.default.resolve(routerBase);
-        if (!fs_1.default.existsSync(routerPath))
+        if (always) {
+            rimraf_1.default.sync(routerPath);
             fs_1.default.mkdirSync(routerPath);
+        }
+        else if (!fs_1.default.existsSync(routerPath)) {
+            fs_1.default.mkdirSync(routerPath);
+        }
         checkRouterFolders({
             turn: 0,
             baseRouter: routerPath,

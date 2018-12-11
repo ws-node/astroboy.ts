@@ -5,9 +5,10 @@ exports.defaultEnv = {
     showTrace: false,
     diType: "native",
     routerAutoBuild: true,
+    routerAlwaysBuild: false,
     ctorFolder: "app/controllers",
     routerFolder: "app/routers",
-    routerRoot: ""
+    routerRoot: "/"
 };
 /** astroboy.ts环境变量 */
 exports.ENV = Configs_1.createConfig("@astroboy.ts");

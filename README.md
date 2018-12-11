@@ -27,9 +27,10 @@
 
 ### 迭代记录
 
-#### 1.0.1-rc.26
+#### 1.0.1-rc.27
 * 针对 `@Controller` 修饰过的ts控制器，将自动生成对应的router.js文件
 * 当不存在 `app/routers` 文件夹的时候自动创建
+* 提供了一个独立的初始化`routers`的函数来支持进行发布前的预处理
 
 #### 1.0.1-rc.22
 * 重新调整 `Context` 和 `AstroboyContext` 对于 `ctx` 类型复写的行为

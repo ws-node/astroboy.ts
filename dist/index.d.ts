@@ -28,4 +28,5 @@ export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
 export * from "./plugins/typed-serializer";
 export { Configs, ConfigToken, ConfigEntry, createOptions, createConfig, TokenGenerator, InjectScope } from "./services/Configs";
+export { initRouters as preInitFn } from "./builders";
 export { Astroboy };

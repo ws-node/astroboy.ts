@@ -1,18 +1,25 @@
 import fs from "fs";
 import path from "path";
-import { IENV } from "./configs/env.config";
+import rimraf from "rimraf";
+import { InnerENV, defaultEnv } from "./configs/env.config";
 import { GlobalImplements } from "./utils";
 
 export function initRouters({
-  ctorFolder: base,
-  routerFolder: routerBase,
-  routerAutoBuild: open,
-  routerRoot: root
-}: IENV) {
+  ctorFolder: base = defaultEnv.ctorFolder,
+  routerFolder: routerBase = defaultEnv.routerFolder,
+  routerAutoBuild: open = defaultEnv.routerAutoBuild,
+  routerAlwaysBuild: always = defaultEnv.routerAlwaysBuild,
+  routerRoot: root = defaultEnv.routerRoot
+}: Partial<InnerENV>) {
   if (open) {
     const ctorPath = path.resolve(base);
     const routerPath = path.resolve(routerBase);
-    if (!fs.existsSync(routerPath)) fs.mkdirSync(routerPath);
+    if (always) {
+      rimraf.sync(routerPath);
+      fs.mkdirSync(routerPath);
+    } else if (!fs.existsSync(routerPath)) {
+      fs.mkdirSync(routerPath);
+    }
     checkRouterFolders({
       turn: 0,
       baseRouter: routerPath,

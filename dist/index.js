@@ -41,4 +41,6 @@ exports.Configs = Configs_1.Configs;
 exports.createOptions = Configs_1.createOptions;
 exports.createConfig = Configs_1.createConfig;
 exports.InjectScope = Configs_1.InjectScope;
+var builders_1 = require("./builders");
+exports.preInitFn = builders_1.initRouters;
 //# sourceMappingURL=index.js.map

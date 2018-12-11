@@ -1,6 +1,6 @@
 {
   "name": "astroboy.ts",
-  "version": "1.0.1-rc.26",
+  "version": "1.0.1-rc.27",
   "description": "rt",
   "main": "./dist/index.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "@types/koa-router": "^7.0.35",
     "@types/lodash": "^4.14.118",
     "@types/node": "^10.12.10",
+    "@types/rimraf": "^2.0.2",
     "@types/uuid": "3.4.4",
     "astroboy": "0.0.35",
     "astroboy-router": "1.2.0-rc.1",
@@ -36,6 +37,7 @@
     "cerialize": "0.1.18",
     "decamelize": "1.2.0",
     "lodash": "^4.17.11",
+    "rimraf": "2.6.2",
     "tslib": "^1.9.3",
     "uuid": "3.3.2"
   },

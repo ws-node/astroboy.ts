@@ -1,2 +1,2 @@
-import { IENV } from "./configs/env.config";
-export declare function initRouters({ ctorFolder: base, routerFolder: routerBase, routerAutoBuild: open, routerRoot: root }: IENV): void;
+import { InnerENV } from "./configs/env.config";
+export declare function initRouters({ ctorFolder: base, routerFolder: routerBase, routerAutoBuild: open, routerAlwaysBuild: always, routerRoot: root }: Partial<InnerENV>): void;

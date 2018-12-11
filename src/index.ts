@@ -46,6 +46,7 @@ export {
   TokenGenerator,
   InjectScope
 } from "./services/Configs";
+export { initRouters as preInitFn } from "./builders";
 
 export {
   Astroboy
