@@ -27,10 +27,11 @@
 
 ### 迭代记录
 
-#### 1.0.1-rc.29
+#### 1.0.1-rc.30
 * 针对 `@Controller` 修饰过的ts控制器，将自动生成对应的router.ts文件
 * 当不存在 `app/routers` 文件夹的时候自动创建
 * 提供了一个独立的初始化`routers`的函数来支持进行发布前的预处理
+* 默认不执行初始化动作，可以选择预处理或是动态处理任意一种方式来实现
 
 #### 1.0.1-rc.22
 * 重新调整 `Context` 和 `AstroboyContext` 对于 `ctx` 类型复写的行为
@@ -213,8 +214,9 @@ export = buildRouter(TEST, "test", "/v1");
 
 ```
 
-> 注：rc.27版本以后已经支持自动生成router，不需再要上述步骤，操作如下：
-##### 1. 配置根目录的 `init.ts` 文件
+> 注：rc.27版本以后已经支持自动生成router，不需再要上述步骤，有两种模式任选其一，操作如下：
+##### 1. routers预处理模式
+- 配置根目录的 `init.ts` 文件
 ```typescript
 import { preInitFn } from "astroboy.ts";
 
@@ -225,8 +227,23 @@ preInitFn({
   routerAlwaysBuild: true
 });
 ```
-##### 2. 调整启动命令
-在开发启动或者生产打包前确保执行 `./node_modules/.bin/ts-node init.ts` 即可
+- 调整启动命令
+
+```bash
+# 在开发启动或者生产打包前确保执行即可
+
+./node_modules/.bin/ts-node init.ts
+```
+
+##### 2. 动态初始化
+- 配置 `app/app.ts` 文件 (但是在删除控制器后，需要手动删除routers中多余的文件)
+```typescript
+Server.Create(..., {
+  ...
+})
+  .option(ENV, { routerAutoBuild: true, routerRoot: "/v1" })
+  ...
+```
 
 到此一个完整的业务级别的router构造完成了。
 

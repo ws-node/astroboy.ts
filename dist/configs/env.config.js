@@ -4,7 +4,7 @@ const Configs_1 = require("../services/Configs");
 exports.defaultEnv = {
     showTrace: false,
     diType: "native",
-    routerAutoBuild: true,
+    routerAutoBuild: false,
     routerAlwaysBuild: false,
     ctorFolder: "app/controllers",
     routerFolder: "app/routers",
