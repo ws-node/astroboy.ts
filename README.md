@@ -28,20 +28,20 @@
 ### 迭代记录
 
 #### 1.0.1-rc.26
-* 针对`@Controller`修饰过的ts控制器，将自动生成对应的router.js文件
-* 当不存在`app/routers`文件夹的时候自动创建
+* 针对 `@Controller` 修饰过的ts控制器，将自动生成对应的router.js文件
+* 当不存在 `app/routers` 文件夹的时候自动创建
 
 #### 1.0.1-rc.22
-* 重新调整`Context`和`AstroboyContext`对于`ctx`类型复写的行为
-* `AstroboyContext`现在支持复写`app`和`config`字段的类型
-* `Context`取消在`AstroboyContext`中公开，只在继承链路中可见
+* 重新调整 `Context` 和 `AstroboyContext` 对于 `ctx` 类型复写的行为
+* `AstroboyContext` 现在支持复写 `app` 和 `config` 字段的类型
+* `Context` 取消在 `AstroboyContext` 中公开，只在继承链路中可见
 
 #### 1.0.1-rc.20
 * 支持DI多重继承的能力
 
 #### 1.0.1-rc.18
-* 修复astroboy-router的一个兼容问题
-* 移除@bonbons/di的定义输出，并修复部分接口
+* 修复 `astroboy-router` 的一个兼容问题
+* 移除 `@bonbons/di` 的定义输出，并修复部分接口
 
 #### 1.0.1-rc.15
 * 实现路由参数注入和类型安全映射
