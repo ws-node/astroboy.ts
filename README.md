@@ -213,7 +213,20 @@ export = buildRouter(TEST, "test", "/v1");
 
 ```
 
-> 注：rc.23版本以后已经支持自动生成router，不需再要上述步骤
+> 注：rc.27版本以后已经支持自动生成router，不需再要上述步骤，操作如下：
+##### 1. 配置 `init.ts`
+```typescript
+const { preInitFn } = require("astroboy.ts");
+
+preInitFn({
+  // 项目路由前缀，自己控制吧
+  routerRoot: "/v1",
+  // 打开强制更新(默认`false`)，每次启动都会删掉routers重建，自己控制吧
+  routerAlwaysBuild: true
+});
+```
+##### 2. 调整启动命令
+在开发启动或者生产打包前确保执行 `./node_modules/.bin/ts-node init.ts` 即可
 
 到此一个完整的业务级别的router构造完成了。
 
