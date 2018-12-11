@@ -10,9 +10,9 @@ import {
 export function initRouters({
   ctorFolder: base = df.ctorFolder,
   routerFolder: routerBase = df.routerFolder,
-  routerAutoBuild: open = df.routerAutoBuild,
-  routerAlwaysBuild: always = df.routerAlwaysBuild,
-  routerRoot: root = df.routerRoot,
+  enabled: open = df.enabled,
+  always = df.always,
+  appRoot: root = df.appRoot,
   fileType = df.fileType
 }: Partial<InnerRouterOptions>) {
   if (open) {

@@ -6,7 +6,7 @@ const path_1 = tslib_1.__importDefault(require("path"));
 const rimraf_1 = tslib_1.__importDefault(require("rimraf"));
 const utils_1 = require("./utils");
 const router_options_1 = require("./configs/router.options");
-function initRouters({ ctorFolder: base = router_options_1.defaultRouterOptions.ctorFolder, routerFolder: routerBase = router_options_1.defaultRouterOptions.routerFolder, routerAutoBuild: open = router_options_1.defaultRouterOptions.routerAutoBuild, routerAlwaysBuild: always = router_options_1.defaultRouterOptions.routerAlwaysBuild, routerRoot: root = router_options_1.defaultRouterOptions.routerRoot, fileType = router_options_1.defaultRouterOptions.fileType }) {
+function initRouters({ ctorFolder: base = router_options_1.defaultRouterOptions.ctorFolder, routerFolder: routerBase = router_options_1.defaultRouterOptions.routerFolder, enabled: open = router_options_1.defaultRouterOptions.enabled, always = router_options_1.defaultRouterOptions.always, appRoot: root = router_options_1.defaultRouterOptions.appRoot, fileType = router_options_1.defaultRouterOptions.fileType }) {
     if (open) {
         const ctorPath = path_1.default.resolve(base);
         const routerPath = path_1.default.resolve(routerBase);

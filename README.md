@@ -229,9 +229,10 @@ import { preInitFn } from "astroboy.ts";
 
 preInitFn({
   // 项目路由前缀，自己控制吧
-  routerRoot: "/v1",
+  appRoot: "/v1",
+  enabled: true,
   // 打开强制更新(默认`false`)，每次启动都会删掉routers重建，自己控制吧
-  routerAlwaysBuild: true,
+  always: true,
   fileType: "ts"
 });
 ```
@@ -249,7 +250,7 @@ preInitFn({
 Server.Create(..., {
   ...
 })
-  .option(ROUTER_OPTIONS, { routerRoot: "/v1", routerAutoBuild: true })
+  .option(ROUTER_OPTIONS, { appRoot: "/v1", enabled: true })
   ...
 ```
 

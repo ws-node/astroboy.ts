@@ -15,11 +15,11 @@ import { ControllerConstructor } from "astroboy-router/dist/metadata";
 export declare function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string): (string | string[])[][];
 interface IPreProcess {
     /** 是否自动生成2.0的routers，默认：`false` */
-    routerAutoBuild: boolean;
+    enabled: boolean;
     /** 是否强制刷新2.0的routers，默认：`false` */
-    routerAlwaysBuild: boolean;
+    always: boolean;
     /** 整个项目的url前缀，默认：`'/'` */
-    routerRoot: string;
+    appRoot: string;
     /** 生成router文件的文件类型，默认：`'js'` */
     fileType: "js" | "ts";
 }
