@@ -8,6 +8,8 @@ function initRouters({ ctorFolder: base, routerFolder: routerBase, routerAutoBui
     if (open) {
         const ctorPath = path_1.default.resolve(base);
         const routerPath = path_1.default.resolve(routerBase);
+        if (!fs_1.default.existsSync(routerPath))
+            fs_1.default.mkdirSync(routerPath);
         checkRouterFolders({
             turn: 0,
             baseRouter: routerPath,
