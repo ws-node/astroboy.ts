@@ -228,28 +228,13 @@ export = buildRouter(TEST, "test", "/v1");
 
 > 注：1.0.1-rc.27版本以后已经支持自动生成router，不需再要上述步骤，有两种模式任选其一，操作如下：
 ##### 1. routers预处理模式
-- 配置根目录的 `init.ts` 文件
-```typescript
-import { preInitFn } from "astroboy.ts";
-
-preInitFn({
-  // 项目路由前缀，自己控制吧
-  appRoot: "/v1",
-  enabled: true,
-  // 打开强制更新(默认`false`)，每次启动都会删掉routers重建，自己控制吧
-  always: true,
-  fileType: "ts"
-});
-```
-- 调整启动命令
-
+- 使用 `astroboy.ts` 提供的命令行工具
 ```bash
 # 在开发启动或者生产打包前确保执行即可
-
-./node_modules/.bin/ts-node init.ts
+../node_modules/.bin/astt router --always --filetype ts
 ```
 
-##### 2. 动态初始化
+##### 2. 动态初始化(不推荐)
 - 配置 `app/app.ts` 文件 (但是在删除控制器后，需要手动删除routers中多余的文件)
 ```typescript
 Server.Create(..., {
