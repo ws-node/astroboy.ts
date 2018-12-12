@@ -85,6 +85,7 @@ class Server {
         this.option(configs_1.ENV, configs_1.defaultEnv);
         this.option(configs_1.JSON_RESULT_OPTIONS, configs_1.defaultJsonResultOptions);
         this.option(typed_serialize_options_1.STATIC_RESOLVER, typed_serializer_1.TypedSerializer);
+        this.option(configs_1.ROUTER_OPTIONS, configs_1.defaultRouterOptions);
     }
     initInjections() {
         this.scoped(AstroboyContext_1.AstroboyContext);

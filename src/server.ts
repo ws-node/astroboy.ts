@@ -21,7 +21,8 @@ import {
   defaultJsonResultOptions,
   JSON_RESULT_OPTIONS,
   InnerRouterOptions,
-  ROUTER_OPTIONS
+  ROUTER_OPTIONS,
+  defaultRouterOptions
 } from "./configs";
 import {
   RealConfigCollection,
@@ -321,6 +322,7 @@ export class Server {
     this.option(ENV, defaultEnv);
     this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
     this.option(STATIC_RESOLVER, TypedSerializer);
+    this.option(ROUTER_OPTIONS, defaultRouterOptions);
   }
 
   private initInjections() {
