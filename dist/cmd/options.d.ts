@@ -3,6 +3,7 @@ export interface ICmdOptions {
     always?: boolean;
     filetype?: string;
     approot?: string;
+    tsconfig?: string;
 }
 export declare const options: {
     name: string;

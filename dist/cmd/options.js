@@ -10,6 +10,7 @@ exports.options = {
         ["--always [isAlways]", "set routers-always-rebuild"],
         ["--filetype [fileType]", "set routers fileType"],
         ["--approot [appRoot]", "set routers-root"],
+        ["--tsconfig [tsconfig]", "set tsconfig.json"],
     ],
     action: actions_1.default,
     help: () => {
