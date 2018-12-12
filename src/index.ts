@@ -47,8 +47,9 @@ interface IPreProcess {
  *   routerRoot: root = defaultEnv.routerRoot
  * }
  */
-export function preInitFn(configs: Partial<IPreProcess>) {
-  return initRouters(configs);
+export function preInitFn(configs: Partial<IPreProcess>): void;
+export function preInitFn(configs: Partial<IPreProcess>, inEnd?) {
+  return initRouters(configs, inEnd);
 }
 
 

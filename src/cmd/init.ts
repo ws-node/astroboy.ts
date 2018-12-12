@@ -20,8 +20,8 @@ preInitFn({
   routerFolder: ROUTER_PATH
 }, ({ routers, error }) => {
   if (error) {
-    throw error;
+    console.log(error);
   } else {
-    console.log(routers);
+    console.log(JSON.stringify(routers, null, " "));
   }
 });

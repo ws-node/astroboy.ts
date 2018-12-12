@@ -1,3 +1,4 @@
+import path from "path";
 import { ICmdOptions } from "./options";
 import { exec } from "child_process";
 import chalk from "chalk";
@@ -5,13 +6,29 @@ import chalk from "chalk";
 export = function (_, command: ICmdOptions) {
   try {
     const tsnode = require.resolve("ts-node");
-    console.log(chalk.blue("Start building routers ****** "));
-    exec(`node -r ${tsnode.replace("/dist/index.js", "")}/register ./init`, (error) => {
+    const astroboy_ts = require.resolve("astroboy.ts");
+    console.log(chalk.cyan("Start building routers ****** "));
+    exec(`node -r ${tsnode.replace("/dist/index.js", "")}/register ${astroboy_ts.replace("/index.js", "/cmd/init")}`, {
+      env: {
+        CTOR_PATH: path.resolve(process.cwd(), "app/controllers"),
+        ROUTER_PATH: path.resolve(process.cwd(), "app/routers"),
+        ASTT_ENABLED: command.enabled === undefined ? "true" : String(String(command.enabled) === "true"),
+        ASTT_ALWAYS: String(String(command.always) === "true"),
+        APP_ROOT: command.approot || "/",
+        FILE_TYPE: command.filetype || "js"
+      },
+    }, (error, stdout, stderr) => {
       if (error) {
         console.log(chalk.yellow("初始化routers失败"));
         console.log(error);
         return;
       }
+      if (stderr) {
+        console.log(chalk.yellow("初始化routers失败"));
+        console.log(stderr);
+        return;
+      }
+      console.log(chalk.blue(stdout));
       console.log(chalk.green("初始化routers完成"));
     });
   } catch (e) {

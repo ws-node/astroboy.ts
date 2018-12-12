@@ -1,17 +1,34 @@
 "use strict";
 const tslib_1 = require("tslib");
+const path_1 = tslib_1.__importDefault(require("path"));
 const child_process_1 = require("child_process");
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
 module.exports = function (_, command) {
     try {
         const tsnode = require.resolve("ts-node");
-        console.log(chalk_1.default.blue("Start building routers ****** "));
-        child_process_1.exec(`node -r ${tsnode.replace("/dist/index.js", "")}/register ./init`, (error) => {
+        const astroboy_ts = require.resolve("astroboy.ts");
+        console.log(chalk_1.default.cyan("Start building routers ****** "));
+        child_process_1.exec(`node -r ${tsnode.replace("/dist/index.js", "")}/register ${astroboy_ts.replace("/index.js", "/cmd/init")}`, {
+            env: {
+                CTOR_PATH: path_1.default.resolve(process.cwd(), "app/controllers"),
+                ROUTER_PATH: path_1.default.resolve(process.cwd(), "app/routers"),
+                ASTT_ENABLED: command.enabled === undefined ? "true" : String(String(command.enabled) === "true"),
+                ASTT_ALWAYS: String(String(command.always) === "true"),
+                APP_ROOT: command.approot || "/",
+                FILE_TYPE: command.filetype || "js"
+            },
+        }, (error, stdout, stderr) => {
             if (error) {
                 console.log(chalk_1.default.yellow("初始化routers失败"));
                 console.log(error);
                 return;
             }
+            if (stderr) {
+                console.log(chalk_1.default.yellow("初始化routers失败"));
+                console.log(stderr);
+                return;
+            }
+            console.log(chalk_1.default.blue(stdout));
             console.log(chalk_1.default.green("初始化routers完成"));
         });
     }

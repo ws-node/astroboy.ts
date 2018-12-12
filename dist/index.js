@@ -26,20 +26,8 @@ function buildRouter(ctor, name, root) {
     return result;
 }
 exports.buildRouter = buildRouter;
-/**
- * ## astroboy.ts 预处理函数
- * * 硬核初始化routers
- * @description
- * @author Big Mogician
- * @export
- * @param {Partial<IPreProcess>} {
- *   routerAutoBuild: open = defaultEnv.routerAutoBuild,
- *   routerAlwaysBuild: always = defaultEnv.routerAlwaysBuild,
- *   routerRoot: root = defaultEnv.routerRoot
- * }
- */
-function preInitFn(configs) {
-    return builders_1.initRouters(configs);
+function preInitFn(configs, inEnd) {
+    return builders_1.initRouters(configs, inEnd);
 }
 exports.preInitFn = preInitFn;
 tslib_1.__exportStar(require("astroboy-router"), exports);
