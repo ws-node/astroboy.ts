@@ -1,3 +1,3 @@
 import { ICmdOptions } from "./options";
-declare const _default: (command: ICmdOptions) => void;
+declare const _default: (_: any, command: ICmdOptions) => void;
 export = _default;

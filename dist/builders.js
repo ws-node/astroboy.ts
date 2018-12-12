@@ -6,33 +6,42 @@ const path_1 = tslib_1.__importDefault(require("path"));
 const rimraf_1 = tslib_1.__importDefault(require("rimraf"));
 const utils_1 = require("./utils");
 const router_options_1 = require("./configs/router.options");
-function initRouters({ ctorFolder: base = router_options_1.defaultRouterOptions.ctorFolder, routerFolder: routerBase = router_options_1.defaultRouterOptions.routerFolder, enabled: open = router_options_1.defaultRouterOptions.enabled, always = router_options_1.defaultRouterOptions.always, appRoot: root = router_options_1.defaultRouterOptions.appRoot, fileType = router_options_1.defaultRouterOptions.fileType }) {
+function initRouters({ ctorFolder: base = router_options_1.defaultRouterOptions.ctorFolder, routerFolder: routerBase = router_options_1.defaultRouterOptions.routerFolder, enabled: open = router_options_1.defaultRouterOptions.enabled, always = router_options_1.defaultRouterOptions.always, appRoot: root = router_options_1.defaultRouterOptions.appRoot, fileType = router_options_1.defaultRouterOptions.fileType }, onEnd) {
     if (open) {
-        const ctorPath = path_1.default.resolve(base);
-        const routerPath = path_1.default.resolve(routerBase);
-        if (always) {
-            // 硬核开关，强撸routers文件夹
-            rimraf_1.default.sync(routerPath);
-            fs_1.default.mkdirSync(routerPath);
+        try {
+            const routers = {};
+            const ctorPath = path_1.default.resolve(base);
+            const routerPath = path_1.default.resolve(routerBase);
+            if (always) {
+                // 硬核开关，强撸routers文件夹
+                rimraf_1.default.sync(routerPath);
+                fs_1.default.mkdirSync(routerPath);
+            }
+            else if (!fs_1.default.existsSync(routerPath)) {
+                fs_1.default.mkdirSync(routerPath);
+            }
+            checkRouterFolders({
+                turn: 0,
+                baseRouter: routerPath,
+                folders: fs_1.default.readdirSync(ctorPath),
+                ctorPath,
+                routerPath,
+                fileType,
+                routers,
+                root
+            });
+            onEnd && onEnd({ routers });
         }
-        else if (!fs_1.default.existsSync(routerPath)) {
-            fs_1.default.mkdirSync(routerPath);
+        catch (e) {
+            onEnd && onEnd({ error: e });
         }
-        checkRouterFolders({
-            turn: 0,
-            baseRouter: routerPath,
-            folders: fs_1.default.readdirSync(ctorPath),
-            ctorPath,
-            routerPath,
-            fileType,
-            root
-        });
     }
 }
 exports.initRouters = initRouters;
-function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, fileType, root }) {
+function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, fileType, root, routers }) {
     folders.forEach(path => {
         if (path.indexOf(".") === -1) {
+            routers[path] = {};
             const routerFolder = `${routerPath}/${path}`;
             const ctorFolder = `${ctorPath}/${path}`;
             if (!fs_1.default.existsSync(routerFolder)) {
@@ -45,20 +54,21 @@ function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, f
                 ctorPath: ctorFolder,
                 routerPath: routerFolder,
                 fileType,
+                routers: routers[path],
                 root
             });
         }
         else {
             if (checkIfOnlyDeclares(path))
                 return;
-            createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot: root });
+            createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot: root, routers });
         }
     });
 }
 function checkIfOnlyDeclares(p) {
     return p.endsWith(".d.ts");
 }
-function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot }) {
+function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot, routers }) {
     try {
         // 尝试按照新版逻辑解析Controller
         const commonName = path.split(".")[0];
@@ -81,6 +91,7 @@ function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, file
         }
         // 复写router.js文件
         fs_1.default.appendFileSync(_PATH, file.join("\n"), { flag: "w" });
+        routers[`${commonName}.${fileType}`] = "success";
     }
     catch (e) {
         throw e;

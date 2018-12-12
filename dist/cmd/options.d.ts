@@ -9,6 +9,6 @@ export declare const options: {
     name: string;
     description: string;
     options: string[][];
-    action: (command: ICmdOptions) => void;
+    action: (_: any, command: ICmdOptions) => void;
     help: () => void;
 };

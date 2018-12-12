@@ -7,6 +7,10 @@ import {
   defaultRouterOptions as df
 } from "./configs/router.options";
 
+interface IRouter {
+  [prop: string]: string | IRouter;
+}
+
 export function initRouters({
   ctorFolder: base = df.ctorFolder,
   routerFolder: routerBase = df.routerFolder,
@@ -14,30 +18,39 @@ export function initRouters({
   always = df.always,
   appRoot: root = df.appRoot,
   fileType = df.fileType
-}: Partial<InnerRouterOptions>) {
+}: Partial<InnerRouterOptions>,
+  onEnd?: (data: { routers?: IRouter, error?: Error }) => void
+) {
   if (open) {
-    const ctorPath = path.resolve(base);
-    const routerPath = path.resolve(routerBase);
-    if (always) {
-      // 硬核开关，强撸routers文件夹
-      rimraf.sync(routerPath);
-      fs.mkdirSync(routerPath);
-    } else if (!fs.existsSync(routerPath)) {
-      fs.mkdirSync(routerPath);
+    try {
+      const routers: IRouter = {};
+      const ctorPath = path.resolve(base);
+      const routerPath = path.resolve(routerBase);
+      if (always) {
+        // 硬核开关，强撸routers文件夹
+        rimraf.sync(routerPath);
+        fs.mkdirSync(routerPath);
+      } else if (!fs.existsSync(routerPath)) {
+        fs.mkdirSync(routerPath);
+      }
+      checkRouterFolders({
+        turn: 0,
+        baseRouter: routerPath,
+        folders: fs.readdirSync(ctorPath),
+        ctorPath,
+        routerPath,
+        fileType,
+        routers,
+        root
+      });
+      onEnd && onEnd({ routers });
+    } catch (e) {
+      onEnd && onEnd({ error: e });
     }
-    checkRouterFolders({
-      turn: 0,
-      baseRouter: routerPath,
-      folders: fs.readdirSync(ctorPath),
-      ctorPath,
-      routerPath,
-      fileType,
-      root
-    });
   }
 }
 
-function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, fileType, root }: {
+function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, fileType, root, routers }: {
   turn: number;
   baseRouter: string;
   folders: string[];
@@ -45,9 +58,11 @@ function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, f
   routerPath: string;
   fileType: string;
   root: string;
+  routers: IRouter;
 }) {
   folders.forEach(path => {
     if (path.indexOf(".") === -1) {
+      routers[path] = {};
       const routerFolder = `${routerPath}/${path}`;
       const ctorFolder = `${ctorPath}/${path}`;
       if (!fs.existsSync(routerFolder)) { fs.mkdirSync(routerFolder); }
@@ -58,12 +73,13 @@ function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, f
         ctorPath: ctorFolder,
         routerPath: routerFolder,
         fileType,
+        routers: <IRouter>routers[path],
         root
       });
     }
     else {
       if (checkIfOnlyDeclares(path)) return;
-      createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot: root });
+      createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot: root, routers });
     }
   });
 }
@@ -72,7 +88,7 @@ function checkIfOnlyDeclares(p: string): any {
   return p.endsWith(".d.ts");
 }
 
-function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot }: {
+function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot, routers }: {
   turn: number;
   baseRouter: string;
   ctorPath: string;
@@ -80,6 +96,7 @@ function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, file
   path: string;
   fileType: string;
   urlRoot: string;
+  routers: IRouter;
 }) {
   try {
     // 尝试按照新版逻辑解析Controller
@@ -100,6 +117,7 @@ function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, file
     }
     // 复写router.js文件
     fs.appendFileSync(_PATH, file.join("\n"), { flag: "w" });
+    routers[`${commonName}.${fileType}`] = "success";
   } catch (e) {
     throw e;
   }

@@ -1,26 +1,26 @@
-import path from "path";
 import { ICmdOptions } from "./options";
-import tsnode from "ts-node";
+import { exec } from "child_process";
 import chalk from "chalk";
 
-export = function (command: ICmdOptions) {
-  if (!tsnode) {
-    console.log(chalk.red("ts-node is not found."));
-    return;
+export = function (_, command: ICmdOptions) {
+  try {
+    const tsnode = require.resolve("ts-node");
+    console.log(chalk.blue("Start building routers ****** "));
+    exec(`node -r ${tsnode.replace("/dist/index.js", "")}/register ./init`, (error) => {
+      if (error) {
+        console.log(chalk.yellow("初始化routers失败"));
+        console.log(error);
+        return;
+      }
+      console.log(chalk.green("初始化routers完成"));
+    });
+  } catch (e) {
+    console.log(chalk.yellow("初始化routers失败"));
+    if (((<Error>e).message || "").includes("ts-node")) {
+      console.log(chalk.red("请安装ts-node"));
+      return;
+    }
+    throw e;
   }
-  const projectRoot = process.cwd();
-  const controllerPath = path.resolve(projectRoot, "app/controllers");
-  const routersPath = path.resolve(projectRoot, "app/routers");
-  const enabled = command.enabled === undefined ? true : String(command.enabled) === "true";
-  process.env.CTOR_PATH = controllerPath;
-  process.env.ROUTER_PATH = routersPath;
-  process.env.ASTT_ENABLED = String(enabled);
-  process.env.ASTT_ALWAYS = String(command.always);
-  process.env.APP_ROOT = command.approot || "/";
-  process.env.FILE_TYPE = command.filetype || "js";
-  tsnode.register({
-    project: command.tsconfig || undefined
-  });
-  require("./init");
 };
 

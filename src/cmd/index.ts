@@ -1,5 +1,4 @@
 import commander from "commander";
-import chalk from "chalk";
 import { options } from "./options";
 
 function initCommand() {
@@ -12,23 +11,13 @@ function initCommand() {
     }
   }
   program.action(options.action).on("--help", options.help);
+  return program;
 }
 
-initCommand();
-
-commander
-  .version("1.0.0-rc.1");
-
-commander
-  .command("*")
-  .action((commandName) => {
-    console.log(arguments);
-    console.log(chalk.red(`cmd [${commandName}] is not exist.`));
-  });
-
-commander
+const program = initCommand()
+  .version("1.0.0-rc.1")
   .parse(process.argv);
 
-if (commander.args.length === 0) {
-  commander.outputHelp();
+if (program.args.length === 0) {
+  program.outputHelp();
 }

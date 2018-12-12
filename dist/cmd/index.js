@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const commander_1 = tslib_1.__importDefault(require("commander"));
-const chalk_1 = tslib_1.__importDefault(require("chalk"));
 const options_1 = require("./options");
 function initCommand() {
     const program = commander_1.default
@@ -14,19 +13,12 @@ function initCommand() {
         }
     }
     program.action(options_1.options.action).on("--help", options_1.options.help);
+    return program;
 }
-initCommand();
-commander_1.default
-    .version("1.0.0-rc.1");
-commander_1.default
-    .command("*")
-    .action((commandName) => {
-    console.log(arguments);
-    console.log(chalk_1.default.red(`cmd [${commandName}] is not exist.`));
-});
-commander_1.default
+const program = initCommand()
+    .version("1.0.0-rc.1")
     .parse(process.argv);
-if (commander_1.default.args.length === 0) {
-    commander_1.default.outputHelp();
+if (program.args.length === 0) {
+    program.outputHelp();
 }
 //# sourceMappingURL=index.js.map

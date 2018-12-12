@@ -9,6 +9,7 @@ const {
   FILE_TYPE
 } = process.env;
 
+// @ts-ignore
 preInitFn({
   enabled: ASTT_ENABLED === "true",
   always: ASTT_ALWAYS === "true",
@@ -17,4 +18,10 @@ preInitFn({
   // @ts-ignore
   ctorFolder: CTOR_PATH,
   routerFolder: ROUTER_PATH
+}, ({ routers, error }) => {
+  if (error) {
+    throw error;
+  } else {
+    console.log(routers);
+  }
 });
