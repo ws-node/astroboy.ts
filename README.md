@@ -2,7 +2,8 @@
 > 基于[astroboy](https://github.com/astroboy-lab/astroboy)的DI版本，TypeScript3.2信仰加成
 
 [![Build Status](https://travis-ci.org/ws-node/astroboy.ts.svg?branch=master)](https://travis-ci.org/ws-node/astroboy.ts)
-[![package version](https://badge.fury.io/js/astroboy.ts.svg)](https://badge.fury.io/js/astroboy.ts.svg)
+<!-- [![package version](https://badge.fury.io/js/astroboy.ts.svg)](https://badge.fury.io/js/astroboy.ts.svg) -->
+[![npm version](https://www.npmjs.com/package/astroboy.ts)](https://www.npmjs.com/package/astroboy.ts)
 
 
 ### 已经实现的功能
