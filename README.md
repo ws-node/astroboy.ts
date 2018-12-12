@@ -1,9 +1,9 @@
 # 🌟astroboy.ts
 > 基于[astroboy](https://github.com/astroboy-lab/astroboy)的DI版本，TypeScript3.2信仰加成
 
-[![Build Status](https://travis-ci.org/ws-node/astroboy.ts.svg?branch=master)](https://travis-ci.org/ws-node/astroboy.ts)
-<!-- [![package version](https://badge.fury.io/js/astroboy.ts.svg)](https://badge.fury.io/js/astroboy.ts.svg) -->
-[![npm version](https://www.npmjs.com/package/astroboy.ts)](https://www.npmjs.com/package/astroboy.ts)
+[![NPM][npm-icon]][npm-url]
+
+[![Build status][ci-image]][ci-url]
 
 
 ### 已经实现的功能
@@ -368,3 +368,8 @@ export = () => injectScope(async ({ injector, configs, ctx, next }) => {
 ```
 
 > 文档完善中...
+
+[npm-icon]: https://nodei.co/npm/astroboy.ts.svg?downloads=true
+[npm-url]: https://npmjs.org/package/astroboy.ts
+[ci-image]: https://travis-ci.org/ws-node/astroboy.ts.svg?branch=master
+[ci-url]: https://travis-ci.org/ws-node/astroboy.ts
