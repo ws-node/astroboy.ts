@@ -14,6 +14,7 @@
 * DI可注入依赖实现多重继承
 * 配置容器对接astroboy标准configs模式
 * 自动化生成astroboy的routers规范
+* 命令行工具支持
 * 完整兼容astroboy原始语义，支持任意扩展
 * 支持完整依赖注入能力的高级中间件
 * 路由方法返回配置接口化
@@ -31,6 +32,9 @@
 * [Interfaces](https://github.com/ws-node/astroboy.ts/wiki/Interfaces) - 公开接口列表
 
 ### 迭代记录
+
+#### 1.0.2-rc.5
+* routers-cli工具已加入
 
 #### 1.0.2-rc.1
 * 锁定1.02功能，开始新一轮rc
