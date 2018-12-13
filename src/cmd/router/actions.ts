@@ -4,6 +4,7 @@ import { exec } from "child_process";
 import chalk from "chalk";
 
 export = function (_, command: IRouterCmdOptions) {
+  if (_ !== "router") return;
   try {
     const tsnode = require.resolve("ts-node");
     const astroboy_ts = require.resolve("astroboy.ts");

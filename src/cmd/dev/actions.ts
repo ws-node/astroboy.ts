@@ -6,7 +6,7 @@ import { IDevCmdOptions } from "./options";
 import { exec } from "child_process";
 
 function getProjectConfig() {
-  const filePath = this.getProjectRoot() + "/ast.json";
+  const filePath = process.cwd() + "/ast.json";
   if (fs.existsSync(filePath)) {
     return require(filePath);
   }
@@ -14,6 +14,7 @@ function getProjectConfig() {
 }
 
 export = function (_, command: IDevCmdOptions) {
+  if (_ !== "dev") return;
   const projectRoot = process.cwd();
   if (!command.ts && !fs.existsSync(`${projectRoot}/app/app.js`)) {
     console.log(chalk.red(`当前项目不存在文件 ${projectRoot}/app/app.js`));

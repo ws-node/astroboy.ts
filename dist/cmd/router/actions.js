@@ -4,6 +4,8 @@ const path_1 = tslib_1.__importDefault(require("path"));
 const child_process_1 = require("child_process");
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
 module.exports = function (_, command) {
+    if (_ !== "router")
+        return;
     try {
         const tsnode = require.resolve("ts-node");
         const astroboy_ts = require.resolve("astroboy.ts");

@@ -13,7 +13,6 @@ function initCommand(plugin: CommandPlugin) {
     }
   }
   program.action(plugin.action).on("--help", plugin.help);
-  return program;
 }
 
 [DevPlugin, RouterPlugin].forEach(i => initCommand(i));

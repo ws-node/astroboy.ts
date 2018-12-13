@@ -6,13 +6,15 @@ const nodemon_1 = tslib_1.__importDefault(require("nodemon"));
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
 const child_process_1 = require("child_process");
 function getProjectConfig() {
-    const filePath = this.getProjectRoot() + "/ast.json";
+    const filePath = process.cwd() + "/ast.json";
     if (fs_1.default.existsSync(filePath)) {
         return require(filePath);
     }
     return {};
 }
 module.exports = function (_, command) {
+    if (_ !== "dev")
+        return;
     const projectRoot = process.cwd();
     if (!command.ts && !fs_1.default.existsSync(`${projectRoot}/app/app.js`)) {
         console.log(chalk_1.default.red(`当前项目不存在文件 ${projectRoot}/app/app.js`));

@@ -14,7 +14,6 @@ function initCommand(plugin) {
         }
     }
     program.action(plugin.action).on("--help", plugin.help);
-    return program;
 }
 [dev_1.DevPlugin, router_1.RouterPlugin].forEach(i => initCommand(i));
 commander_1.default.version("1.0.0-rc.1")
