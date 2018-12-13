@@ -1,6 +1,7 @@
 import camel from "camelcase";
 import decamel from "decamelize";
 import reduce from "lodash/reduce";
+import set from "lodash/set";
 import isPlainObject from "lodash/isPlainObject";
 import { IResult, IResultScope } from "../typings/IResult";
 import { JsonResultOptions, JSON_RESULT_OPTIONS } from "../configs/json.options";
@@ -19,12 +20,18 @@ export class JsonResult implements IResult {
    * @memberof JsonResult
    */
   toResult({ configs }: IResultScope): string {
-    const { format, whiteSpace: b, keyResolver: r } = {
+    const { format, whiteSpace: b, keyResolver: r, jsonTemplate: tpl, jsonTplKey: tplKey } = {
       ...configs.get(JSON_RESULT_OPTIONS),
       ...this.configs
     };
+    let value = this.value || {};
+    if (tpl) {
+      const n = { ...tpl };
+      if (tplKey) set(n, tplKey, value);
+      value = n;
+    }
     return JSON.stringify(
-      !r ? (this.value || {}) : resolveKeys(r, this.value || {}),
+      !r ? value : resolveKeys(r, value),
       null,
       decideWhiteSpace(format, b)
     );

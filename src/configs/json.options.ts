@@ -14,12 +14,18 @@ export interface JsonResultOptions {
   whiteSpace: 0 | 1 | 2 | 4;
   /** 对象键值处理函数 - 默认：`undefined` */
   keyResolver?: (key: string) => string;
+  /** json模板 - 默认：`undefined` */
+  jsonTemplate?: { [prop: string]: any; };
+  /** json模板上写入内容的字段位置 - 默认：`undefined` */
+  jsonTplKey?: string;
 }
 
 export const defaultJsonResultOptions: JsonResultOptions = {
   format: false,
   whiteSpace: 2,
-  keyResolver: undefined
+  keyResolver: undefined,
+  jsonTemplate: undefined,
+  jsonTplKey: undefined
 };
 
 export const JSON_RESULT_OPTIONS = createOptions<JsonResultOptions>("JSON_RESULT_OPTIONS");

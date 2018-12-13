@@ -4,6 +4,7 @@ const tslib_1 = require("tslib");
 const camelcase_1 = tslib_1.__importDefault(require("camelcase"));
 const decamelize_1 = tslib_1.__importDefault(require("decamelize"));
 const reduce_1 = tslib_1.__importDefault(require("lodash/reduce"));
+const set_1 = tslib_1.__importDefault(require("lodash/set"));
 const isPlainObject_1 = tslib_1.__importDefault(require("lodash/isPlainObject"));
 const json_options_1 = require("../configs/json.options");
 class JsonResult {
@@ -21,8 +22,15 @@ class JsonResult {
      * @memberof JsonResult
      */
     toResult({ configs }) {
-        const { format, whiteSpace: b, keyResolver: r } = Object.assign({}, configs.get(json_options_1.JSON_RESULT_OPTIONS), this.configs);
-        return JSON.stringify(!r ? (this.value || {}) : resolveKeys(r, this.value || {}), null, decideWhiteSpace(format, b));
+        const { format, whiteSpace: b, keyResolver: r, jsonTemplate: tpl, jsonTplKey: tplKey } = Object.assign({}, configs.get(json_options_1.JSON_RESULT_OPTIONS), this.configs);
+        let value = this.value || {};
+        if (tpl) {
+            const n = Object.assign({}, tpl);
+            if (tplKey)
+                set_1.default(n, tplKey, value);
+            value = n;
+        }
+        return JSON.stringify(!r ? value : resolveKeys(r, value), null, decideWhiteSpace(format, b));
     }
 }
 exports.JsonResult = JsonResult;
