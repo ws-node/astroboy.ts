@@ -1,4 +1,4 @@
-import { APIFactory } from "astroboy-router/dist/decorators/route.factory";
+import { APIFactory, CustomRouteFactory } from "astroboy-router/dist/decorators/route.factory";
 import { METHOD, IRouteFactory, IRouter } from "astroboy-router/dist/metadata";
 import { tryGetRouter } from "astroboy-router/dist/decorators/utils";
 import { getMethodParamsType } from "../utils";
@@ -99,6 +99,31 @@ function resolveParamType(type?: any) {
 function addMagicForRoute(method: METHOD, path: string): IRouteFactory {
   return function route_magic<T>(prototype: T, propKey: string, descriptor?: PropertyDescriptor) {
     APIFactory(method, path)(prototype, propKey, descriptor);
+  };
+}
+
+/**
+ * 最高扩展性的路由声明
+ * * 使用这个扩展工厂构造Route声明
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {{
+ *   method: METHOD;
+ *   tpls: string[];
+ *   name?: string;
+ *   isIndex?: boolean;
+ * }} configs
+ * @returns
+ */
+export function __BASE_ROUTE_DECO_FACTORY(configs: {
+  method: METHOD;
+  tpls: string[];
+  name?: string;
+  isIndex?: boolean;
+}) {
+  return function __route_custom<T>(prototype: T, propKey: string, descriptor?: PropertyDescriptor) {
+    return CustomRouteFactory(configs)(prototype, propKey, descriptor);
   };
 }
 

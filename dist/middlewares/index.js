@@ -7,24 +7,6 @@ const configs_1 = require("../configs");
 const Configs_1 = require("../services/Configs");
 const Scope_1 = require("../services/Scope");
 /**
- * 创建具有依赖注入能力的中间件
- * @description
- * @author Big Mogician
- * @export
- * @template T extends IContext
- * @param {((bunddle: IMiddlewaresScope, ctx: T, next: () => Promise<void>) => void | Promise<void>)} middleware
- * @returns
- */
-function createMiddleware(middleware) {
-    return (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, function* () {
-        const scopeId = utils_1.getScopeId(ctx);
-        const configs = utils_1.GlobalDI.get(Configs_1.Configs, scopeId);
-        const injector = utils_1.GlobalDI.get(Injector_1.InjectService, scopeId);
-        yield middleware({ injector, configs, ctx, next });
-    });
-}
-exports.injectScope = createMiddleware;
-/**
  * ## astroboy.ts初始化中间件
  * * 请确保此中间件的优先级足够高
  * * 建议优先级<1
@@ -54,4 +36,6 @@ exports.serverInit = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, func
         injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
     }
 });
+var core_1 = require("./core");
+exports.injectScope = core_1.createMiddleware;
 //# sourceMappingURL=index.js.map

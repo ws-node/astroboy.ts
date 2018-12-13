@@ -9,6 +9,7 @@ exports.GET = route_1.GET;
 exports.POST = route_1.POST;
 exports.PUT = route_1.PUT;
 exports.DELETE = route_1.DELETE;
+exports.__BASE_ROUTE_DECO_FACTORY = route_1.__BASE_ROUTE_DECO_FACTORY;
 exports.FromParams = route_1.FromParams;
 exports.FromBody = route_1.FromBody;
 //# sourceMappingURL=index.js.map

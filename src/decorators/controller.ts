@@ -1,6 +1,6 @@
 import { Constructor, IBaseInjectable } from "@bonbons/di";
 import { Router } from "astroboy-router";
-import { createInstance, GlobalImplements, getInjector, getShortScopeId, setColor } from "../utils";
+import { createInstance, GlobalImplements, getInjector } from "../utils";
 import { InjectService } from "../services/Injector";
 import { Context } from "../services/Context";
 import { ICommonResultType, IResult } from "../typings/IResult";

@@ -63,6 +63,26 @@ function addMagicForRoute(method, path) {
         route_factory_1.APIFactory(method, path)(prototype, propKey, descriptor);
     };
 }
+/**
+ * 最高扩展性的路由声明
+ * * 使用这个扩展工厂构造Route声明
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {{
+ *   method: METHOD;
+ *   tpls: string[];
+ *   name?: string;
+ *   isIndex?: boolean;
+ * }} configs
+ * @returns
+ */
+function __BASE_ROUTE_DECO_FACTORY(configs) {
+    return function __route_custom(prototype, propKey, descriptor) {
+        return route_factory_1.CustomRouteFactory(configs)(prototype, propKey, descriptor);
+    };
+}
+exports.__BASE_ROUTE_DECO_FACTORY = __BASE_ROUTE_DECO_FACTORY;
 function GET(path) {
     return addMagicForRoute("GET", path);
 }

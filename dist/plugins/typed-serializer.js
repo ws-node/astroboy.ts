@@ -3,6 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cerialize_1 = require("cerialize");
 exports.Extends = cerialize_1.inheritSerialization;
 const utils_1 = require("../utils");
+/**
+ * 内建静态类型序列化工具类
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class TypedSerializerCreator
+ * @implements {IStaticTypedResolver}
+ */
 class TypedSerializerCreator {
     ToJSON(obj, options) {
         if (options === undefined)
@@ -26,7 +34,7 @@ class TypedSerializerCreator {
     }
 }
 exports.TypedSerializerCreator = TypedSerializerCreator;
-/** Bonbons built-in static type contract serialization tool (based on cerialize) */
+/** 内建静态类型序列化工具 (based on cerialize) */
 exports.TypedSerializer = new TypedSerializerCreator();
 function SerializeDefine(...args) {
     return function serialize_define(target, propKey, descriptor) {

@@ -33,6 +33,9 @@
 
 ### 迭代记录
 
+#### 1.0.2-rc.18
+* 新增 `__BASE_ROUTE_DECO_FACTORY` 装饰器，为 `Route` 自定义提供最高扩展性
+
 #### 1.0.2-rc.16
 * astt cli工具已加入，支持生成routers
 
