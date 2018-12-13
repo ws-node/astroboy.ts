@@ -1,5 +1,6 @@
 import { CommandPlugin } from "../base";
 export interface IDevCmdOptions {
+    config: string;
     debug: string | boolean;
     env: string;
     port: number | string;

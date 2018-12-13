@@ -2,6 +2,7 @@ import fn from "./actions";
 import { CommandPlugin } from "../base";
 
 export interface IDevCmdOptions {
+  config: string;
   debug: string | boolean;
   env: string;
   port: number | string;
@@ -15,6 +16,7 @@ export const options: CommandPlugin = {
   name: "dev",
   description: "本地开发，开启后端服务",
   options: [
+    ["--config [atcConfig]", "使用自定义的atc.config.js配置文件"],
     ["--debug [debugName]", "开启 debug 模式"],
     ["--env [NODE_ENV]", "设置 NODE_ENV 环境变量，默认 development"],
     ["--port [NODE_PORT]", "设置 NODE_PORT 环境变量，默认 8201"],

@@ -24,9 +24,10 @@ export = function (_, command: IDevCmdOptions) {
     console.log(chalk.red(`当前项目不存在文件 ${projectRoot}/app/app.ts`));
     return;
   }
+  const fileName = command.config || "atc.config.js";
   let config: any;
   try {
-    config = require(path.resolve(projectRoot, "atc.config.js")) || {};
+    config = require(path.join(projectRoot, fileName)) || {};
   } catch (_) {
     config = {};
   }

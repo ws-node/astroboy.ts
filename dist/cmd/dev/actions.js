@@ -24,9 +24,10 @@ module.exports = function (_, command) {
         console.log(chalk_1.default.red(`当前项目不存在文件 ${projectRoot}/app/app.ts`));
         return;
     }
+    const fileName = command.config || "atc.config.js";
     let config;
     try {
-        config = require(path_1.default.resolve(projectRoot, "atc.config.js")) || {};
+        config = require(path_1.default.join(projectRoot, fileName)) || {};
     }
     catch (_) {
         config = {};
