@@ -7,6 +7,14 @@ import { Constructor } from "@bonbons/di";
 import { IStaticTypedResolver, IStaticSerializeOptions } from "../typings/IStaticTypeResolver";
 import { getPropertyType } from "../utils";
 
+/**
+ * 内建静态类型序列化工具类
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class TypedSerializerCreator
+ * @implements {IStaticTypedResolver}
+ */
 export class TypedSerializerCreator implements IStaticTypedResolver {
 
   public ToJSON<T = any>(obj: any, options?: Partial<IStaticSerializeOptions<T>>): string {
@@ -33,12 +41,42 @@ export class TypedSerializerCreator implements IStaticTypedResolver {
 
 }
 
-/** Bonbons built-in static type contract serialization tool (based on cerialize) */
+/** 内建静态类型序列化工具 (based on cerialize) */
 export const TypedSerializer = new TypedSerializerCreator();
 
+/**
+ * 定义一个静态类型字段的序列化行为
+ * @description
+ * @author Big Mogician
+ */
 function SerializeDefine();
+/**
+ * 定义一个静态类型字段的序列化行为
+ * * 字段名重映射
+ * @description
+ * @author Big Mogician
+ * @param {string} name 确定字段名称映射
+ */
 function SerializeDefine(name: string);
+/**
+ * 定义一个静态类型字段的序列化行为
+ * * 字段名重映射
+ * * 类型重映射
+ * @description
+ * @author Big Mogician
+ * @template T
+ * @param {string} name 确定字段名称映射
+ * @param {Constructor<T>} type 确定字段的实际类型
+ */
 function SerializeDefine<T>(name: string, type: Constructor<T>);
+/**
+ * 定义一个静态类型字段的序列化行为
+ * * 类型重映射
+ * @description
+ * @author Big Mogician
+ * @template T
+ * @param {Constructor<T>} type 确定字段的实际类型
+ */
 function SerializeDefine<T>(type: Constructor<T>);
 function SerializeDefine(...args: any[]) {
   return function serialize_define<M>(target: M, propKey: string, descriptor?: PropertyDescriptor) {
@@ -56,9 +94,39 @@ function SerializeDefine(...args: any[]) {
   };
 }
 
+/**
+ * 定义一个静态类型字段的反序列化行为
+ * @description
+ * @author Big Mogician
+ */
 function DeserializeDefine();
+/**
+ * 定义一个静态类型字段的
+ * * 字段名重映射
+ * @description
+ * @author Big Mogician
+ * @param {string} name 确定字段名称映射
+ */
 function DeserializeDefine(name: string);
+/**
+ * 定义一个静态类型字段的反序列化行为
+ * * 字段名重映射
+ * * 类型重映射
+ * @description
+ * @author Big Mogician
+ * @template T
+ * @param {string} name 确定字段名称映射
+ * @param {Constructor<T>} type 确定字段的实际类型
+ */
 function DeserializeDefine<T>(name: string, type: Constructor<T>);
+/**
+ * 定义一个静态类型字段的反序列化行为
+ * * 类型重映射
+ * @description
+ * @author Big Mogician
+ * @template T
+ * @param {Constructor<T>} type 确定字段的实际类型
+ */
 function DeserializeDefine<T>(type: Constructor<T>);
 function DeserializeDefine(...args: any[]) {
   return function deserialize_define<M>(target: M, propKey: string, descriptor?: PropertyDescriptor) {
