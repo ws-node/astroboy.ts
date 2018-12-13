@@ -6,6 +6,7 @@ export interface ICmdOptions {
   always?: boolean;
   filetype?: string;
   approot?: string;
+  details?: string;
   tsconfig?: string;
 }
 
@@ -18,6 +19,7 @@ export const options = {
     ["--filetype [fileType]", "set routers fileType"],
     ["--approot [appRoot]", "set routers-root"],
     ["--tsconfig [tsconfig]", "set tsconfig.json"],
+    ["--details [showRouters]", "show building results or not"],
   ],
   action: fn,
   help: () => {

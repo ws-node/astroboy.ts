@@ -11,6 +11,7 @@ exports.options = {
         ["--filetype [fileType]", "set routers fileType"],
         ["--approot [appRoot]", "set routers-root"],
         ["--tsconfig [tsconfig]", "set tsconfig.json"],
+        ["--details [showRouters]", "show building results or not"],
     ],
     action: actions_1.default,
     help: () => {

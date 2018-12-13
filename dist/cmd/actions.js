@@ -7,7 +7,6 @@ module.exports = function (_, command) {
     try {
         const tsnode = require.resolve("ts-node");
         const astroboy_ts = require.resolve("astroboy.ts");
-        process.env.__TSCONFIG = command.tsconfig || "_";
         console.log(chalk_1.default.cyan("Start building routers ****** "));
         const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
         const initFile = astroboy_ts.replace("/index.js", "/cmd/init");
@@ -18,7 +17,9 @@ module.exports = function (_, command) {
                 ASTT_ENABLED: command.enabled === undefined ? "true" : String(String(command.enabled) === "true"),
                 ASTT_ALWAYS: String(String(command.always) === "true"),
                 APP_ROOT: command.approot || "/",
-                FILE_TYPE: command.filetype || "js"
+                FILE_TYPE: command.filetype || "js",
+                SHOW_ROUTERS: String(String(command.details) === "true"),
+                __TSCONFIG: command.tsconfig || "_"
             },
         }, (error, stdout, stderr) => {
             if (error) {

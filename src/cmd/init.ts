@@ -6,7 +6,8 @@ const {
   ASTT_ENABLED,
   ASTT_ALWAYS,
   APP_ROOT,
-  FILE_TYPE
+  FILE_TYPE,
+  SHOW_ROUTERS
 } = process.env;
 
 // @ts-ignore
@@ -22,6 +23,6 @@ preInitFn({
   if (error) {
     console.log(error);
   } else {
-    console.log(JSON.stringify(routers, null, " "));
+    if (SHOW_ROUTERS === "true") console.log(JSON.stringify(routers, null, " "));
   }
 });

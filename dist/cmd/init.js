@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
-const { CTOR_PATH, ROUTER_PATH, ASTT_ENABLED, ASTT_ALWAYS, APP_ROOT, FILE_TYPE } = process.env;
+const { CTOR_PATH, ROUTER_PATH, ASTT_ENABLED, ASTT_ALWAYS, APP_ROOT, FILE_TYPE, SHOW_ROUTERS } = process.env;
 // @ts-ignore
 index_1.preInitFn({
     enabled: ASTT_ENABLED === "true",
@@ -16,7 +16,8 @@ index_1.preInitFn({
         console.log(error);
     }
     else {
-        console.log(JSON.stringify(routers, null, " "));
+        if (SHOW_ROUTERS === "true")
+            console.log(JSON.stringify(routers, null, " "));
     }
 });
 //# sourceMappingURL=init.js.map

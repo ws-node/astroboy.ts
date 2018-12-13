@@ -33,8 +33,9 @@
 
 ### 迭代记录
 
-#### 1.0.2-rc.21
-* `astt-cli` 新增tsconfig配置支持
+#### 1.0.2-rc.23
+* `astt-cli` 新增 `tsconfig` 配置支持
+* `astt-cli` 新增 `details` 配置支持
 
 #### 1.0.2-rc.20
 * `JsonResult` 内置了支持模板定制的能力
