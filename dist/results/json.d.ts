@@ -1,5 +1,5 @@
 import { IResult, IResultScope } from "../typings/IResult";
-import { JsonResultOptions } from "../configs/json.options";
+import { JsonResultOptions } from "../options";
 export declare class JsonResult implements IResult {
     private value;
     private configs?;

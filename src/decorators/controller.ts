@@ -7,7 +7,7 @@ import { ICommonResultType, IResult } from "../typings/IResult";
 import { IContext } from "../typings/IContext";
 import { Configs } from "../services/Configs";
 import { tryGetRouteMagic, RouteArgument } from "./route";
-import { STATIC_RESOLVER } from "../configs/typed-serialize.options";
+import { STATIC_RESOLVER } from "../options";
 import { IStaticTypedResolver } from "../typings/IStaticTypeResolver";
 
 declare module "koa" {

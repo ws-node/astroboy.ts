@@ -18,6 +18,10 @@ import {
 } from "@bonbons/di";
 import {
   ENV, defaultEnv,
+  CONFIG_VIEW,
+  defaultView
+} from "./configs";
+import {
   defaultJsonResultOptions,
   JSON_RESULT_OPTIONS,
   InnerRouterOptions,
@@ -25,15 +29,13 @@ import {
   defaultRouterOptions,
   RENDER_RESULT_OPTIONS,
   defaultRenderResultOptions,
-  CONFIG_VIEW,
-  defaultView
-} from "./configs";
+  STATIC_RESOLVER
+} from "./options";
 import {
   RealConfigCollection,
   ConfigToken,
   Configs
 } from "./services/Configs";
-import { STATIC_RESOLVER } from "./configs/typed-serialize.options";
 import { TypedSerializer } from "./plugins/typed-serializer";
 import { initRouters } from "./builders";
 

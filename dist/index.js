@@ -39,6 +39,7 @@ tslib_1.__exportStar(require("./services/BaseClass"), exports);
 tslib_1.__exportStar(require("./services/AstroboyContext"), exports);
 tslib_1.__exportStar(require("./server"), exports);
 tslib_1.__exportStar(require("./configs"), exports);
+tslib_1.__exportStar(require("./options"), exports);
 tslib_1.__exportStar(require("./results/json"), exports);
 tslib_1.__exportStar(require("./results/render"), exports);
 tslib_1.__exportStar(require("./plugins/typed-serializer"), exports);

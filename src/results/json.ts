@@ -4,7 +4,7 @@ import reduce from "lodash/reduce";
 import set from "lodash/set";
 import isPlainObject from "lodash/isPlainObject";
 import { IResult, IResultScope } from "../typings/IResult";
-import { JsonResultOptions, JSON_RESULT_OPTIONS } from "../configs/json.options";
+import { JsonResultOptions, JSON_RESULT_OPTIONS } from "../options";
 
 export class JsonResult implements IResult {
 

@@ -62,6 +62,7 @@ export * from "./services/BaseClass";
 export * from "./services/AstroboyContext";
 export * from "./server";
 export * from "./configs";
+export * from "./options";
 export * from "./typings/IContext";
 export * from "./typings/IResult";
 export * from "./typings/IStaticTypeResolver";

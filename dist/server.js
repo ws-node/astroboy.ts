@@ -9,8 +9,8 @@ const Scope_1 = require("./services/Scope");
 const utils_1 = require("./utils");
 const di_1 = require("@bonbons/di");
 const configs_1 = require("./configs");
+const options_1 = require("./options");
 const Configs_1 = require("./services/Configs");
-const typed_serialize_options_1 = require("./configs/typed-serialize.options");
 const typed_serializer_1 = require("./plugins/typed-serializer");
 const builders_1 = require("./builders");
 /**
@@ -84,17 +84,17 @@ class Server {
     initOptions() {
         this.option(configs_1.ENV, configs_1.defaultEnv);
         this.option(configs_1.CONFIG_VIEW, configs_1.defaultView);
-        this.option(configs_1.JSON_RESULT_OPTIONS, configs_1.defaultJsonResultOptions);
-        this.option(configs_1.RENDER_RESULT_OPTIONS, configs_1.defaultRenderResultOptions);
-        this.option(typed_serialize_options_1.STATIC_RESOLVER, typed_serializer_1.TypedSerializer);
-        this.option(configs_1.ROUTER_OPTIONS, configs_1.defaultRouterOptions);
+        this.option(options_1.JSON_RESULT_OPTIONS, options_1.defaultJsonResultOptions);
+        this.option(options_1.RENDER_RESULT_OPTIONS, options_1.defaultRenderResultOptions);
+        this.option(options_1.STATIC_RESOLVER, typed_serializer_1.TypedSerializer);
+        this.option(options_1.ROUTER_OPTIONS, options_1.defaultRouterOptions);
     }
     initInjections() {
         this.scoped(AstroboyContext_1.AstroboyContext);
         this.scoped(Scope_1.Scope);
     }
     initRouters() {
-        builders_1.initRouters(this.configs.get(configs_1.ROUTER_OPTIONS));
+        builders_1.initRouters(this.configs.get(options_1.ROUTER_OPTIONS));
         return this;
     }
     finalInjectionsInit() {

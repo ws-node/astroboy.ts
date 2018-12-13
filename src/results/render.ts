@@ -1,5 +1,5 @@
 import { IResult, IResultScope } from "../typings/IResult";
-import { RenderResultOptions, RENDER_RESULT_OPTIONS } from "../configs";
+import { RenderResultOptions, RENDER_RESULT_OPTIONS } from "../options";
 import { Context } from "../services/Context";
 
 export class RenderResult implements IResult {

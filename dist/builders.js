@@ -5,8 +5,8 @@ const fs_1 = tslib_1.__importDefault(require("fs"));
 const path_1 = tslib_1.__importDefault(require("path"));
 const rimraf_1 = tslib_1.__importDefault(require("rimraf"));
 const utils_1 = require("./utils");
-const router_options_1 = require("./configs/router.options");
-function initRouters({ ctorFolder: base = router_options_1.defaultRouterOptions.ctorFolder, routerFolder: routerBase = router_options_1.defaultRouterOptions.routerFolder, enabled: open = router_options_1.defaultRouterOptions.enabled, always = router_options_1.defaultRouterOptions.always, appRoot: root = router_options_1.defaultRouterOptions.appRoot, fileType = router_options_1.defaultRouterOptions.fileType }, onEnd) {
+const options_1 = require("./options");
+function initRouters({ ctorFolder: base = options_1.defaultRouterOptions.ctorFolder, routerFolder: routerBase = options_1.defaultRouterOptions.routerFolder, enabled: open = options_1.defaultRouterOptions.enabled, always = options_1.defaultRouterOptions.always, appRoot: root = options_1.defaultRouterOptions.appRoot, fileType = options_1.defaultRouterOptions.fileType }, onEnd) {
     if (open) {
         try {
             const routers = {};

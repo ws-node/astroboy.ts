@@ -6,7 +6,7 @@ const utils_1 = require("../utils");
 const Context_1 = require("../services/Context");
 const Configs_1 = require("../services/Configs");
 const route_1 = require("./route");
-const typed_serialize_options_1 = require("../configs/typed-serialize.options");
+const options_1 = require("../options");
 const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
 const $$injector = "$$injector";
 /**
@@ -52,7 +52,7 @@ function Controller(prefix) {
                     return tslib_1.__awaiter(this, void 0, void 0, function* () {
                         const injector = this[$$injector];
                         const { ctx } = injector.get(Context_1.Context);
-                        const staticResolver = injector.get(Configs_1.Configs).get(typed_serialize_options_1.STATIC_RESOLVER);
+                        const staticResolver = injector.get(Configs_1.Configs).get(options_1.STATIC_RESOLVER);
                         const params = resolveRouteMethodParams(routeParams, ctx, staticResolver);
                         const result = yield value.bind(this)(...params);
                         if (result)

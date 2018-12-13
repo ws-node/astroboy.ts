@@ -6,7 +6,7 @@ const decamelize_1 = tslib_1.__importDefault(require("decamelize"));
 const reduce_1 = tslib_1.__importDefault(require("lodash/reduce"));
 const set_1 = tslib_1.__importDefault(require("lodash/set"));
 const isPlainObject_1 = tslib_1.__importDefault(require("lodash/isPlainObject"));
-const json_options_1 = require("../configs/json.options");
+const options_1 = require("../options");
 class JsonResult {
     constructor(value, configs) {
         this.value = value;
@@ -22,7 +22,7 @@ class JsonResult {
      * @memberof JsonResult
      */
     toResult({ configs }) {
-        const { format, whiteSpace: b, keyResolver: r, jsonTemplate: tpl, jsonTplKey: tplKey } = Object.assign({}, configs.get(json_options_1.JSON_RESULT_OPTIONS), this.configs);
+        const { format, whiteSpace: b, keyResolver: r, jsonTemplate: tpl, jsonTplKey: tplKey } = Object.assign({}, configs.get(options_1.JSON_RESULT_OPTIONS), this.configs);
         let value = this.value || {};
         if (tpl) {
             const n = Object.assign({}, tpl);

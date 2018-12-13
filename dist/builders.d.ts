@@ -1,4 +1,4 @@
-import { InnerRouterOptions } from "./configs/router.options";
+import { InnerRouterOptions } from "./options";
 interface IRouter {
     [prop: string]: string | IRouter;
 }

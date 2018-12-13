@@ -5,7 +5,7 @@ import { GlobalImplements } from "./utils";
 import {
   InnerRouterOptions,
   defaultRouterOptions as df
-} from "./configs/router.options";
+} from "./options";
 
 interface IRouter {
   [prop: string]: string | IRouter;
