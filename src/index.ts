@@ -66,6 +66,7 @@ export * from "./typings/IContext";
 export * from "./typings/IResult";
 export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
+export * from "./results/render";
 export * from "./plugins/typed-serializer";
 
 export {

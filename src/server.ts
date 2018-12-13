@@ -22,7 +22,11 @@ import {
   JSON_RESULT_OPTIONS,
   InnerRouterOptions,
   ROUTER_OPTIONS,
-  defaultRouterOptions
+  defaultRouterOptions,
+  RENDER_RESULT_OPTIONS,
+  defaultRenderResultOptions,
+  CONFIG_VIEW,
+  defaultView
 } from "./configs";
 import {
   RealConfigCollection,
@@ -320,7 +324,9 @@ export class Server {
 
   private initOptions() {
     this.option(ENV, defaultEnv);
+    this.option(CONFIG_VIEW, defaultView);
     this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
+    this.option(RENDER_RESULT_OPTIONS, defaultRenderResultOptions);
     this.option(STATIC_RESOLVER, TypedSerializer);
     this.option(ROUTER_OPTIONS, defaultRouterOptions);
   }
