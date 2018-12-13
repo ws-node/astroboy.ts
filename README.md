@@ -33,6 +33,9 @@
 
 ### 迭代记录
 
+#### 1.0.2-rc.24
+* `astt` 更名 `atc` ，并支持新的 `dev` 命令
+
 #### 1.0.2-rc.23
 * `astt-cli` 新增 `tsconfig` 配置支持
 * `astt-cli` 新增 `details` 配置支持

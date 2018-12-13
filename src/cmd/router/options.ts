@@ -1,7 +1,7 @@
-
 import fn from "./actions";
+import { CommandPlugin } from "../base";
 
-export interface ICmdOptions {
+export interface IRouterCmdOptions {
   enabled?: boolean;
   always?: boolean;
   filetype?: string;
@@ -10,7 +10,7 @@ export interface ICmdOptions {
   tsconfig?: string;
 }
 
-export const options = {
+export const options: CommandPlugin = {
   name: "router",
   description: "astroboy.ts routers cmd",
   options: [
@@ -26,10 +26,10 @@ export const options = {
     console.log("");
     console.log("  Examples:");
     console.log("");
-    console.log("    $ astt router");
-    console.log("    $ astt router --always");
-    console.log("    $ astt router --fileType ts");
-    console.log("    $ astt router --approot /v1/prj");
+    console.log("    $ atc router");
+    console.log("    $ atc router --always");
+    console.log("    $ atc router --fileType ts");
+    console.log("    $ atc router --approot /v1/prj");
     console.log();
   }
 };

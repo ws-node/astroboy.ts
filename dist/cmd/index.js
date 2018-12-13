@@ -2,23 +2,23 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const commander_1 = tslib_1.__importDefault(require("commander"));
-const options_1 = require("./options");
-function initCommand() {
+const router_1 = require("./router");
+function initCommand(plugin) {
     const program = commander_1.default
-        .name(options_1.options.name)
-        .description(options_1.options.description);
-    if (options_1.options.options) {
-        for (let i = 0; i < options_1.options.options.length; i++) {
-            program.option(options_1.options.options[i][0], options_1.options.options[i][1]);
+        .name(plugin.name)
+        .description(plugin.description);
+    if (plugin.options) {
+        for (let i = 0; i < plugin.options.length; i++) {
+            program.option(plugin.options[i][0], plugin.options[i][1]);
         }
     }
-    program.action(options_1.options.action).on("--help", options_1.options.help);
+    program.action(plugin.action).on("--help", plugin.help);
     return program;
 }
-const program = initCommand()
-    .version("1.0.0-rc.1")
+[router_1.RouterPlugin].forEach(i => initCommand(i));
+commander_1.default.version("1.0.0-rc.1")
     .parse(process.argv);
-if (program.args.length === 0) {
-    program.outputHelp();
+if (commander_1.default.args.length === 0) {
+    commander_1.default.outputHelp();
 }
 //# sourceMappingURL=index.js.map

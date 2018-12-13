@@ -1,23 +1,25 @@
 import commander from "commander";
-import { options } from "./options";
+import { CommandPlugin } from "./base";
+import { RouterPlugin } from "./router";
 
-function initCommand() {
+function initCommand(plugin: CommandPlugin) {
   const program = commander
-    .name(options.name)
-    .description(options.description);
-  if (options.options) {
-    for (let i = 0; i < options.options.length; i++) {
-      program.option(options.options[i][0], options.options[i][1]);
+    .name(plugin.name)
+    .description(plugin.description);
+  if (plugin.options) {
+    for (let i = 0; i < plugin.options.length; i++) {
+      program.option(plugin.options[i][0], plugin.options[i][1]);
     }
   }
-  program.action(options.action).on("--help", options.help);
+  program.action(plugin.action).on("--help", plugin.help);
   return program;
 }
 
-const program = initCommand()
-  .version("1.0.0-rc.1")
+[RouterPlugin].forEach(i => initCommand(i));
+
+commander.version("1.0.0-rc.1")
   .parse(process.argv);
 
-if (program.args.length === 0) {
-  program.outputHelp();
+if (commander.args.length === 0) {
+  commander.outputHelp();
 }

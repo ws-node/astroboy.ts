@@ -1,13 +1,13 @@
 {
   "name": "astroboy.ts",
-  "version": "1.0.2-rc.23",
+  "version": "1.0.2-rc.24",
   "description": "基于[astroboy]的DI版本，TypeScript3.2信仰加成",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc"
   },
   "bin": {
-    "astt": "bin/astt"
+    "astt": "bin/atc"
   },
   "repository": {
     "type": "git",
@@ -26,11 +26,8 @@
   "homepage": "https://github.com/ws-node/astroboy.ts#readme",
   "dependencies": {
     "@bonbons/di": "1.3.3",
-    "@types/camelcase": "4.1.0",
-    "@types/decamelize": "1.2.0",
     "@types/koa": "^2.0.47",
     "@types/koa-router": "^7.0.35",
-    "@types/lodash": "^4.14.118",
     "@types/node": "^10.12.10",
     "@types/uuid": "3.4.4",
     "astroboy": "0.0.35",
@@ -41,14 +38,19 @@
     "commander": "2.19.0",
     "decamelize": "1.2.0",
     "lodash": "^4.17.11",
+    "nodemon": "1.18.8",
     "rimraf": "2.6.2",
+    "tsconfig-paths": "^3.7.0",
     "tslib": "^1.9.3",
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@types/rimraf": "^2.0.2",
+    "@types/camelcase": "4.1.0",
     "@types/chalk": "2.2.0",
     "@types/commander": "2.12.2",
+    "@types/decamelize": "1.2.0",
+    "@types/lodash": "^4.14.118",
+    "@types/rimraf": "^2.0.2",
     "astroboy-cli": "^0.0.8",
     "ts-node": "^7.0.1",
     "tslint": "5.11.0",

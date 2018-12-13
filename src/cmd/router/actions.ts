@@ -1,9 +1,9 @@
 import path from "path";
-import { ICmdOptions } from "./options";
+import { IRouterCmdOptions } from "./options";
 import { exec } from "child_process";
 import chalk from "chalk";
 
-export = function (_, command: ICmdOptions) {
+export = function (_, command: IRouterCmdOptions) {
   try {
     const tsnode = require.resolve("ts-node");
     const astroboy_ts = require.resolve("astroboy.ts");
