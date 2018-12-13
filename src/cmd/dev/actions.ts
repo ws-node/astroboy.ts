@@ -70,15 +70,26 @@ export = function (_, command: IDevCmdOptions) {
   // 传递了 --ts 参数，示例：
   // ast dev --ts
   if (command.ts) {
-    const ts_node = `-r ${path.resolve(__dirname, "./ts-node")}`;
-    const tsc_path_map = `-r ${require.resolve("tsconfig-paths").replace("/lib/index.js", "")}/register`;
-    // 同时传递了 --ts和--tsconfig 参数，示例：
-    // ast dev --ts --tsconfig app/tsconfig.json
-    if (command.tsconfig) {
-      config.env.TS_NODE_PROJECT = command.tsconfig;
+    try {
+      const tsnode = require.resolve("ts-node");
+      const astroboy_ts = require.resolve("astroboy.ts");
+      const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
+      const ts_node = `-r ${registerFile}`;
+      const tsc_path_map = `-r ${require.resolve("tsconfig-paths").replace("/lib/index.js", "")}/register`;
+      // 同时传递了 --ts和--tsconfig 参数，示例：
+      // ast dev --ts --tsconfig app/tsconfig.json
+      if (command.tsconfig) {
+        config.env.__TSCONFIG = command.tsconfig || "-";
+      }
+      config.env.APP_EXTENSIONS = JSON.stringify(["js", "ts"]);
+      config.exec = `${node} ${ts_node} ${tsc_path_map} ${path.join(projectRoot, "app/app.ts")}`;
+    } catch (error) {
+      if ((<string>error.message || "").includes("ts-node")) {
+        console.log(chalk.red("请安装ts-node"));
+      } else {
+        throw error;
+      }
     }
-    config.env.APP_EXTENSIONS = JSON.stringify(["js", "ts"]);
-    config.exec = `${node} ${ts_node} ${tsc_path_map} ${path.join(projectRoot, "app/app.ts")}`;
   } else {
     config.env.APP_EXTENSIONS = JSON.stringify(["js"]);
     config.exec = `${node} ${path.join(projectRoot, "app/app.js")}`;
