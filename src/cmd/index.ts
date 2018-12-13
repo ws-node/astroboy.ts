@@ -1,6 +1,7 @@
 import commander from "commander";
 import { CommandPlugin } from "./base";
 import { RouterPlugin } from "./router";
+import { DevPlugin } from "./dev";
 
 function initCommand(plugin: CommandPlugin) {
   const program = commander
@@ -15,7 +16,7 @@ function initCommand(plugin: CommandPlugin) {
   return program;
 }
 
-[RouterPlugin].forEach(i => initCommand(i));
+[DevPlugin, RouterPlugin].forEach(i => initCommand(i));
 
 commander.version("1.0.0-rc.1")
   .parse(process.argv);

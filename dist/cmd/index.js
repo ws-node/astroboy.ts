@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const commander_1 = tslib_1.__importDefault(require("commander"));
 const router_1 = require("./router");
+const dev_1 = require("./dev");
 function initCommand(plugin) {
     const program = commander_1.default
         .name(plugin.name)
@@ -15,7 +16,7 @@ function initCommand(plugin) {
     program.action(plugin.action).on("--help", plugin.help);
     return program;
 }
-[router_1.RouterPlugin].forEach(i => initCommand(i));
+[dev_1.DevPlugin, router_1.RouterPlugin].forEach(i => initCommand(i));
 commander_1.default.version("1.0.0-rc.1")
     .parse(process.argv);
 if (commander_1.default.args.length === 0) {

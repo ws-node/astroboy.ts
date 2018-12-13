@@ -246,7 +246,7 @@ export = buildRouter(TEST, "test", "/v1");
 - 使用 `astroboy.ts` 提供的命令行工具
 ```bash
 # 在开发启动或者生产打包前确保执行即可
-../node_modules/.bin/astt router --always --filetype ts
+../node_modules/.bin/atc router --always --filetype ts
 ```
 
 ##### 2. 动态初始化(不推荐)

@@ -1,13 +1,13 @@
 {
   "name": "astroboy.ts",
-  "version": "1.0.2-rc.24",
+  "version": "1.0.2-rc.25",
   "description": "基于[astroboy]的DI版本，TypeScript3.2信仰加成",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc"
   },
   "bin": {
-    "astt": "bin/atc"
+    "atc": "bin/atc"
   },
   "repository": {
     "type": "git",

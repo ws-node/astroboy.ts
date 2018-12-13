@@ -18,10 +18,10 @@ exports.options = {
         console.log("");
         console.log("  Examples:");
         console.log("");
-        console.log("    $ astt router");
-        console.log("    $ astt router --always");
-        console.log("    $ astt router --fileType ts");
-        console.log("    $ astt router --approot /v1/prj");
+        console.log("    $ atc router");
+        console.log("    $ atc router --always");
+        console.log("    $ atc router --fileType ts");
+        console.log("    $ atc router --approot /v1/prj");
         console.log();
     }
 };
