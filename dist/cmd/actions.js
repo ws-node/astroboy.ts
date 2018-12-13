@@ -7,8 +7,11 @@ module.exports = function (_, command) {
     try {
         const tsnode = require.resolve("ts-node");
         const astroboy_ts = require.resolve("astroboy.ts");
+        process.env.__TSCONFIG = command.tsconfig || "_";
         console.log(chalk_1.default.cyan("Start building routers ****** "));
-        child_process_1.exec(`node -r ${tsnode.replace("/dist/index.js", "")}/register ${astroboy_ts.replace("/index.js", "/cmd/init")}`, {
+        const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
+        const initFile = astroboy_ts.replace("/index.js", "/cmd/init");
+        child_process_1.exec(`node -r ${registerFile} ${initFile}`, {
             env: {
                 CTOR_PATH: path_1.default.resolve(process.cwd(), "app/controllers"),
                 ROUTER_PATH: path_1.default.resolve(process.cwd(), "app/routers"),
