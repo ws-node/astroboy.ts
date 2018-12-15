@@ -6,7 +6,9 @@ import chalk from "chalk";
 
 export = function (_, command: IRouterCmdOptions) {
   if (_ !== "router") return;
+  console.log(chalk.green("========= [ASTROBOY.TS] <==> ROUTER ========"));
   const fileName = command.config || "atc.config.js";
+  console.log(`${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`);
   let config: any;
   const defaultConfigs = {
     enabled: true,
@@ -24,6 +26,7 @@ export = function (_, command: IRouterCmdOptions) {
       tsconfig: req.tsconfig || config.tsconfig
     };
   } catch (_) {
+    console.log(chalk.yellow("未找到配置文件"));
     config = defaultConfigs;
   }
   if (command.enabled) config.enabled = String(command.enabled) === "true";
@@ -34,10 +37,12 @@ export = function (_, command: IRouterCmdOptions) {
   if (command.tsconfig) config.tsconfig = command.tsconfig;
   try {
     const tsnode = require.resolve("ts-node");
+    console.log(chalk.cyan("正在构建路由，请稍候...\n"));
     const astroboy_ts = require.resolve("astroboy.ts");
-    console.log(chalk.cyan("开始构建路由，请稍后========"));
     const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
     const initFile = astroboy_ts.replace("/index.js", "/cmd/init");
+    console.log(chalk.yellow("开始执行路由初始化逻辑："));
+    console.log(`script ==> ${chalk.grey(initFile)}`);
     exec(`node -r ${registerFile} ${initFile}`, {
       env: {
         CTOR_PATH: path.resolve(process.cwd(), "app/controllers"),
@@ -52,20 +57,24 @@ export = function (_, command: IRouterCmdOptions) {
     }, (error, stdout, stderr) => {
       if (error) {
         console.log(chalk.yellow("初始化routers失败"));
-        console.log(error);
+        console.log(chalk.red(<any>error));
+        console.log("--------------------");
         return;
       }
       if (stderr) {
         console.log(chalk.yellow("初始化routers失败"));
-        console.log(stderr);
+        console.log(chalk.red(stderr));
+        console.log("--------------------");
         return;
       }
       try {
-        showRoutes(JSON.parse(stdout || "{}") || {});
+        const count = showRoutes(JSON.parse(stdout || "{}") || {});
+        console.log(chalk.green(`路由初始化完成${chalk.white(`[${count}]`)}`));
       } catch (_) {
+        console.log(chalk.yellow("初始化routers失败"));
         console.log(chalk.red(_));
+        console.log("--------------------");
       }
-      console.log(chalk.green("初始化routers完成"));
     });
   } catch (e) {
     console.log(chalk.yellow("初始化routers失败"));
@@ -78,11 +87,14 @@ export = function (_, command: IRouterCmdOptions) {
 };
 
 function showRoutes(obj: any, preK?: string) {
+  let count = 0;
   Object.keys(obj || {}).forEach(k => {
     if (typeof obj[k] === "string") {
       console.log(chalk.blue(!preK ? `--> ${k}` : `--> ${preK}/${k}`));
+      count += 1;
     } else {
-      showRoutes(obj[k], !preK ? k : `${preK}/${k}`);
+      count += showRoutes(obj[k], !preK ? k : `${preK}/${k}`);
     }
   });
+  return count;
 }

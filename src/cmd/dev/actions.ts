@@ -6,17 +6,20 @@ import { IDevCmdOptions } from "./options";
 
 export = function (_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
+  console.log(chalk.green("========= [ASTROBOY.TS] <==> DEVTOOL ========"));
   const projectRoot = process.cwd();
   if (!fs.existsSync(`${projectRoot}/app/app.ts`)) {
+    console.log(chalk.yellow("项目启动失败"));
     console.log(chalk.red(`当前项目不存在文件 ${projectRoot}/app/app.ts`));
     return;
   }
-
   const fileName = command.config || "atc.config.js";
+  console.log(`${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`);
   let config: any;
   try {
     config = require(path.join(projectRoot, fileName)) || {};
   } catch (_) {
+    console.log(chalk.yellow("未找到配置文件"));
     config = {};
   }
 
@@ -76,8 +79,10 @@ export = function (_, command: IDevCmdOptions) {
   } catch (error) {
     if ((<string>error.message || "").includes("ts-node")) {
       console.log(chalk.red("请安装ts-node"));
+      return;
     } else {
-      throw error;
+      console.log(chalk.red(error));
+      return;
     }
   }
 
@@ -91,6 +96,8 @@ export = function (_, command: IDevCmdOptions) {
   }
 
   nodemon(config).on("start", () => {
+    console.log(chalk.yellow("开始运行应用执行脚本："));
+    console.log(`script ==> ${chalk.grey(config.exec)}\n`);
     console.log(chalk.green("应用启动中...\n"));
     console.log(chalk.green("环境变量："));
     console.log(chalk.cyan(`NODE_ENV: \t${config.env.NODE_ENV}`));

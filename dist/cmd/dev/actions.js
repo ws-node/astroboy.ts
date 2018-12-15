@@ -7,17 +7,21 @@ const chalk_1 = tslib_1.__importDefault(require("chalk"));
 module.exports = function (_, command) {
     if (_ !== "dev")
         return;
+    console.log(chalk_1.default.green("========= [ASTROBOY.TS] <==> DEVTOOL ========"));
     const projectRoot = process.cwd();
     if (!fs_1.default.existsSync(`${projectRoot}/app/app.ts`)) {
+        console.log(chalk_1.default.yellow("项目启动失败"));
         console.log(chalk_1.default.red(`当前项目不存在文件 ${projectRoot}/app/app.ts`));
         return;
     }
     const fileName = command.config || "atc.config.js";
+    console.log(`${chalk_1.default.white("尝试加载配置文件 : ")}${chalk_1.default.yellow(fileName)}`);
     let config;
     try {
         config = require(path_1.default.join(projectRoot, fileName)) || {};
     }
     catch (_) {
+        console.log(chalk_1.default.yellow("未找到配置文件"));
         config = {};
     }
     if (config.env) {
@@ -78,9 +82,11 @@ module.exports = function (_, command) {
     catch (error) {
         if ((error.message || "").includes("ts-node")) {
             console.log(chalk_1.default.red("请安装ts-node"));
+            return;
         }
         else {
-            throw error;
+            console.log(chalk_1.default.red(error));
+            return;
         }
     }
     // 传递了--mock 参数
@@ -92,6 +98,8 @@ module.exports = function (_, command) {
         config.env.HTTPS_PROXY = url;
     }
     nodemon_1.default(config).on("start", () => {
+        console.log(chalk_1.default.yellow("开始运行应用执行脚本："));
+        console.log(`script ==> ${chalk_1.default.grey(config.exec)}\n`);
         console.log(chalk_1.default.green("应用启动中...\n"));
         console.log(chalk_1.default.green("环境变量："));
         console.log(chalk_1.default.cyan(`NODE_ENV: \t${config.env.NODE_ENV}`));
