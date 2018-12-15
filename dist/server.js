@@ -93,10 +93,12 @@ class Server {
         this.option(nunjunks_1.NUNJUNKS_OPTIONS, nunjunks_1.defaultNunjunksOptions);
     }
     initInjections() {
+        // 不允许装饰器复写
         this.scoped(AstroboyContext_1.AstroboyContext);
         this.scoped(Scope_1.Scope);
-        this.scoped(nunjunks_1.NunjunksEngine);
-        this.scoped(Render_1.Render);
+        // 允许被装饰器复写
+        this.di.register(nunjunks_1.NunjunksEngine, nunjunks_1.NunjunksEngine, di_1.InjectScope.Scope);
+        this.di.register(Render_1.Render, Render_1.Render, di_1.InjectScope.Scope);
     }
     initRouters() {
         builders_1.initRouters(this.configs.get(options_1.ROUTER_OPTIONS));

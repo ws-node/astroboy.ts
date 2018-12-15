@@ -11,7 +11,7 @@ export interface INunjunksRenderOptions {
 }
 
 export const defaultNunjunksOptions: INunjunksRenderOptions = {
-  root: path.resolve(__dirname, "app/views"),
+  root: path.resolve(process.cwd(), "app/views"),
   cache: true,
   autoescape: true,
   throwOnUndefined: false,

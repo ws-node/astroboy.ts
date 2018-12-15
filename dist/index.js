@@ -37,6 +37,7 @@ tslib_1.__exportStar(require("./services/Injector"), exports);
 tslib_1.__exportStar(require("./services/Context"), exports);
 tslib_1.__exportStar(require("./services/BaseClass"), exports);
 tslib_1.__exportStar(require("./services/AstroboyContext"), exports);
+tslib_1.__exportStar(require("./services/Render"), exports);
 tslib_1.__exportStar(require("./server"), exports);
 tslib_1.__exportStar(require("./configs"), exports);
 tslib_1.__exportStar(require("./options"), exports);

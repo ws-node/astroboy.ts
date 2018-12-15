@@ -10,6 +10,7 @@
 
 * 高性能依赖注入[ 实现：[@bonbons/di](https://www.npmjs.com/package/@bonbons/di) ]
 * 控制器声明式路由[ 实现：[astroboy-router](https://www.npmjs.com/package/astroboy-router) ]
+* 可扩展的注入式模版引擎
 * 可配置容器定义化
 * DI可注入依赖实现多重继承
 * 配置容器对接astroboy标准configs模式
@@ -33,12 +34,13 @@
 
 ### 迭代记录
 
-#### 1.0.2-rc.30
+#### 1.0.2-rc.31
 * 修复找不到 `Controller` 的问题
+* 修复 `nunjunks` 默认模板root路径不正确的问题
 
 #### 1.0.2-rc.29
 * 内置 `nunjunks` 模板渲染引擎
-* 新增 `Render` 渲染服务
+* 新增 `Render` DI渲染服务，可以自定义实现
 
 #### 1.0.2-rc.28
 * `astt` 新增 `--config` 指令，允许使用配置文件启动cli

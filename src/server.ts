@@ -341,10 +341,12 @@ export class Server {
   }
 
   private initInjections() {
+    // 不允许装饰器复写
     this.scoped(AstroboyContext);
     this.scoped(Scope);
-    this.scoped(NunjunksEngine);
-    this.scoped(Render);
+    // 允许被装饰器复写
+    this.di.register(NunjunksEngine, NunjunksEngine, InjectScope.Scope);
+    this.di.register(Render, Render, InjectScope.Scope);
   }
 
   private initRouters() {

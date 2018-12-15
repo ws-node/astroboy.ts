@@ -43,6 +43,7 @@ export * from "./services/Injector";
 export * from "./services/Context";
 export * from "./services/BaseClass";
 export * from "./services/AstroboyContext";
+export * from "./services/Render";
 export * from "./server";
 export * from "./configs";
 export * from "./options";
