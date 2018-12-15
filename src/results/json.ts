@@ -1,10 +1,9 @@
 import camel from "camelcase";
 import decamel from "decamelize";
-import reduce from "lodash/reduce";
 import set from "lodash/set";
-import isPlainObject from "lodash/isPlainObject";
 import { IResult, IResultScope } from "../typings/IResult";
 import { JsonResultOptions, JSON_RESULT_OPTIONS } from "../options";
+import { resolveKeys } from "../utils";
 
 export class JsonResult implements IResult {
 
@@ -48,23 +47,6 @@ function decideWhiteSpace(format: boolean, b: 0 | 1 | 2 | 4) {
     case 0: return "";
     default: return "";
   }
-}
-
-function resolveKeys(resolver: (k: string) => string, value: any, deep = true) {
-  let res: any;
-  if (Array.isArray(value) && value.length > 0) {
-    res = [];
-  } else if (isPlainObject(value) && Object.keys(value).length > 0) {
-    res = {};
-  } else {
-    return value;
-  }
-  return reduce(value, (result, val, key) => {
-    if (deep) { val = resolveKeys(resolver, val); }
-    const newKey = typeof key === "string" ? resolver(key) : key;
-    result[newKey] = val;
-    return result;
-  }, res);
 }
 
 function camelCase(key: string) {

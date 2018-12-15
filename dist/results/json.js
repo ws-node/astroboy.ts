@@ -3,10 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const camelcase_1 = tslib_1.__importDefault(require("camelcase"));
 const decamelize_1 = tslib_1.__importDefault(require("decamelize"));
-const reduce_1 = tslib_1.__importDefault(require("lodash/reduce"));
 const set_1 = tslib_1.__importDefault(require("lodash/set"));
-const isPlainObject_1 = tslib_1.__importDefault(require("lodash/isPlainObject"));
 const options_1 = require("../options");
+const utils_1 = require("../utils");
 class JsonResult {
     constructor(value, configs) {
         this.value = value;
@@ -30,7 +29,7 @@ class JsonResult {
                 set_1.default(n, tplKey, value);
             value = n;
         }
-        return JSON.stringify(!r ? value : resolveKeys(r, value), null, decideWhiteSpace(format, b));
+        return JSON.stringify(!r ? value : utils_1.resolveKeys(r, value), null, decideWhiteSpace(format, b));
     }
 }
 exports.JsonResult = JsonResult;
@@ -44,26 +43,6 @@ function decideWhiteSpace(format, b) {
         case 0: return "";
         default: return "";
     }
-}
-function resolveKeys(resolver, value, deep = true) {
-    let res;
-    if (Array.isArray(value) && value.length > 0) {
-        res = [];
-    }
-    else if (isPlainObject_1.default(value) && Object.keys(value).length > 0) {
-        res = {};
-    }
-    else {
-        return value;
-    }
-    return reduce_1.default(value, (result, val, key) => {
-        if (deep) {
-            val = resolveKeys(resolver, val);
-        }
-        const newKey = typeof key === "string" ? resolver(key) : key;
-        result[newKey] = val;
-        return result;
-    }, res);
 }
 function camelCase(key) {
     return camelcase_1.default(key);

@@ -1,4 +1,7 @@
 import get from "lodash/get";
+import merge from "lodash/merge";
+import isPlainObject from "lodash/isPlainObject";
+import reduce from "lodash/reduce";
 import uuid from "uuid/v4";
 import { Constructor, getDependencies, DIContainer, ConfigsCollection, ScopeID, PARAMS_META_KEY, TYPE_META_KEY } from "@bonbons/di";
 import { InjectService } from "./services/Injector";
@@ -51,7 +54,7 @@ export function createInstance<T>(target: Constructor<T>, ctx: IContext) {
 export function optionAssign(configs: ConfigsCollection, token: any, newValue: any) {
   return isCustomClassInstance(newValue || {}) ?
     newValue :
-    Object.assign(configs.get(token) || {}, newValue);
+    merge({}, configs.get(token) || {}, newValue);
 }
 
 export function isCustomClassInstance(obj: any, type?: any) {
@@ -71,4 +74,21 @@ export function getMethodParamsType(prototype: any, propertyKey: string) {
 
 export function getPropertyType(prototype: any, propertyKey: string) {
   return Reflect.getMetadata(TYPE_META_KEY, prototype, propertyKey) || undefined;
+}
+
+export function resolveKeys(resolver: (k: string) => string, value: any, deep = true) {
+  let res: any;
+  if (Array.isArray(value) && value.length > 0) {
+    res = [];
+  } else if (isPlainObject(value) && Object.keys(value).length > 0) {
+    res = {};
+  } else {
+    return value;
+  }
+  return reduce(value, (result, val, key) => {
+    if (deep) { val = resolveKeys(resolver, val); }
+    const newKey = typeof key === "string" ? resolver(key) : key;
+    result[newKey] = val;
+    return result;
+  }, res);
 }

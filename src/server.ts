@@ -37,6 +37,12 @@ import {
   Configs
 } from "./services/Configs";
 import { TypedSerializer } from "./plugins/typed-serializer";
+import {
+  NunjunksEngine,
+  NUNJUNKS_OPTIONS,
+  defaultNunjunksOptions
+} from "./plugins/nunjunks";
+import { Render } from "./services/Render";
 import { initRouters } from "./builders";
 
 type DIPair = [any, any];
@@ -331,11 +337,14 @@ export class Server {
     this.option(RENDER_RESULT_OPTIONS, defaultRenderResultOptions);
     this.option(STATIC_RESOLVER, TypedSerializer);
     this.option(ROUTER_OPTIONS, defaultRouterOptions);
+    this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
   }
 
   private initInjections() {
     this.scoped(AstroboyContext);
     this.scoped(Scope);
+    this.scoped(NunjunksEngine);
+    this.scoped(Render);
   }
 
   private initRouters() {

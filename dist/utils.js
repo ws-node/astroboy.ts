@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const get_1 = tslib_1.__importDefault(require("lodash/get"));
+const merge_1 = tslib_1.__importDefault(require("lodash/merge"));
+const isPlainObject_1 = tslib_1.__importDefault(require("lodash/isPlainObject"));
+const reduce_1 = tslib_1.__importDefault(require("lodash/reduce"));
 const v4_1 = tslib_1.__importDefault(require("uuid/v4"));
 const di_1 = require("@bonbons/di");
 const Injector_1 = require("./services/Injector");
@@ -51,7 +54,7 @@ exports.createInstance = createInstance;
 function optionAssign(configs, token, newValue) {
     return isCustomClassInstance(newValue || {}) ?
         newValue :
-        Object.assign(configs.get(token) || {}, newValue);
+        merge_1.default({}, configs.get(token) || {}, newValue);
 }
 exports.optionAssign = optionAssign;
 function isCustomClassInstance(obj, type) {
@@ -73,4 +76,25 @@ function getPropertyType(prototype, propertyKey) {
     return Reflect.getMetadata(di_1.TYPE_META_KEY, prototype, propertyKey) || undefined;
 }
 exports.getPropertyType = getPropertyType;
+function resolveKeys(resolver, value, deep = true) {
+    let res;
+    if (Array.isArray(value) && value.length > 0) {
+        res = [];
+    }
+    else if (isPlainObject_1.default(value) && Object.keys(value).length > 0) {
+        res = {};
+    }
+    else {
+        return value;
+    }
+    return reduce_1.default(value, (result, val, key) => {
+        if (deep) {
+            val = resolveKeys(resolver, val);
+        }
+        const newKey = typeof key === "string" ? resolver(key) : key;
+        result[newKey] = val;
+        return result;
+    }, res);
+}
+exports.resolveKeys = resolveKeys;
 //# sourceMappingURL=utils.js.map

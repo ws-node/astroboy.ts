@@ -65,6 +65,7 @@ export * from "./configs";
 export * from "./options";
 export * from "./typings/IContext";
 export * from "./typings/IResult";
+export * from "./typings/IViewEngine";
 export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
 export * from "./results/render";

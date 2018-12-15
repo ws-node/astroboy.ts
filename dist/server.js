@@ -12,6 +12,8 @@ const configs_1 = require("./configs");
 const options_1 = require("./options");
 const Configs_1 = require("./services/Configs");
 const typed_serializer_1 = require("./plugins/typed-serializer");
+const nunjunks_1 = require("./plugins/nunjunks");
+const Render_1 = require("./services/Render");
 const builders_1 = require("./builders");
 /**
  * ## astroboy.ts服务
@@ -88,10 +90,13 @@ class Server {
         this.option(options_1.RENDER_RESULT_OPTIONS, options_1.defaultRenderResultOptions);
         this.option(options_1.STATIC_RESOLVER, typed_serializer_1.TypedSerializer);
         this.option(options_1.ROUTER_OPTIONS, options_1.defaultRouterOptions);
+        this.option(nunjunks_1.NUNJUNKS_OPTIONS, nunjunks_1.defaultNunjunksOptions);
     }
     initInjections() {
         this.scoped(AstroboyContext_1.AstroboyContext);
         this.scoped(Scope_1.Scope);
+        this.scoped(nunjunks_1.NunjunksEngine);
+        this.scoped(Render_1.Render);
     }
     initRouters() {
         builders_1.initRouters(this.configs.get(options_1.ROUTER_OPTIONS));
