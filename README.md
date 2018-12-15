@@ -34,7 +34,7 @@
 
 ### 迭代记录
 
-#### 1.0.2-rc.33
+#### 1.0.2-rc.34
 * 去除 `atc-cli` 对js的支持，去掉参数 `--ts` 
 * 调整视觉风格
 
@@ -167,7 +167,10 @@ module.exports = {
 
 #### 4. 启动
 ```
-ast dev --ts --inspect --tsconfig tsconfig.json
+# 本地安装astrpboy.ts
+./node_modules/.bin/atc dev --inspect --tsconfig app/tsconfig.json
+# 全局装过astrpboy.ts
+atc dev --inspect --tsconfig app/tsconfig.json
 ```
 
 ### 开发姿势
@@ -262,7 +265,7 @@ export = buildRouter(TEST, "test", "/v1");
 - 使用 `astroboy.ts` 提供的命令行工具
 ```bash
 # 在开发启动或者生产打包前确保执行即可
-../node_modules/.bin/atc router --always --filetype ts
+./node_modules/.bin/atc router --always --filetype ts
 ```
 
 ##### 2. 动态初始化(不推荐)

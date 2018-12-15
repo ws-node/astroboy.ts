@@ -33,7 +33,11 @@ export = function (_, command: IRouterCmdOptions) {
         console.log(stderr);
         return;
       }
-      console.log(chalk.blue(stdout));
+      try {
+        showRoutes(JSON.parse(stdout) || {});
+      } catch (_) {
+        console.log(chalk.red(_));
+      }
       console.log(chalk.green("初始化routers完成"));
     });
   } catch (e) {
@@ -46,3 +50,12 @@ export = function (_, command: IRouterCmdOptions) {
   }
 };
 
+function showRoutes(obj: any, preK?: string) {
+  Object.keys(obj || {}).forEach(k => {
+    if (typeof obj[k] === "string") {
+      console.log(chalk.blue(!preK ? `--${obj[k]}` : `--${preK}/${obj[k]}`));
+    } else {
+      showRoutes(obj[k], !preK ? k : `${preK}/${k}`);
+    }
+  });
+}

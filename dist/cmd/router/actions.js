@@ -3,13 +3,23 @@ const tslib_1 = require("tslib");
 const path_1 = tslib_1.__importDefault(require("path"));
 const child_process_1 = require("child_process");
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
+function showRoutes(obj, preK) {
+    Object.keys(obj || {}).forEach(k => {
+        if (typeof obj[k] === "string") {
+            console.log(chalk_1.default.blue(!preK ? `--${obj[k]}` : `--${preK}/${obj[k]}`));
+        }
+        else {
+            showRoutes(obj[k], !preK ? k : `${preK}/${k}`);
+        }
+    });
+}
 module.exports = function (_, command) {
     if (_ !== "router")
         return;
     try {
         const tsnode = require.resolve("ts-node");
         const astroboy_ts = require.resolve("astroboy.ts");
-        console.log(chalk_1.default.cyan("Start building routers ****** "));
+        console.log(chalk_1.default.cyan("开始构建路由，请稍后========"));
         const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
         const initFile = astroboy_ts.replace("/index.js", "/cmd/init");
         child_process_1.exec(`node -r ${registerFile} ${initFile}`, {
@@ -34,7 +44,12 @@ module.exports = function (_, command) {
                 console.log(stderr);
                 return;
             }
-            console.log(chalk_1.default.blue(stdout));
+            try {
+                showRoutes(JSON.parse(stdout) || {});
+            }
+            catch (_) {
+                console.log(chalk_1.default.red(_));
+            }
             console.log(chalk_1.default.green("初始化routers完成"));
         });
     }
