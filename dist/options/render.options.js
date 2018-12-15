@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Configs_1 = require("../services/Configs");
-const core_1 = require("../plugins/nunjunks/core");
+const nunjunks_1 = require("../plugins/nunjunks");
 exports.defaultRenderResultOptions = {
     astConf: {
         use: false,
@@ -13,7 +13,7 @@ exports.defaultRenderResultOptions = {
     configs: undefined,
     engine: "nunjunks",
     engines: {
-        nunjunks: core_1.NunjunksEngine
+        nunjunks: nunjunks_1.NunjunksEngine
     }
 };
 exports.RENDER_RESULT_OPTIONS = Configs_1.createOptions("RENDER_RESULT_OPTIONS");

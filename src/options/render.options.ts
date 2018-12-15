@@ -1,6 +1,6 @@
 import { Constructor } from "@bonbons/di";
 import { createOptions } from "../services/Configs";
-import { NunjunksEngine } from "../plugins/nunjunks/core";
+import { NunjunksEngine } from "../plugins/nunjunks";
 import { IViewEngine } from "../typings/IViewEngine";
 
 /**
