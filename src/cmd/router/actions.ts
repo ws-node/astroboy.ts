@@ -8,7 +8,7 @@ export = function (_, command: IRouterCmdOptions) {
   try {
     const tsnode = require.resolve("ts-node");
     const astroboy_ts = require.resolve("astroboy.ts");
-    console.log(chalk.cyan("Start building routers ****** "));
+    console.log(chalk.cyan("开始构建路由，请稍后========"));
     const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
     const initFile = astroboy_ts.replace("/index.js", "/cmd/init");
     exec(`node -r ${registerFile} ${initFile}`, {
