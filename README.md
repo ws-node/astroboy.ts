@@ -178,6 +178,35 @@ atc dev --inspect --tsconfig app/tsconfig.json
 
 ### 开发姿势
 
+#### 0.cli配置文件
+
+astroboy.ts开放了一个配置文件，用来简化cli参数的使用，类似webpack，可以使用--config参数修改配置文件的名字。
+> atc.config.js - 一个简单的配置文件
+```javascript
+const path = require("path");
+
+module.exports = {
+  // atc router 的命令配置
+  routers: {
+    enabled: true,
+    always: false,
+    approot: "/v1",
+    filetype: "ts",
+    details: true,
+    tsconfig: "tsconfig.json"
+  },
+  // atc-cli监控的文件修改列表，自动重启node服务
+  watch: [
+    path.join(__dirname, "app/**/*.*"),
+    path.join(__dirname, "config/**/*.*"),
+    path.join(__dirname, "plugins/**/*.*")
+  ],
+  // 忽略的文件列表
+  ignore: []
+};
+
+```
+
 #### 1.编写路由控制器
 
 控制器方面使用装饰器来定制Router的业务层级，确定Route的url和method，提供params和body的注入获取能力，并抽象了响应中body的写入能力。
