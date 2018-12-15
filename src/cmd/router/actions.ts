@@ -34,7 +34,7 @@ export = function (_, command: IRouterCmdOptions) {
         return;
       }
       try {
-        showRoutes(JSON.parse(stdout) || {});
+        showRoutes(JSON.parse(stdout || "{}") || {});
       } catch (_) {
         console.log(chalk.red(_));
       }
@@ -53,7 +53,7 @@ export = function (_, command: IRouterCmdOptions) {
 function showRoutes(obj: any, preK?: string) {
   Object.keys(obj || {}).forEach(k => {
     if (typeof obj[k] === "string") {
-      console.log(chalk.blue(!preK ? `--${obj[k]}` : `--${preK}/${obj[k]}`));
+      console.log(chalk.blue(!preK ? `--> ${k}` : `--> ${preK}/${k}`));
     } else {
       showRoutes(obj[k], !preK ? k : `${preK}/${k}`);
     }
