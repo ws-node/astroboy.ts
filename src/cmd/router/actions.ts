@@ -17,9 +17,11 @@ export = function (_, command: IRouterCmdOptions) {
     tsconfig: undefined
   };
   try {
+    const req = require(path.join(process.cwd(), fileName)) || {};
     config = {
       ...defaultConfigs,
-      ...get(require(path.join(process.cwd(), fileName)), "routers", {})
+      ...get(req, "routers", {}),
+      tsconfig: req.tsconfig || config.tsconfig
     };
   } catch (_) {
     config = defaultConfigs;

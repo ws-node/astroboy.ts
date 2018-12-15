@@ -20,10 +20,8 @@ module.exports = function (_, command) {
     catch (_) {
         config = {};
     }
-    if (config.verbose === undefined)
-        config.verbose = true;
     if (config.env) {
-        config.env = Object.assign({}, config.env, { NODE_ENV: command.env ? command.env : config.env.NODE_ENV, NODE_PORT: command.port ? command.port : config.env.NODE_PORT });
+        config.env = Object.assign({}, config.env, { NODE_ENV: command.env ? command.env : (config.env.NODE_ENV || "development"), NODE_PORT: command.port ? command.port : (config.env.NODE_PORT || 8201) });
     }
     else {
         config.env = {
@@ -38,21 +36,31 @@ module.exports = function (_, command) {
             path_1.default.join(projectRoot, "plugins/**/*.*")
         ];
     }
-    if (!config.ignore) {
+    if (config.verbose === undefined)
+        config.verbose = true;
+    if (!config.ignore)
         config.ignore = [];
-    }
+    if (config.inspect === undefined)
+        config.inspect = true;
+    if (command.debug)
+        config.debug = command.debug;
+    if (command.tsconfig)
+        config.tsconfig = command.tsconfig;
+    if (command.mock)
+        config.mock = command.mock;
+    config.inspect = String(config.inspect) === "true";
     // 传递了 --debug 参数，示例：
     // atc dev --debug
     // atc dev --debug koa:application
-    if (command.debug && command.debug === true) {
+    if (config.debug && config.debug === true) {
         config.env.DEBUG = "*";
     }
-    else if (command.debug && command.debug !== true) {
-        config.env.DEBUG = command.debug;
+    else if (config.debug && config.debug !== true) {
+        config.env.DEBUG = config.debug;
     }
     // 传递了 --inspect 参数，示例：
     // atc dev --inspect
-    const node = `node${!!command.inspect ? " --inspect" : ""}`;
+    const node = `node${!!config.inspect ? " --inspect" : ""}`;
     try {
         const tsnode = require.resolve("ts-node");
         const astroboy_ts = require.resolve("astroboy.ts");
@@ -61,8 +69,8 @@ module.exports = function (_, command) {
         const tsc_path_map = `-r ${require.resolve("tsconfig-paths").replace("/lib/index.js", "")}/register`;
         // 传递了 --tsconfig 参数，示例：
         // atc dev --tsconfig app/tsconfig.json
-        if (command.tsconfig) {
-            config.env.__TSCONFIG = command.tsconfig || "-";
+        if (config.tsconfig) {
+            config.env.__TSCONFIG = config.tsconfig || "-";
         }
         config.env.APP_EXTENSIONS = JSON.stringify(["js", "ts"]);
         config.exec = `${node} ${ts_node} ${tsc_path_map} ${path_1.default.join(projectRoot, "app/app.ts")}`;
@@ -78,8 +86,8 @@ module.exports = function (_, command) {
     // 传递了--mock 参数
     // atc dev --mock
     // atc dev --mock https://127.0.0.1:8001
-    if (command.mock) {
-        const url = command.mock === true ? "http://127.0.0.1:8001" : command.mock;
+    if (config.mock) {
+        const url = config.mock === true ? "http://127.0.0.1:8001" : config.mock;
         config.env.HTTP_PROXY = url;
         config.env.HTTPS_PROXY = url;
     }

@@ -28,7 +28,8 @@ module.exports = function (_, command) {
         tsconfig: undefined
     };
     try {
-        config = Object.assign({}, defaultConfigs, get_1.default(require(path_1.default.join(process.cwd(), fileName)), "routers", {}));
+        const req = require(path_1.default.join(process.cwd(), fileName)) || {};
+        config = Object.assign({}, defaultConfigs, get_1.default(req, "routers", {}), { tsconfig: req.tsconfig || config.tsconfig });
     }
     catch (_) {
         config = defaultConfigs;

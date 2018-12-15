@@ -34,8 +34,9 @@
 
 ### 迭代记录
 
-#### 1.0.2-rc.36
+#### 1.0.2-rc.37
 * 增加 `atc-cli` 对 `router` 命令的config文件支持
+* 调整配置文件参数
 
 #### 1.0.2-rc.35
 * 去除 `atc-cli` 对js的支持，去掉参数 `--ts` 
@@ -186,14 +187,17 @@ astroboy.ts开放了一个配置文件，用来简化cli参数的使用，类似
 const path = require("path");
 
 module.exports = {
+  tsconfig: "tsconfig.json",
+  inspect: true,
+  debug: "*",
+  mock: "http://127.0.0.1:8001",
   // atc router 的命令配置
   routers: {
     enabled: true,
     always: false,
     approot: "/v1",
     filetype: "ts",
-    details: true,
-    tsconfig: "tsconfig.json"
+    details: true
   },
   // atc-cli监控的文件修改列表，自动重启node服务
   watch: [

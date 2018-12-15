@@ -7,7 +7,6 @@ export interface IDevCmdOptions {
   env: string;
   port: number | string;
   mock: string | boolean;
-  ts: boolean;
   tsconfig: string;
   inspect: boolean;
 }
