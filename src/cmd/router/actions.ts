@@ -1,10 +1,35 @@
 import path from "path";
+import get from "lodash/get";
 import { IRouterCmdOptions } from "./options";
 import { exec } from "child_process";
 import chalk from "chalk";
 
 export = function (_, command: IRouterCmdOptions) {
   if (_ !== "router") return;
+  const fileName = command.config || "atc.config.js";
+  let config: any;
+  const defaultConfigs = {
+    enabled: true,
+    always: false,
+    approot: "",
+    filetype: "js",
+    details: false,
+    tsconfig: undefined
+  };
+  try {
+    config = {
+      ...defaultConfigs,
+      ...get(require(path.join(process.cwd(), fileName)), "routers", {})
+    };
+  } catch (_) {
+    config = defaultConfigs;
+  }
+  if (command.enabled) config.enabled = String(command.enabled) === "true";
+  if (command.always) config.always = String(command.always) === "true";
+  if (command.details) config.details = String(command.details) === "true";
+  if (command.approot) config.approot = command.approot;
+  if (command.filetype) config.filetype = command.filetype;
+  if (command.tsconfig) config.tsconfig = command.tsconfig;
   try {
     const tsnode = require.resolve("ts-node");
     const astroboy_ts = require.resolve("astroboy.ts");
@@ -15,12 +40,12 @@ export = function (_, command: IRouterCmdOptions) {
       env: {
         CTOR_PATH: path.resolve(process.cwd(), "app/controllers"),
         ROUTER_PATH: path.resolve(process.cwd(), "app/routers"),
-        ASTT_ENABLED: command.enabled === undefined ? "true" : String(String(command.enabled) === "true"),
-        ASTT_ALWAYS: String(String(command.always) === "true"),
-        APP_ROOT: command.approot || "/",
-        FILE_TYPE: command.filetype || "js",
-        SHOW_ROUTERS: String(String(command.details) === "true"),
-        __TSCONFIG: command.tsconfig || "_"
+        ASTT_ENABLED: config.enabled === undefined ? "true" : String(!!config.enabled === true),
+        ASTT_ALWAYS: String(!!config.always),
+        APP_ROOT: config.approot || "",
+        FILE_TYPE: config.filetype || "js",
+        SHOW_ROUTERS: String(!!config.details),
+        __TSCONFIG: config.tsconfig || "_"
       },
     }, (error, stdout, stderr) => {
       if (error) {

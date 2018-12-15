@@ -2,6 +2,7 @@ import fn from "./actions";
 import { CommandPlugin } from "../base";
 
 export interface IRouterCmdOptions {
+  config?: string;
   enabled?: boolean;
   always?: boolean;
   filetype?: string;
@@ -14,12 +15,13 @@ export const options: CommandPlugin = {
   name: "router",
   description: "astroboy.ts routers cmd",
   options: [
-    ["--enabled [isEnabled]", "open routers-auto-build"],
-    ["--always [isAlways]", "set routers-always-rebuild"],
-    ["--filetype [fileType]", "set routers fileType"],
-    ["--approot [appRoot]", "set routers-root"],
-    ["--tsconfig [tsconfig]", "set tsconfig.json"],
-    ["--details [showRouters]", "show building results or not"],
+    ["-C, --config [atcConfig]", "use atc.config.js"],
+    ["-E, --enabled [isEnabled]", "open routers-auto-build"],
+    ["-A, --always [isAlways]", "set routers-always-rebuild"],
+    ["-F, --filetype [fileType]", "set routers fileType"],
+    ["-R, --approot [appRoot]", "set routers-root"],
+    ["-T, --tsconfig [tsconfig]", "set tsconfig.json"],
+    ["-D, --details [showRouters]", "show building results or not"],
   ],
   action: fn,
   help: () => {

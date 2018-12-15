@@ -1,5 +1,6 @@
 import { CommandPlugin } from "../base";
 export interface IRouterCmdOptions {
+    config?: string;
     enabled?: boolean;
     always?: boolean;
     filetype?: string;

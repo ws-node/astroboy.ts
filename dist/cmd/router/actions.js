@@ -1,6 +1,7 @@
 "use strict";
 const tslib_1 = require("tslib");
 const path_1 = tslib_1.__importDefault(require("path"));
+const get_1 = tslib_1.__importDefault(require("lodash/get"));
 const child_process_1 = require("child_process");
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
 function showRoutes(obj, preK) {
@@ -16,6 +17,34 @@ function showRoutes(obj, preK) {
 module.exports = function (_, command) {
     if (_ !== "router")
         return;
+    const fileName = command.config || "atc.config.js";
+    let config;
+    const defaultConfigs = {
+        enabled: true,
+        always: false,
+        approot: "",
+        filetype: "js",
+        details: false,
+        tsconfig: undefined
+    };
+    try {
+        config = Object.assign({}, defaultConfigs, get_1.default(require(path_1.default.join(process.cwd(), fileName)), "routers", {}));
+    }
+    catch (_) {
+        config = defaultConfigs;
+    }
+    if (command.enabled)
+        config.enabled = String(command.enabled) === "true";
+    if (command.always)
+        config.always = String(command.always) === "true";
+    if (command.details)
+        config.details = String(command.details) === "true";
+    if (command.approot)
+        config.approot = command.approot;
+    if (command.filetype)
+        config.filetype = command.filetype;
+    if (command.tsconfig)
+        config.tsconfig = command.tsconfig;
     try {
         const tsnode = require.resolve("ts-node");
         const astroboy_ts = require.resolve("astroboy.ts");
@@ -26,12 +55,12 @@ module.exports = function (_, command) {
             env: {
                 CTOR_PATH: path_1.default.resolve(process.cwd(), "app/controllers"),
                 ROUTER_PATH: path_1.default.resolve(process.cwd(), "app/routers"),
-                ASTT_ENABLED: command.enabled === undefined ? "true" : String(String(command.enabled) === "true"),
-                ASTT_ALWAYS: String(String(command.always) === "true"),
-                APP_ROOT: command.approot || "/",
-                FILE_TYPE: command.filetype || "js",
-                SHOW_ROUTERS: String(String(command.details) === "true"),
-                __TSCONFIG: command.tsconfig || "_"
+                ASTT_ENABLED: config.enabled === undefined ? "true" : String(!!config.enabled === true),
+                ASTT_ALWAYS: String(!!config.always),
+                APP_ROOT: config.approot || "",
+                FILE_TYPE: config.filetype || "js",
+                SHOW_ROUTERS: String(!!config.details),
+                __TSCONFIG: config.tsconfig || "_"
             },
         }, (error, stdout, stderr) => {
             if (error) {
