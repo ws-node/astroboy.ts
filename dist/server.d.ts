@@ -236,6 +236,7 @@ export declare class Server {
     private finalInjectionsInit;
     private readConfigs;
     private startApp;
+    private readRuntimeEnv;
     /**
      * ## 按照配置设置DI的解析方式
      * * `native` : 原生模式

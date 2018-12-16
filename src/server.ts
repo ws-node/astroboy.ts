@@ -42,6 +42,7 @@ import {
   NUNJUNKS_OPTIONS,
   defaultNunjunksOptions
 } from "./plugins/nunjunks";
+import { SimpleLogger } from "./plugins/simple-logger";
 import { Render } from "./services/Render";
 import { initRouters } from "./builders";
 
@@ -344,6 +345,7 @@ export class Server {
     // 不允许装饰器复写
     this.scoped(AstroboyContext);
     this.scoped(Scope);
+    this.singleton(SimpleLogger);
     // 允许被装饰器复写
     this.di.register(NunjunksEngine, NunjunksEngine, InjectScope.Scope);
     this.di.register(Render, Render, InjectScope.Scope);
@@ -379,12 +381,17 @@ export class Server {
     } = events || {};
     new (this.appBuilder || Astroboy)(this.appConfigs || {}).on("start", (app: Koa) => {
       this.readConfigs(app["config"]);
+      this.readRuntimeEnv(app);
       this.resetDIResolver();
       this.resolveInjections();
       onStart && onStart(app);
     }).on("error", (error, ctx) => {
       onError && onError(error, ctx);
     });
+  }
+
+  private readRuntimeEnv(app: Koa) {
+    this.option(ENV, { env: app.env || "development" });
   }
 
   /**

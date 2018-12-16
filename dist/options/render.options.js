@@ -14,6 +14,16 @@ exports.defaultRenderResultOptions = {
     engine: "nunjunks",
     engines: {
         nunjunks: nunjunks_1.NunjunksEngine
+    },
+    onError: {
+        path: undefined,
+        tplStr: undefined,
+        content: (_) => "Internal Server Error"
+    },
+    onDevError: {
+        path: undefined,
+        tplStr: undefined,
+        content: (e) => `<h3 style="color: red">${(e.name && `模板渲染错误: ${e.name}`) || "模板渲染错误"}<h3><pre>${e.stack}</pre>`
     }
 };
 exports.RENDER_RESULT_OPTIONS = Configs_1.createOptions("RENDER_RESULT_OPTIONS");

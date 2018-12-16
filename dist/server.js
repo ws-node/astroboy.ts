@@ -13,6 +13,7 @@ const options_1 = require("./options");
 const Configs_1 = require("./services/Configs");
 const typed_serializer_1 = require("./plugins/typed-serializer");
 const nunjunks_1 = require("./plugins/nunjunks");
+const simple_logger_1 = require("./plugins/simple-logger");
 const Render_1 = require("./services/Render");
 const builders_1 = require("./builders");
 /**
@@ -96,6 +97,7 @@ class Server {
         // 不允许装饰器复写
         this.scoped(AstroboyContext_1.AstroboyContext);
         this.scoped(Scope_1.Scope);
+        this.singleton(simple_logger_1.SimpleLogger);
         // 允许被装饰器复写
         this.di.register(nunjunks_1.NunjunksEngine, nunjunks_1.NunjunksEngine, di_1.InjectScope.Scope);
         this.di.register(Render_1.Render, Render_1.Render, di_1.InjectScope.Scope);
@@ -121,12 +123,16 @@ class Server {
         const { onStart = undefined, onError = undefined } = events || {};
         new (this.appBuilder || astroboy_1.default)(this.appConfigs || {}).on("start", (app) => {
             this.readConfigs(app["config"]);
+            this.readRuntimeEnv(app);
             this.resetDIResolver();
             this.resolveInjections();
             onStart && onStart(app);
         }).on("error", (error, ctx) => {
             onError && onError(error, ctx);
         });
+    }
+    readRuntimeEnv(app) {
+        this.option(configs_1.ENV, { env: app.env || "development" });
     }
     /**
      * ## 按照配置设置DI的解析方式

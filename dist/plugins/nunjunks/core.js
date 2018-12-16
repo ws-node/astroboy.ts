@@ -22,12 +22,12 @@ let NunjunksEngine = class NunjunksEngine {
     }
     render(name, configs) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.createEnv(configs).render(name, this.rs.views);
+            return this.createEnv(configs).render(name, this.rs.views);
         });
     }
     renderString(tpl, configs) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.createEnv(configs).renderString(tpl, this.rs.views);
+            return this.createEnv(configs).renderString(tpl, this.rs.views);
         });
     }
 };
