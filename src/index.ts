@@ -71,7 +71,12 @@ export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
 export * from "./results/render";
 
-export { TypedSerializer } from "./plugins/typed-serializer";
+export {
+  TypedSerializer,
+  Serialize,
+  Deserialize,
+  Extends
+} from "./plugins/typed-serializer";
 export { NUNJUNKS_OPTIONS } from "./plugins/nunjunks";
 
 export {
