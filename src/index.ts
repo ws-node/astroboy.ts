@@ -70,7 +70,9 @@ export * from "./typings/IViewEngine";
 export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
 export * from "./results/render";
-export * from "./plugins/typed-serializer";
+
+export { TypedSerializer } from "./plugins/typed-serializer";
+export { NUNJUNKS_OPTIONS } from "./plugins/nunjunks";
 
 export {
   Configs,
