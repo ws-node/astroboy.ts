@@ -23,8 +23,9 @@
 > 😨更多功能正在开发中...
 
 ### Wiki + Demo
-* [Demo](https://github.com/ws-node/demo2.astroboy.ts) - astroboy.ts 最新功能预览(可以切换本地和npm导包方式)
-* [Demo](https://github.com/ws-node/demo.astroboy.ts) - astroboy.ts 最大兼容预览(可以切换本地和npm导包方式)
+* [Demo1:多版本并存](https://github.com/ws-node/demo.astroboy.ts) - 最大兼容预览(多重代码风格可以共存)
+* [Demo2:全量astroboy.ts+构建base项目包](https://github.com/ws-node/demo2.astroboy.ts) - base仓库预览(构建继承astroboy.ts的base项目)
+* [Demo3:使用base仓库构建应用](https://github.com/ws-node/demo3.astroboy.ts) - 最大预览(使用base项目构建应用)
 * [Core](https://github.com/ws-node/astroboy.ts/wiki/Core) - 核心组件
 * [Services](https://github.com/ws-node/astroboy.ts/wiki/Services) - 内置服务列表
 * [Configs/Options](https://github.com/ws-node/astroboy.ts/wiki/Configs-Options) - 配置列表
