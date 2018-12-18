@@ -17,6 +17,7 @@ export interface RenderResultOptions<T extends string | Symbol = any> {
         use: boolean;
         configs: any;
     };
+    root?: string;
     path?: string;
     tplStr?: string;
     state?: any;

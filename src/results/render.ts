@@ -19,7 +19,8 @@ export class RenderResult implements IResult {
     const { ctx } = injector.get(Context);
     const opts = merge(<RenderResultOptions>{}, configs.get(RENDER_RESULT_OPTIONS) || {}, this.configs || {});
     const {
-      path,
+      root,
+      path: xpath,
       tplStr,
       state,
       engines,
@@ -28,9 +29,10 @@ export class RenderResult implements IResult {
       configs: confs,
     } = opts;
     if (astConf && !!astConf.use) {
-      return await ctx.render(path, state, astConf.configs);
+      return await ctx.render(xpath, state, astConf.configs);
     }
     const engine = injector.get(engines[key]);
+    const path = !root ? xpath : `${root}/${xpath}`;
     try {
       return !tplStr ?
         await engine.render(path, confs) :

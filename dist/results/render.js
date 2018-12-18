@@ -15,11 +15,12 @@ class RenderResult {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const { ctx } = injector.get(Context_1.Context);
             const opts = merge_1.default({}, configs.get(options_1.RENDER_RESULT_OPTIONS) || {}, this.configs || {});
-            const { path, tplStr, state, engines, astConf, engine: key, configs: confs, } = opts;
+            const { root, path: xpath, tplStr, state, engines, astConf, engine: key, configs: confs, } = opts;
             if (astConf && !!astConf.use) {
-                return yield ctx.render(path, state, astConf.configs);
+                return yield ctx.render(xpath, state, astConf.configs);
             }
             const engine = injector.get(engines[key]);
+            const path = !root ? xpath : `${root}/${xpath}`;
             try {
                 return !tplStr ?
                     yield engine.render(path, confs) :

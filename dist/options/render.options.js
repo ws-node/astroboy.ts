@@ -9,6 +9,7 @@ exports.defaultRenderResultOptions = {
     },
     path: "",
     tplStr: undefined,
+    root: undefined,
     state: undefined,
     configs: undefined,
     engine: "nunjunks",
