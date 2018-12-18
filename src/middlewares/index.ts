@@ -17,7 +17,7 @@ export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
   const injector = GlobalDI.get(InjectService, scopeId);
   const logger = injector.get(SimpleLogger);
   const scope = injector.get(Scope);
-  scope.init(scopeId).begin();
+  scope["init"](scopeId)["begin"]();
   logger.trace(`scope ${
     setColor("cyan", getShortScopeId(scopeId))
     } is init.`
@@ -26,7 +26,7 @@ export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
     await next();
   } finally {
     const scope = injector.get(Scope);
-    scope.end();
+    scope["end"]();
     const duration = scope.diration();
     logger.trace(`scope ${
       setColor("cyan", getShortScopeId(injector.scopeId))

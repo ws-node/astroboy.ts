@@ -18,14 +18,14 @@ exports.serverInit = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, func
     const injector = utils_1.GlobalDI.get(Injector_1.InjectService, scopeId);
     const logger = injector.get(simple_logger_1.SimpleLogger);
     const scope = injector.get(Scope_1.Scope);
-    scope.init(scopeId).begin();
+    scope["init"](scopeId)["begin"]();
     logger.trace(`scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(scopeId))} is init.`);
     try {
         yield next();
     }
     finally {
         const scope = injector.get(Scope_1.Scope);
-        scope.end();
+        scope["end"]();
         const duration = scope.diration();
         logger.trace(`scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(injector.scopeId))} is [${utils_1.setColor(duration > 500 ? "red" : duration > 200 ? "yellow" : "green", duration)} ms] disposed.`);
         injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();

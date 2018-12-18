@@ -1,4 +1,10 @@
 import { InjectDIToken, ScopeID } from "@bonbons/di";
+export declare namespace InjectService {
+    interface Contract {
+        readonly scopeId: ScopeID;
+        get<T>(token: InjectDIToken<T>): T;
+    }
+}
 /**
  * ## 依赖注入服务
  * * 手动注入器
@@ -8,7 +14,7 @@ import { InjectDIToken, ScopeID } from "@bonbons/di";
  * @abstract
  * @class InjectService
  */
-export declare abstract class InjectService {
+export declare abstract class InjectService implements InjectService.Contract {
     abstract readonly scopeId: ScopeID;
     /**
      * ### 解析并获得类型实例

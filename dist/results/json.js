@@ -6,6 +6,15 @@ const decamelize_1 = tslib_1.__importDefault(require("decamelize"));
 const set_1 = tslib_1.__importDefault(require("lodash/set"));
 const options_1 = require("../options");
 const utils_1 = require("../utils");
+/**
+ * ## Body序列化约定实现
+ * * 按照约定将内容序列化到body响应中
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class JsonResult
+ * @implements {IResult}
+ */
 class JsonResult {
     constructor(value, configs) {
         this.value = value;

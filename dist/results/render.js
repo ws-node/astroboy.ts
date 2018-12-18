@@ -7,17 +7,27 @@ const Context_1 = require("../services/Context");
 const simple_logger_1 = require("../plugins/simple-logger");
 const env_config_1 = require("../configs/env.config");
 const Render_1 = require("../services/Render");
+/**
+ * ## Body渲染约定的实现
+ * * 按照约定将模板渲染到body相应中
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class RenderResult
+ * @implements {IResult}
+ */
 class RenderResult {
     constructor(value) {
         this.configs = typeof value === "string" ? { path: value } : value;
     }
+    /** 框架调用，请勿手动调用 */
     toResult({ injector, configs }) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const { ctx } = injector.get(Context_1.Context);
             const opts = merge_1.default({}, configs.get(options_1.RENDER_RESULT_OPTIONS) || {}, this.configs || {});
-            const { root, path: xpath, tplStr, state, engines, astConf, engine: key, configs: confs, } = opts;
+            const { root, path: xpath, tplStr, engines, astConf, engine: key, configs: confs, } = opts;
             if (astConf && !!astConf.use) {
-                return yield ctx.render(xpath, state, astConf.configs);
+                return yield ctx.render(xpath, astConf.state, astConf.configs);
             }
             const engine = injector.get(engines[key]);
             const path = !root ? xpath : `${root}/${xpath}`;

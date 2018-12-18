@@ -7,6 +7,13 @@ const decorators_1 = require("../decorators");
 const AstroboyContext_1 = require("./AstroboyContext");
 const utils_1 = require("../utils");
 const json_1 = require("../results/json");
+/**
+ * ## 统一渲染服务
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class Render
+ */
 let Render = class Render {
     constructor(context) {
         this.context = context;

@@ -1,12 +1,18 @@
 import { ScopeID } from "@bonbons/di";
-export declare class Scope {
+export declare namespace Scope {
+    interface Contract {
+        readonly id: ScopeID;
+        diration(): number;
+    }
+}
+export declare class Scope implements Scope.Contract {
     private _init;
-    private scopeId?;
+    private scopeId;
     private start;
     private stop;
     readonly id: ScopeID;
-    init(id: ScopeID): this;
-    begin(): void;
-    end(): void;
+    protected init(id: ScopeID): this;
+    protected begin(): void;
+    protected end(): void;
     diration(): number;
 }

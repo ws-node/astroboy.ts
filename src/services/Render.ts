@@ -9,8 +9,25 @@ interface IGlobalSetOptions {
   toSnake: boolean;
 }
 
+export namespace Render {
+  export interface Contract {
+    readonly views: any;
+    setView(obj: { [prop: string]: any }): void;
+    setView(obj: { [prop: string]: any }, options: Partial<IGlobalSetOptions>): void;
+    setView(key: string, obj: any): void;
+    setView(key: string, obj: any, options: Partial<IGlobalSetOptions>): void;
+  }
+}
+
+/**
+ * ## 统一渲染服务
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class Render
+ */
 @Injectable()
-export class Render {
+export class Render implements Render.Contract {
 
   private _views: any = {};
 

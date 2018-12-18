@@ -7,6 +7,15 @@ import { ENV } from "../configs/env.config";
 import { IContext } from "../typings/IContext";
 import { Render } from "../services/Render";
 
+/**
+ * ## Body渲染约定的实现
+ * * 按照约定将模板渲染到body相应中
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class RenderResult
+ * @implements {IResult}
+ */
 export class RenderResult implements IResult {
 
   private configs!: Partial<RenderResultOptions>;
@@ -15,6 +24,7 @@ export class RenderResult implements IResult {
     this.configs = typeof value === "string" ? { path: value } : value;
   }
 
+  /** 框架调用，请勿手动调用 */
   async toResult({ injector, configs }: IResultScope): Promise<string> {
     const { ctx } = injector.get(Context);
     const opts = merge(<RenderResultOptions>{}, configs.get(RENDER_RESULT_OPTIONS) || {}, this.configs || {});
@@ -22,14 +32,13 @@ export class RenderResult implements IResult {
       root,
       path: xpath,
       tplStr,
-      state,
       engines,
       astConf,
       engine: key,
       configs: confs,
     } = opts;
     if (astConf && !!astConf.use) {
-      return await ctx.render(xpath, state, astConf.configs);
+      return await ctx.render(xpath, astConf.state, astConf.configs);
     }
     const engine = injector.get(engines[key]);
     const path = !root ? xpath : `${root}/${xpath}`;
