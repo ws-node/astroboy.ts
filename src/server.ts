@@ -215,8 +215,7 @@ export class Server {
    */
   public scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: TImplement): this;
   public scoped(...args: any[]): this {
-    this.preScopeds.push([args[0], args[1] || args[0]]);
-    return this;
+    return this.preInject(InjectScope.Scope, <any>args);
   }
 
   /**
@@ -299,7 +298,40 @@ export class Server {
    */
   public singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: TImplement): this;
   public singleton(...args: any[]): this {
-    this.preSingletons.push([args[0], args[1] || args[0]]);
+    return this.preInject(InjectScope.Singleton, <any>args);
+  }
+
+  /** 预注册，会覆盖装饰器的定义注册 */
+  private preInject(type: InjectScope, service: Constructor<any>): this;
+  private preInject(type: InjectScope, token_implement: [Constructor<any>, any]): this;
+  private preInject(type: InjectScope, p: any | [any, any]) {
+    const args = p instanceof Array ? p : [p, p];
+    switch (type) {
+      case InjectScope.Scope:
+        this.preScopeds.push([args[0], args[1] || args[0]]);
+        break;
+      case InjectScope.Singleton:
+        this.preSingletons.push([args[0], args[1] || args[0]]);
+        break;
+      default: break;
+    }
+    return this;
+  }
+
+  /** 直接注册，允许`@Injectable()`装饰器之后进行定义复写 */
+  private directInject(type: InjectScope, service: Constructor<any>): this;
+  private directInject(type: InjectScope, token_implement: [Constructor<any>, any]): this;
+  private directInject(type: InjectScope, p: any | [any, any]) {
+    const args = p instanceof Array ? p : [p, p];
+    switch (type) {
+      case InjectScope.Scope:
+        this.di.register(args[0], args[1] || args[0], InjectScope.Scope);
+        break;
+      case InjectScope.Singleton:
+        this.di.register(args[0], args[1] || args[0], InjectScope.Singleton);
+        break;
+      default: break;
+    }
     return this;
   }
 
@@ -347,8 +379,8 @@ export class Server {
     this.scoped(Scope);
     this.singleton(SimpleLogger);
     // 允许被装饰器复写
-    this.di.register(NunjunksEngine, NunjunksEngine, InjectScope.Scope);
-    this.di.register(Render, Render, InjectScope.Scope);
+    this.directInject(InjectScope.Scope, NunjunksEngine);
+    this.directInject(InjectScope.Scope, Render);
   }
 
   private initRouters() {
