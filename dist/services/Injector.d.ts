@@ -47,3 +47,8 @@ export declare abstract class InjectService implements InjectService.Contract {
  * @param {string[]} depts 所有祖先实例在内部的字段名
  */
 export declare function createInjectMixin<T extends object>(target: T, depts: string[]): T;
+export declare function createInjectMixin<T extends object, P1>(target: T, ...depts: [P1]): T & P1;
+export declare function createInjectMixin<T extends object, P1, P2>(target: T, ...depts: [P1, P2]): T & P1 & P2;
+export declare function createInjectMixin<T extends object, P1, P2, P3>(target: T, ...depts: [P1, P2, P3]): T & P1 & P2 & P3;
+export declare function createInjectMixin<T extends object, P1, P2, P3, P4>(target: T, ...depts: [P1, P2, P3, P4]): T & P1 & P2 & P3 & P4;
+export declare function createInjectMixin<T extends object>(target: T, ...depts: any[]): T;
