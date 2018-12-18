@@ -1,48 +1,6 @@
-import {
-  serializeAs, deserializeAs,
-  inheritSerialization, Serialize,
-  Deserialize, GenericDeserialize
-} from "cerialize";
 import { Constructor } from "@bonbons/di";
-import { IStaticTypedResolver, IStaticSerializeOptions } from "../typings/IStaticTypeResolver";
-import { getPropertyType } from "../utils";
-
-/**
- * 内建静态类型序列化工具类
- * @description
- * @author Big Mogician
- * @export
- * @class TypedSerializerCreator
- * @implements {IStaticTypedResolver}
- */
-export class TypedSerializerCreator implements IStaticTypedResolver {
-
-  public ToJSON<T = any>(obj: any, options?: Partial<IStaticSerializeOptions<T>>): string {
-    if (options === undefined) options = { format: false };
-    return JSON.stringify(Serialize(obj, options.type), null, options.format ? "  " : 0);
-  }
-
-  public FromJSON<T = any>(json: string, type?: Constructor<T>): T {
-    return !type ?
-      Deserialize(JSON.parse(json)) as T :
-      GenericDeserialize(JSON.parse(json), type) as T;
-  }
-
-  public ToObject<T = any>(obj: any, options?: Partial<IStaticSerializeOptions<T>>): any {
-    if (options === undefined) options = { format: false };
-    return Serialize(obj, options.type);
-  }
-
-  public FromObject<T>(json: any, type?: Constructor<T>): T {
-    return !type ?
-      Deserialize(json) as T :
-      GenericDeserialize(json, type) as T;
-  }
-
-}
-
-/** 内建静态类型序列化工具 (based on cerialize) */
-export const TypedSerializer = new TypedSerializerCreator();
+import { getPropertyType } from "../../utils";
+import { serializeAs, deserializeAs, inheritSerialization } from "cerialize";
 
 /**
  * 定义一个静态类型字段的序列化行为
