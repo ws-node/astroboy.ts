@@ -11,6 +11,24 @@
   "bin": {
     "atc": "bin/atc"
   },
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ws-node/astroboy.ts.git"
@@ -61,6 +79,7 @@
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "nyc": "^13.0.1",
+    "source-map-support": "^0.5.9",
     "ts-node": "7.0.1",
     "tslint": "5.11.0",
     "typescript": "3.2.1"

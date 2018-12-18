@@ -4,6 +4,7 @@
 [![NPM][npm-icon]][npm-url]
 
 [![Build status][ci-image]][ci-url]
+[![Coverage Status][cover-image]][cover-url]
 
 
 ### 已经实现的功能
@@ -466,3 +467,5 @@ SOFTWARE.
 [npm-url]: https://npmjs.org/package/astroboy.ts
 [ci-image]: https://travis-ci.org/ws-node/astroboy.ts.svg?branch=master
 [ci-url]: https://travis-ci.org/ws-node/astroboy.ts
+[cover-image]: https://coveralls.io/repos/github/ws-node/astroboy.ts/badge.svg?branch=master
+[cover-url]: https://coveralls.io/github/ws-node/astroboy.ts?branch=master
