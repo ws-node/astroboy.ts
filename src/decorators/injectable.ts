@@ -38,6 +38,6 @@ export function Injectable(config?: InjectScope | Partial<IInjectableConfigs>) {
     const prototype: IBaseInjectable = target.prototype;
     prototype.__valid = true;
     GlobalDI.register(token || target, target, scope);
-    return <Constructor<T>>(token || target);
+    return <Constructor<T>>(target);
   };
 }

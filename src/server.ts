@@ -319,10 +319,9 @@ export class Server {
   }
 
   /** 直接注册，允许`@Injectable()`装饰器之后进行定义复写 */
-  private directInject(type: InjectScope, service: Constructor<any>): this;
+  private directInject(type: InjectScope, service: [Constructor<any>]): this;
   private directInject(type: InjectScope, token_implement: [Constructor<any>, any]): this;
-  private directInject(type: InjectScope, p: any | [any, any]) {
-    const args = p instanceof Array ? p : [p, p];
+  private directInject(type: InjectScope, args: [any] | [any, any]) {
     switch (type) {
       case InjectScope.Scope:
         this.di.register(args[0], args[1] || args[0], InjectScope.Scope);
@@ -379,8 +378,8 @@ export class Server {
     this.scoped(Scope);
     this.singleton(SimpleLogger);
     // 允许被装饰器复写
-    this.directInject(InjectScope.Scope, NunjunksEngine);
-    this.directInject(InjectScope.Scope, Render);
+    this.directInject(InjectScope.Scope, [NunjunksEngine]);
+    this.directInject(InjectScope.Scope, [Render]);
   }
 
   private initRouters() {

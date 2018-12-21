@@ -73,8 +73,7 @@ class Server {
         }
         return this;
     }
-    directInject(type, p) {
-        const args = p instanceof Array ? p : [p, p];
+    directInject(type, args) {
         switch (type) {
             case di_1.InjectScope.Scope:
                 this.di.register(args[0], args[1] || args[0], di_1.InjectScope.Scope);
@@ -123,8 +122,8 @@ class Server {
         this.scoped(Scope_1.Scope);
         this.singleton(simple_logger_1.SimpleLogger);
         // 允许被装饰器复写
-        this.directInject(di_1.InjectScope.Scope, nunjunks_1.NunjunksEngine);
-        this.directInject(di_1.InjectScope.Scope, Render_1.Render);
+        this.directInject(di_1.InjectScope.Scope, [nunjunks_1.NunjunksEngine]);
+        this.directInject(di_1.InjectScope.Scope, [Render_1.Render]);
     }
     initRouters() {
         builders_1.initRouters(this.configs.get(options_1.ROUTER_OPTIONS));
