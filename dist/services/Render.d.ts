@@ -27,6 +27,15 @@ export declare class Render implements Render.Contract {
     private _views;
     readonly views: any;
     constructor(context: AstroboyContext);
+    /**
+     * ## Render init
+     * * 重载方法已实现新的初始化逻辑
+     * @description
+     * @author Big Mogician
+     * @protected
+     * @memberof Render
+     */
+    protected init(): void;
     setView(obj: {
         [prop: string]: any;
     }): void;

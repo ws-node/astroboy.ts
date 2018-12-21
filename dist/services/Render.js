@@ -18,8 +18,18 @@ let Render = class Render {
     constructor(context) {
         this.context = context;
         this._views = {};
+        this.init();
     }
     get views() { return this._views; }
+    /**
+     * ## Render init
+     * * 重载方法已实现新的初始化逻辑
+     * @description
+     * @author Big Mogician
+     * @protected
+     * @memberof Render
+     */
+    init() { }
     setView(...args) {
         const [p1, p2, p3] = args;
         let toSnake = false;

@@ -33,7 +33,19 @@ export class Render implements Render.Contract {
 
   public get views() { return this._views; }
 
-  constructor(private context: AstroboyContext) { }
+  constructor(private context: AstroboyContext) {
+    this.init();
+  }
+
+  /**
+   * ## Render init
+   * * 重载方法已实现新的初始化逻辑
+   * @description
+   * @author Big Mogician
+   * @protected
+   * @memberof Render
+   */
+  protected init() { }
 
   public setView(obj: { [prop: string]: any }): void;
   public setView(obj: { [prop: string]: any }, options: Partial<IGlobalSetOptions>): void;
