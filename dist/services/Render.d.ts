@@ -23,7 +23,7 @@ export declare namespace Render {
  * @class Render
  */
 export declare class Render implements Render.Contract {
-    private context;
+    protected context: AstroboyContext;
     private _views;
     readonly views: any;
     constructor(context: AstroboyContext);

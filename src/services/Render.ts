@@ -33,7 +33,7 @@ export class Render implements Render.Contract {
 
   public get views() { return this._views; }
 
-  constructor(private context: AstroboyContext) {
+  constructor(protected context: AstroboyContext) {
     this.init();
   }
 
