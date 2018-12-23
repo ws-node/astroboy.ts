@@ -55,5 +55,6 @@ export * from "./results/json";
 export * from "./results/render";
 export { TypedSerializer, Serialize, Deserialize, Extends } from "./plugins/typed-serializer";
 export { NUNJUNKS_OPTIONS } from "./plugins/nunjunks";
+export { SIMPLE_LOGGER_OPTIONS } from "./plugins/simple-logger";
 export { Configs, ConfigToken, ConfigEntry, createOptions, createConfig, TokenGenerator, InjectScope } from "./services/Configs";
 export { Astroboy };

@@ -6,7 +6,7 @@ const chai_1 = require("chai");
 require("mocha");
 describe("astroboy.ts/src/index.ts", () => {
     it("test astroboy.ts package exports", () => {
-        chai_1.expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(55);
+        chai_1.expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(56);
         chai_1.expect(typeof Pkg.API, "[astroboy.ts].API").to.equal("function");
         chai_1.expect(typeof Pkg.Astroboy, "[astroboy.ts].Astroboy").to.equal("function");
         chai_1.expect(typeof Pkg.AstroboyContext, "[astroboy.ts].AstroboyContext").to.equal("function");
@@ -62,6 +62,8 @@ describe("astroboy.ts/src/index.ts", () => {
         chai_1.expect(typeof Pkg.injectScope, "[astroboy.ts].injectScope").to.equal("function");
         chai_1.expect(typeof Pkg.preInitFn, "[astroboy.ts].preInitFn").to.equal("function");
         chai_1.expect(typeof Pkg.serverInit, "[astroboy.ts].serverInit").to.equal("function");
+        // 20181223
+        chai_1.expect(typeof Pkg.SIMPLE_LOGGER_OPTIONS, "[astroboy.ts].SIMPLE_LOGGER_OPTIONS").to.equal("object");
     });
 });
 //# sourceMappingURL=index.spec.js.map

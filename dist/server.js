@@ -115,6 +115,7 @@ class Server {
         this.option(options_1.STATIC_RESOLVER, typed_serializer_1.TypedSerializer);
         this.option(options_1.ROUTER_OPTIONS, options_1.defaultRouterOptions);
         this.option(nunjunks_1.NUNJUNKS_OPTIONS, nunjunks_1.defaultNunjunksOptions);
+        this.option(simple_logger_1.SIMPLE_LOGGER_OPTIONS, simple_logger_1.defaultSimpleLoggerOptions);
     }
     initInjections() {
         // 不允许装饰器复写

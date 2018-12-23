@@ -6,7 +6,7 @@ import "mocha";
 describe("astroboy.ts/src/index.ts", () => {
 
   it("test astroboy.ts package exports", () => {
-    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(55);
+    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(56);
     expect(typeof Pkg.API, "[astroboy.ts].API").to.equal("function");
     expect(typeof Pkg.Astroboy, "[astroboy.ts].Astroboy").to.equal("function");
     expect(typeof Pkg.AstroboyContext, "[astroboy.ts].AstroboyContext").to.equal("function");
@@ -62,6 +62,8 @@ describe("astroboy.ts/src/index.ts", () => {
     expect(typeof Pkg.injectScope, "[astroboy.ts].injectScope").to.equal("function");
     expect(typeof Pkg.preInitFn, "[astroboy.ts].preInitFn").to.equal("function");
     expect(typeof Pkg.serverInit, "[astroboy.ts].serverInit").to.equal("function");
+    // 20181223
+    expect(typeof Pkg.SIMPLE_LOGGER_OPTIONS, "[astroboy.ts].SIMPLE_LOGGER_OPTIONS").to.equal("object");
   });
 
 });

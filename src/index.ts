@@ -78,6 +78,7 @@ export {
   Extends
 } from "./plugins/typed-serializer";
 export { NUNJUNKS_OPTIONS } from "./plugins/nunjunks";
+export { SIMPLE_LOGGER_OPTIONS } from "./plugins/simple-logger";
 
 export {
   Configs,

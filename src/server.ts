@@ -42,7 +42,7 @@ import {
   NUNJUNKS_OPTIONS,
   defaultNunjunksOptions
 } from "./plugins/nunjunks";
-import { SimpleLogger } from "./plugins/simple-logger";
+import { SimpleLogger, SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions } from "./plugins/simple-logger";
 import { Render } from "./services/Render";
 import { initRouters } from "./builders";
 
@@ -370,6 +370,7 @@ export class Server {
     this.option(STATIC_RESOLVER, TypedSerializer);
     this.option(ROUTER_OPTIONS, defaultRouterOptions);
     this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
+    this.option(SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions);
   }
 
   private initInjections() {
