@@ -27,11 +27,9 @@ export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
   try {
     await next();
   } catch (error) {
-    const { handler } = this.configs.get(GLOBAL_ERROR);
+    const configs = injector.get(Configs);
+    const { handler } = configs.get(GLOBAL_ERROR);
     if (handler) {
-      const scopeId = getScopeId(ctx);
-      const injector = this.di.get(InjectService, scopeId);
-      const configs = this.di.get(Configs, scopeId);
       handler(error, injector, configs);
     }
   } finally {

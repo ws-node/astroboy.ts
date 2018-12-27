@@ -26,11 +26,9 @@ exports.serverInit = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, func
         yield next();
     }
     catch (error) {
-        const { handler } = this.configs.get(errors_options_1.GLOBAL_ERROR);
+        const configs = injector.get(Configs_1.Configs);
+        const { handler } = configs.get(errors_options_1.GLOBAL_ERROR);
         if (handler) {
-            const scopeId = utils_1.getScopeId(ctx);
-            const injector = this.di.get(Injector_1.InjectService, scopeId);
-            const configs = this.di.get(Configs_1.Configs, scopeId);
             handler(error, injector, configs);
         }
     }
