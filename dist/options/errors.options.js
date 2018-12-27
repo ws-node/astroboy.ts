@@ -7,16 +7,24 @@ const render_options_1 = require("./render.options");
 const env_config_1 = require("../configs/env.config");
 const Context_1 = require("../services/Context");
 const Render_1 = require("../services/Render");
+const simple_logger_1 = require("../plugins/simple-logger");
 exports.defaultGlobalError = {
     handler: (error, injector, configs) => tslib_1.__awaiter(this, void 0, void 0, function* () {
         const render = injector.get(Render_1.Render);
         const { ctx } = injector.get(Context_1.Context);
         const { env } = configs.get(env_config_1.ENV);
         const { onError, onDevError } = configs.get(render_options_1.RENDER_RESULT_OPTIONS);
-        const _a = Object.assign({}, (env === "production" ? onError : onDevError)), { content: _ } = _a, args = tslib_1.__rest(_a, ["content"]);
+        const _a = env === "production" ? onError : onDevError, { content: defaultRender } = _a, args = tslib_1.__rest(_a, ["content"]);
         render.setView("__viewError", error);
-        const result = new render_1.RenderResult(args);
-        ctx.body = yield result.toResult({ injector, configs });
+        try {
+            const result = new render_1.RenderResult(args);
+            ctx.body = yield result.toResult({ injector, configs });
+        }
+        catch (_) {
+            const logger = injector.get(simple_logger_1.SimpleLogger);
+            logger.trace("GLOBAL_ERROR render failed", _);
+            ctx.body = defaultRender(error);
+        }
     })
 };
 exports.GLOBAL_ERROR = Configs_1.createOptions("GLOBAL_ERROR");
