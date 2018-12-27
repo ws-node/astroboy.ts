@@ -6,7 +6,8 @@ import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
 import {
   GlobalDI,
-  optionAssign
+  optionAssign,
+  getScopeId
 } from "./utils";
 import {
   Constructor,
@@ -29,7 +30,9 @@ import {
   defaultRouterOptions,
   RENDER_RESULT_OPTIONS,
   defaultRenderResultOptions,
-  STATIC_RESOLVER
+  STATIC_RESOLVER,
+  defaultGlobalError,
+  GLOBAL_ERROR
 } from "./options";
 import {
   RealConfigCollection,
@@ -371,6 +374,7 @@ export class Server {
     this.option(ROUTER_OPTIONS, defaultRouterOptions);
     this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
     this.option(SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions);
+    this.option(GLOBAL_ERROR, defaultGlobalError);
   }
 
   private initInjections() {
@@ -419,6 +423,13 @@ export class Server {
       onStart && onStart(app);
     }).on("error", (error, ctx) => {
       onError && onError(error, ctx);
+      const { handler } = this.configs.get(GLOBAL_ERROR);
+      if (handler) {
+        const scopeId = getScopeId(ctx);
+        const injector = this.di.get(InjectService, scopeId);
+        const configs = this.di.get(Configs, scopeId);
+        handler(error, injector, configs);
+      }
     });
   }
 

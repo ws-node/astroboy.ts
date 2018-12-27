@@ -116,6 +116,7 @@ class Server {
         this.option(options_1.ROUTER_OPTIONS, options_1.defaultRouterOptions);
         this.option(nunjunks_1.NUNJUNKS_OPTIONS, nunjunks_1.defaultNunjunksOptions);
         this.option(simple_logger_1.SIMPLE_LOGGER_OPTIONS, simple_logger_1.defaultSimpleLoggerOptions);
+        this.option(options_1.GLOBAL_ERROR, options_1.defaultGlobalError);
     }
     initInjections() {
         // 不允许装饰器复写
@@ -153,6 +154,13 @@ class Server {
             onStart && onStart(app);
         }).on("error", (error, ctx) => {
             onError && onError(error, ctx);
+            const { handler } = this.configs.get(options_1.GLOBAL_ERROR);
+            if (handler) {
+                const scopeId = utils_1.getScopeId(ctx);
+                const injector = this.di.get(Injector_1.InjectService, scopeId);
+                const configs = this.di.get(Configs_1.Configs, scopeId);
+                handler(error, injector, configs);
+            }
         });
     }
     readRuntimeEnv(app) {
