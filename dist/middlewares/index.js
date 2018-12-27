@@ -29,7 +29,7 @@ exports.serverInit = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, func
         const configs = injector.get(Configs_1.Configs);
         const { handler } = configs.get(errors_options_1.GLOBAL_ERROR);
         if (handler) {
-            handler(error, injector, configs);
+            yield handler(error, injector, configs);
         }
     }
     finally {

@@ -30,7 +30,7 @@ export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
     const configs = injector.get(Configs);
     const { handler } = configs.get(GLOBAL_ERROR);
     if (handler) {
-      handler(error, injector, configs);
+      await handler(error, injector, configs);
     }
   } finally {
     const scope = injector.get(Scope);
