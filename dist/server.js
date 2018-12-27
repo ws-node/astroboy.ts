@@ -154,13 +154,6 @@ class Server {
             onStart && onStart(app);
         }).on("error", (error, ctx) => {
             onError && onError(error, ctx);
-            const { handler } = this.configs.get(options_1.GLOBAL_ERROR);
-            if (handler) {
-                const scopeId = utils_1.getScopeId(ctx);
-                const injector = this.di.get(Injector_1.InjectService, scopeId);
-                const configs = this.di.get(Configs_1.Configs, scopeId);
-                handler(error, injector, configs);
-            }
         });
     }
     readRuntimeEnv(app) {

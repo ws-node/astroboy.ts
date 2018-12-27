@@ -3,6 +3,8 @@ import { IContext } from "../typings/IContext";
 import { InjectService } from "../services/Injector";
 import { Scope } from "../services/Scope";
 import { SimpleLogger } from "../plugins/simple-logger";
+import { GLOBAL_ERROR } from "../options/errors.options";
+import { Configs } from "../services/Configs";
 
 /**
  * ## astroboy.ts初始化中间件
@@ -24,6 +26,14 @@ export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
   );
   try {
     await next();
+  } catch (error) {
+    const { handler } = this.configs.get(GLOBAL_ERROR);
+    if (handler) {
+      const scopeId = getScopeId(ctx);
+      const injector = this.di.get(InjectService, scopeId);
+      const configs = this.di.get(Configs, scopeId);
+      handler(error, injector, configs);
+    }
   } finally {
     const scope = injector.get(Scope);
     scope["end"]();

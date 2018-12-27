@@ -6,8 +6,7 @@ import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
 import {
   GlobalDI,
-  optionAssign,
-  getScopeId
+  optionAssign
 } from "./utils";
 import {
   Constructor,
@@ -423,13 +422,6 @@ export class Server {
       onStart && onStart(app);
     }).on("error", (error, ctx) => {
       onError && onError(error, ctx);
-      const { handler } = this.configs.get(GLOBAL_ERROR);
-      if (handler) {
-        const scopeId = getScopeId(ctx);
-        const injector = this.di.get(InjectService, scopeId);
-        const configs = this.di.get(Configs, scopeId);
-        handler(error, injector, configs);
-      }
     });
   }
 

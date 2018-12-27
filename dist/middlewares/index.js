@@ -5,6 +5,8 @@ const utils_1 = require("../utils");
 const Injector_1 = require("../services/Injector");
 const Scope_1 = require("../services/Scope");
 const simple_logger_1 = require("../plugins/simple-logger");
+const errors_options_1 = require("../options/errors.options");
+const Configs_1 = require("../services/Configs");
 /**
  * ## astroboy.ts初始化中间件
  * * 请确保此中间件的优先级足够高
@@ -22,6 +24,15 @@ exports.serverInit = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, func
     logger.trace(`scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(scopeId))} is init.`);
     try {
         yield next();
+    }
+    catch (error) {
+        const { handler } = this.configs.get(errors_options_1.GLOBAL_ERROR);
+        if (handler) {
+            const scopeId = utils_1.getScopeId(ctx);
+            const injector = this.di.get(Injector_1.InjectService, scopeId);
+            const configs = this.di.get(Configs_1.Configs, scopeId);
+            handler(error, injector, configs);
+        }
     }
     finally {
         const scope = injector.get(Scope_1.Scope);
