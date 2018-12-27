@@ -8,9 +8,9 @@ import { IViewEngine } from "../typings/IViewEngine";
  */
 interface IErrorHandler {
     /** 错误页面模板的path，默认：`undefined` */
-    path: string;
+    path: string | false;
     /** 错误页面字符串模板，默认：`undefined` */
-    tplStr: string;
+    tplStr: string | false;
     /**
      * 错误页面渲染函数，作为兜底的渲染能力提供，
      * * 默认(dev)：`() => "${错误的堆栈信息}""`

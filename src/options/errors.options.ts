@@ -20,7 +20,9 @@ export const defaultGlobalError: IGlobalErrorHandler = {
     const { content: defaultRender, ...args } = env === "production" ? onError : onDevError;
     render.setView("__viewError", error);
     try {
-      const result = new RenderResult(args);
+      const path = !args.path ? undefined : args.path;
+      const tpl = !args.tplStr ? undefined : args.tplStr;
+      const result = new RenderResult({ path, tplStr: tpl });
       ctx.body = await result.toResult({ injector, configs });
     } catch (_) {
       const logger = injector.get(SimpleLogger);

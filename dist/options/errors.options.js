@@ -17,7 +17,9 @@ exports.defaultGlobalError = {
         const _a = env === "production" ? onError : onDevError, { content: defaultRender } = _a, args = tslib_1.__rest(_a, ["content"]);
         render.setView("__viewError", error);
         try {
-            const result = new render_1.RenderResult(args);
+            const path = !args.path ? undefined : args.path;
+            const tpl = !args.tplStr ? undefined : args.tplStr;
+            const result = new render_1.RenderResult({ path, tplStr: tpl });
             ctx.body = yield result.toResult({ injector, configs });
         }
         catch (_) {
