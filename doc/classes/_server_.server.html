@@ -1,0 +1,1556 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Server | astroboy.ts</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">astroboy.ts</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/_server_.html">&quot;server&quot;</a>
+				</li>
+				<li>
+					<a href="_server_.server.html">Server</a>
+				</li>
+			</ul>
+			<h1>Class Server</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<h2 id="astroboy-ts-">astroboy.ts服务</h2>
+					</div>
+					<dl class="tsd-comment-tags">
+						<dt>description</dt>
+						<dd></dd>
+						<dt>author</dt>
+						<dd><p>Big Mogician</p>
+						</dd>
+						<dt>export</dt>
+						<dd></dd>
+						<dt>class</dt>
+						<dd><p>Server</p>
+						</dd>
+					</dl>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Server</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_server_.server.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#appbuilder" class="tsd-kind-icon">app<wbr>Builder</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#appconfigs" class="tsd-kind-icon">app<wbr>Configs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#configs" class="tsd-kind-icon">configs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#di" class="tsd-kind-icon">di</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#prescopeds" class="tsd-kind-icon">pre<wbr>Scopeds</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#presingletons" class="tsd-kind-icon">pre<wbr>Singletons</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#directinject" class="tsd-kind-icon">direct<wbr>Inject</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#finalinjectionsinit" class="tsd-kind-icon">final<wbr>Injections<wbr>Init</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#init" class="tsd-kind-icon">init</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#initconfigcollection" class="tsd-kind-icon">init<wbr>Config<wbr>Collection</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#initcontextprovider" class="tsd-kind-icon">init<wbr>Context<wbr>Provider</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#initinjectservice" class="tsd-kind-icon">init<wbr>Inject<wbr>Service</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#initinjections" class="tsd-kind-icon">init<wbr>Injections</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#initoptions" class="tsd-kind-icon">init<wbr>Options</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#initrouters" class="tsd-kind-icon">init<wbr>Routers</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="_server_.server.html#option" class="tsd-kind-icon">option</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#preinit" class="tsd-kind-icon">pre<wbr>Init</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#preinject" class="tsd-kind-icon">pre<wbr>Inject</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#readconfigs" class="tsd-kind-icon">read<wbr>Configs</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#readruntimeenv" class="tsd-kind-icon">read<wbr>Runtime<wbr>Env</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#resetdiresolver" class="tsd-kind-icon">resetDIResolver</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#resolveinjections" class="tsd-kind-icon">resolve<wbr>Injections</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_server_.server.html#run" class="tsd-kind-icon">run</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="_server_.server.html#scoped" class="tsd-kind-icon">scoped</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="_server_.server.html#singleton" class="tsd-kind-icon">singleton</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_server_.server.html#startapp" class="tsd-kind-icon">start<wbr>App</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_server_.server.html#create" class="tsd-kind-icon">Create</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Server<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_server_.server.html" class="tsd-signature-type">Server</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Server<span class="tsd-signature-symbol">(</span>appBuilder<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_server_.server.html" class="tsd-signature-type">Server</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Server<span class="tsd-signature-symbol">(</span>appConfigs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_server_.server.html" class="tsd-signature-type">Server</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Server<span class="tsd-signature-symbol">(</span>appBuilder<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, appConfigs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_server_.server.html" class="tsd-signature-type">Server</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L69">server.ts:69</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="_server_.server.html" class="tsd-signature-type">Server</a></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L71">server.ts:71</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>appBuilder: <span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_server_.server.html" class="tsd-signature-type">Server</a></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L72">server.ts:72</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>appConfigs: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_server_.server.html" class="tsd-signature-type">Server</a></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L73">server.ts:73</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>appBuilder: <span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>appConfigs: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_server_.server.html" class="tsd-signature-type">Server</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="appbuilder" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> app<wbr>Builder</h3>
+					<div class="tsd-signature tsd-kind-icon">app<wbr>Builder<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L68">server.ts:68</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="appconfigs" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> app<wbr>Configs</h3>
+					<div class="tsd-signature tsd-kind-icon">app<wbr>Configs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L69">server.ts:69</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="configs" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> configs</h3>
+					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <a href="_services_configs_.realconfigcollection.html" class="tsd-signature-type">RealConfigCollection</a><span class="tsd-signature-symbol"> =&nbsp;new RealConfigCollection()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L63">server.ts:63</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="di" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> di</h3>
+					<div class="tsd-signature tsd-kind-icon">di<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">DIContainer</span><span class="tsd-signature-symbol"> =&nbsp;GlobalDI</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L62">server.ts:62</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="prescopeds" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> pre<wbr>Scopeds</h3>
+					<div class="tsd-signature tsd-kind-icon">pre<wbr>Scopeds<span class="tsd-signature-symbol">:</span> <a href="../modules/_server_.html#dipair" class="tsd-signature-type">DIPair</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L66">server.ts:66</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="presingletons" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> pre<wbr>Singletons</h3>
+					<div class="tsd-signature tsd-kind-icon">pre<wbr>Singletons<span class="tsd-signature-symbol">:</span> <a href="../modules/_server_.html#dipair" class="tsd-signature-type">DIPair</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L65">server.ts:65</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="directinject" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> direct<wbr>Inject</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">direct<wbr>Inject<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">InjectScope</span>, service<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">direct<wbr>Inject<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">InjectScope</span>, token_implement<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L324">server.ts:324</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>直接注册，允许<code>@Injectable()</code>装饰器之后进行定义复写</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>type: <span class="tsd-signature-type">InjectScope</span></h5>
+								</li>
+								<li>
+									<h5>service: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L325">server.ts:325</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>type: <span class="tsd-signature-type">InjectScope</span></h5>
+								</li>
+								<li>
+									<h5>token_implement: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="finalinjectionsinit" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> final<wbr>Injections<wbr>Init</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">final<wbr>Injections<wbr>Init<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L394">server.ts:394</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="init" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">init<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L363">server.ts:363</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="initconfigcollection" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Config<wbr>Collection</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Config<wbr>Collection<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L502">server.ts:502</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="-">注入全局配置容器服务</h2>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>Server</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="initcontextprovider" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Context<wbr>Provider</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Context<wbr>Provider<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L466">server.ts:466</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="-">初始化上下文服务</h2>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>Server</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="initinjectservice" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Inject<wbr>Service</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Inject<wbr>Service<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L484">server.ts:484</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="-">初始化手工注入服务</h2>
+									<ul>
+										<li>可以自举</li>
+									</ul>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>Server</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="initinjections" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Injections</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Injections<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L379">server.ts:379</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="initoptions" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Options</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Options<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L367">server.ts:367</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="initrouters" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Routers</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Routers<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L389">server.ts:389</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="option" class="tsd-anchor"></a>
+					<h3>option</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">option&lt;T&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><a href="../interfaces/_services_configs_.configtoken.html" class="tsd-signature-type">ConfigToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">option&lt;T&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><a href="../interfaces/_services_configs_.configtoken.html" class="tsd-signature-type">ConfigToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L117">server.ts:117</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h3 id="-">声明一个配置项</h3>
+									<ul>
+										<li>仅声明，不设置默认值</li>
+									</ul>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>T</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <a href="../interfaces/_services_configs_.configtoken.html" class="tsd-signature-type">ConfigToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L129">server.ts:129</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h3 id="-">注入一个配置项</h3>
+									<ul>
+										<li>需要设置默认值</li>
+									</ul>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>T</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <a href="../interfaces/_services_configs_.configtoken.html" class="tsd-signature-type">ConfigToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="preinit" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> pre<wbr>Init</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">pre<wbr>Init<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L358">server.ts:358</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="preinject" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> pre<wbr>Inject</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">pre<wbr>Inject<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">InjectScope</span>, service<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">pre<wbr>Inject<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">InjectScope</span>, token_implement<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L307">server.ts:307</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>预注册，会覆盖装饰器的定义注册</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>type: <span class="tsd-signature-type">InjectScope</span></h5>
+								</li>
+								<li>
+									<h5>service: <span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L308">server.ts:308</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>type: <span class="tsd-signature-type">InjectScope</span></h5>
+								</li>
+								<li>
+									<h5>token_implement: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="readconfigs" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> read<wbr>Configs</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Configs<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L400">server.ts:400</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="readruntimeenv" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> read<wbr>Runtime<wbr>Env</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Runtime<wbr>Env<span class="tsd-signature-symbol">(</span>app<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Koa</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L428">server.ts:428</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>app: <span class="tsd-signature-type">Koa</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="resetdiresolver" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> resetDIResolver</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">resetDIResolver<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L441">server.ts:441</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="-di-">按照配置设置DI的解析方式</h2>
+									<ul>
+										<li><code>native</code> : 原生模式</li>
+										<li><code>proxy</code> : Proxy代理模式</li>
+									</ul>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>Server</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="resolveinjections" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> resolve<wbr>Injections</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Injections<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L453">server.ts:453</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="-di-">完成DI容器初始化并锁定</h2>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>Server</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="run" class="tsd-anchor"></a>
+					<h3>run</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>events<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L349">server.ts:349</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h3 id="-app">启动app</h3>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>Server</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> events: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="scoped" class="tsd-anchor"></a>
+					<h3>scoped</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">scoped&lt;TInject&gt;<span class="tsd-signature-symbol">(</span>srv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TInject</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">scoped&lt;TToken, TImplement&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span>, srv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ImplementType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">scoped&lt;TToken, TImplement&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span>, srv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ImplementFactory</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">scoped&lt;TToken, TImplement&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span>, srv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L154">server.ts:154</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="set-a-scoped-service">Set a scoped service</h2>
+									<ul>
+										<li>service should be decorated by @Injectable(...)</li>
+									</ul>
+								</div>
+								<p>Set a scoped service with constructor.
+								All scoped services will be created new instance in different request pipe</p>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TInject</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>TInject</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>srv: <span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TInject</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L174">server.ts:174</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="set-a-scoped-service">Set a scoped service</h2>
+									<ul>
+										<li>service should be decorated by @Injectable(...)</li>
+									</ul>
+								</div>
+								<p>Set a scoped service with injectable token (such abstract class,
+									but not the typescript interface because there&#39;s no interface in
+									the javascript runtime) and implement service constructor. All
+								scoped services will be created new instance in different request pipe.</p>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TToken</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TImplement</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>TToken</h4>
+								</li>
+								<li>
+									<h4>TImplement</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>srv: <span class="tsd-signature-type">ImplementType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L195">server.ts:195</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="set-a-scoped-service">Set a scoped service</h2>
+									<ul>
+										<li>service should be decorated by @Injectable(...)</li>
+									</ul>
+								</div>
+								<p>Set a scoped service with injectable token (such abstract class,
+									but not the typescript interface because there&#39;s no interface in
+									the javascript runtime) and implement service instance factory
+									( pure function with no side effects).
+								All scoped services will be created new instance in different request pipe.</p>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TToken</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TImplement</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>TToken</h4>
+								</li>
+								<li>
+									<h4>TImplement</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>srv: <span class="tsd-signature-type">ImplementFactory</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L218">server.ts:218</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="set-a-scoped-service">Set a scoped service</h2>
+									<ul>
+										<li>service should be decorated by @Injectable(...)</li>
+									</ul>
+								</div>
+								<p>Set a scoped service with injectable token (such abstract class,
+									but not the typescript interface because there&#39;s no interface in
+									the javascript runtime) and a well-created implement service instance.
+									All scoped services will be created new
+									instance in different request pipe (but injecting by instance means
+									the instance may be changed in runtime, so please be careful. If you
+								want to prevent this situation, use a service factory here).</p>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TInject</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TImplement</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>TToken</h4>
+								</li>
+								<li>
+									<h4>TImplement</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>srv: <span class="tsd-signature-type">TImplement</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="singleton" class="tsd-anchor"></a>
+					<h3>singleton</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">singleton&lt;TInject&gt;<span class="tsd-signature-symbol">(</span>srv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TInject</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">singleton&lt;TToken, TImplement&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span>, srv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ImplementType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">singleton&lt;TToken, TImplement&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span>, srv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ImplementFactory</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">singleton&lt;TToken, TImplement&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span>, srv<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L238">server.ts:238</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="set-a-singleton-service">Set a singleton service</h2>
+									<ul>
+										<li>service should be decorated by @Injectable(...)</li>
+									</ul>
+								</div>
+								<p>Set a singleton service with constructor.
+								All singleton services will use unique instance throught different request pipes.</p>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TInject</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>TInject</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>srv: <span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TInject</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L259">server.ts:259</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="set-a-singleton-service">Set a singleton service</h2>
+									<ul>
+										<li>service should be decorated by @Injectable(...)</li>
+									</ul>
+								</div>
+								<p>Set a singleton service with injectable token (such abstract class,
+									but not the typescript interface because there&#39;s no interface in
+									the javascript runtime) and implement service constructor.
+									All singleton services will use unique
+								instance throught different request pipes.</p>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TToken</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TImplement</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>TToken</h4>
+								</li>
+								<li>
+									<h4>TImplement</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>srv: <span class="tsd-signature-type">ImplementType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L280">server.ts:280</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="set-a-singleton-service">Set a singleton service</h2>
+									<ul>
+										<li>service should be decorated by @Injectable(...)</li>
+									</ul>
+								</div>
+								<p>Set a singleton service with injectable token (such abstract class,
+									but not the typescript interface because there&#39;s no interface in
+									the javascript runtime) and implement service factory ( pure function with no side effects).
+									All singleton services will use unique
+								instance throught different request pipes.</p>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TToken</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TImplement</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>TToken</h4>
+								</li>
+								<li>
+									<h4>TImplement</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>srv: <span class="tsd-signature-type">ImplementFactory</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TImplement</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L301">server.ts:301</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h2 id="set-a-singleton-service">Set a singleton service</h2>
+									<ul>
+										<li>service should be decorated by @Injectable(...)</li>
+									</ul>
+								</div>
+								<p>Set a singleton service with injectable token (such abstract class,
+									but not the typescript interface because there&#39;s no interface in
+									the javascript runtime) and a well-created implement service instance.
+									All singleton services will use unique
+								instance throught different request pipes.</p>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TToken</p>
+									</dd>
+									<dt>template</dt>
+									<dd><p>TImplement</p>
+									</dd>
+									<dt>memberof</dt>
+									<dd><p>BonbonsServer</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>TToken</h4>
+								</li>
+								<li>
+									<h4>TImplement</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <span class="tsd-signature-type">AbstractType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TToken</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>srv: <span class="tsd-signature-type">TImplement</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="startapp" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> start<wbr>App</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">start<wbr>App<span class="tsd-signature-symbol">(</span>events<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L409">server.ts:409</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> events: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="create" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> Create</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">Create<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_server_.server.html" class="tsd-signature-type">Server</a></li>
+						<li class="tsd-signature tsd-kind-icon">Create<span class="tsd-signature-symbol">(</span>ctor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_server_.server.html" class="tsd-signature-type">Server</a></li>
+						<li class="tsd-signature tsd-kind-icon">Create<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_server_.server.html" class="tsd-signature-type">Server</a></li>
+						<li class="tsd-signature tsd-kind-icon">Create<span class="tsd-signature-symbol">(</span>ctor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, configs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_server_.server.html" class="tsd-signature-type">Server</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L99">server.ts:99</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h3 id="-">创建一个新的应用</h3>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>description</dt>
+									<dd></dd>
+									<dt>author</dt>
+									<dd><p>Big Mogician</p>
+									</dd>
+									<dt>static</dt>
+									<dd></dd>
+									<dt>memberof</dt>
+									<dd><p>Server</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="_server_.server.html" class="tsd-signature-type">Server</a></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L100">server.ts:100</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctor: <span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_server_.server.html" class="tsd-signature-type">Server</a></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L101">server.ts:101</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>configs: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_server_.server.html" class="tsd-signature-type">Server</a></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ws-node/astroboy.ts/blob/f91fc26/src/server.ts#L102">server.ts:102</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctor: <span class="tsd-signature-type">Constructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>configs: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_server_.server.html" class="tsd-signature-type">Server</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/_server_.html">"server"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_server_.server.html" class="tsd-kind-icon">Server</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="_server_.server.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#appbuilder" class="tsd-kind-icon">app<wbr>Builder</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#appconfigs" class="tsd-kind-icon">app<wbr>Configs</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#configs" class="tsd-kind-icon">configs</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#di" class="tsd-kind-icon">di</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#prescopeds" class="tsd-kind-icon">pre<wbr>Scopeds</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#presingletons" class="tsd-kind-icon">pre<wbr>Singletons</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#directinject" class="tsd-kind-icon">direct<wbr>Inject</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#finalinjectionsinit" class="tsd-kind-icon">final<wbr>Injections<wbr>Init</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#init" class="tsd-kind-icon">init</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#initconfigcollection" class="tsd-kind-icon">init<wbr>Config<wbr>Collection</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#initcontextprovider" class="tsd-kind-icon">init<wbr>Context<wbr>Provider</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#initinjectservice" class="tsd-kind-icon">init<wbr>Inject<wbr>Service</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#initinjections" class="tsd-kind-icon">init<wbr>Injections</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#initoptions" class="tsd-kind-icon">init<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#initrouters" class="tsd-kind-icon">init<wbr>Routers</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="_server_.server.html#option" class="tsd-kind-icon">option</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#preinit" class="tsd-kind-icon">pre<wbr>Init</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#preinject" class="tsd-kind-icon">pre<wbr>Inject</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#readconfigs" class="tsd-kind-icon">read<wbr>Configs</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#readruntimeenv" class="tsd-kind-icon">read<wbr>Runtime<wbr>Env</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#resetdiresolver" class="tsd-kind-icon">resetDIResolver</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#resolveinjections" class="tsd-kind-icon">resolve<wbr>Injections</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_server_.server.html#run" class="tsd-kind-icon">run</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="_server_.server.html#scoped" class="tsd-kind-icon">scoped</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="_server_.server.html#singleton" class="tsd-kind-icon">singleton</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_server_.server.html#startapp" class="tsd-kind-icon">start<wbr>App</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_server_.server.html#create" class="tsd-kind-icon">Create</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_server_.html#dipair" class="tsd-kind-icon">DIPair</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

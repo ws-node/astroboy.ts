@@ -1,0 +1,756 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>astroboy.ts</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">astroboy.ts</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> astroboy.ts</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="-astroboy-ts">🌟astroboy.ts</h1>
+				<blockquote>
+					<p>基于<a href="https://github.com/astroboy-lab/astroboy">astroboy</a>的DI版本，TypeScript3.2信仰加成</p>
+				</blockquote>
+				<p><a href="https://npmjs.org/package/astroboy.ts"><img src="https://nodei.co/npm/astroboy.ts.svg?downloads=true" alt="NPM"></a></p>
+				<p><a href="https://travis-ci.org/ws-node/astroboy.ts"><img src="https://travis-ci.org/ws-node/astroboy.ts.svg?branch=master" alt="Build status"></a>
+				<a href="https://coveralls.io/github/ws-node/astroboy.ts?branch=master"><img src="https://coveralls.io/repos/github/ws-node/astroboy.ts/badge.svg?branch=master" alt="Coverage Status"></a></p>
+				<h3 id="-">已经实现的功能</h3>
+				<ul>
+					<li>高性能依赖注入[ 实现：<a href="https://www.npmjs.com/package/@bonbons/di">@bonbons/di</a> ]</li>
+					<li>控制器声明式路由[ 实现：<a href="https://www.npmjs.com/package/astroboy-router">astroboy-router</a> ]</li>
+					<li>可扩展的注入式模版引擎</li>
+					<li>可配置容器定义化</li>
+					<li>DI可注入依赖实现多重继承</li>
+					<li>配置容器对接astroboy标准configs模式</li>
+					<li>自动化生成astroboy的routers规范</li>
+					<li>命令行工具支持</li>
+					<li>完整兼容astroboy原始语义，支持任意扩展</li>
+					<li>支持完整依赖注入能力的高级中间件</li>
+					<li>路由方法返回配置接口化</li>
+				</ul>
+				<blockquote>
+					<p>😨更多功能正在开发中...</p>
+				</blockquote>
+				<h3 id="wiki-demo">Wiki + Demo</h3>
+				<ul>
+					<li><a href="https://github.com/ws-node/demo.astroboy.ts">Demo1:多版本并存</a> - 最大兼容预览(多重代码风格可以共存)</li>
+					<li><a href="https://github.com/ws-node/demo2.astroboy.ts">Demo2:全量astroboy.ts+构建base项目包</a> - base仓库预览(构建继承astroboy.ts的base项目)</li>
+					<li><a href="https://github.com/ws-node/demo3.astroboy.ts">Demo3:使用base仓库构建应用</a> - 最大预览(使用base项目构建应用)</li>
+					<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Core">Core</a> - 核心组件</li>
+					<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Services">Services</a> - 内置服务列表</li>
+					<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Configs-Options">Configs/Options</a> - 配置列表</li>
+					<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Decorators">Decorators</a> - 装饰器列表</li>
+					<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Functions">Functions</a> - 功能函数</li>
+					<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Interfaces">Interfaces</a> - 公开接口列表</li>
+				</ul>
+				<h3 id="-">迭代记录</h3>
+				<h4 id="1-0-4">1.0.4</h4>
+				<ul>
+					<li>1.0.4功能锁定</li>
+				</ul>
+				<h4 id="1-0-3-rc-21">1.0.3-rc.21</h4>
+				<ul>
+					<li>细节优化</li>
+				</ul>
+				<h4 id="1-0-3-rc-16">1.0.3-rc.16</h4>
+				<ul>
+					<li>新增全局错误处理</li>
+				</ul>
+				<h4 id="1-0-3-rc-12">1.0.3-rc.12</h4>
+				<ul>
+					<li>修复 <code>Injectable</code> 装饰器故障</li>
+				</ul>
+				<h4 id="1-0-3-rc-9">1.0.3-rc.9</h4>
+				<ul>
+					<li>增强多重继承的类型化写法</li>
+					<li><code>Render</code> 新增 <code>init</code> 重载钩子</li>
+				</ul>
+				<h4 id="1-0-3-rc-7">1.0.3-rc.7</h4>
+				<ul>
+					<li>所有基础服务全部完成契约化，可以通过class本身的 <code>Contract</code> 拿到其公共接口</li>
+					<li>调整 <code>RenderResult</code> 的原生参数配置</li>
+					<li>增加大量文档和注释</li>
+				</ul>
+				<h4 id="1-0-3-rc-5">1.0.3-rc.5</h4>
+				<ul>
+					<li>DI接入的重构</li>
+					<li><code>Injectable</code> 装饰器赠加新的重载</li>
+				</ul>
+				<h4 id="1-0-3-rc-4">1.0.3-rc.4</h4>
+				<ul>
+					<li>增加单元测试</li>
+				</ul>
+				<h4 id="1-0-3-rc-1">1.0.3-rc.1</h4>
+				<ul>
+					<li>功能锁定1.0.3，开始新一轮rc</li>
+				</ul>
+				<h4 id="1-0-2-rc-39">1.0.2-rc.39</h4>
+				<ul>
+					<li>调整了内部日志的记录方式</li>
+					<li>增强了 <code>RenderResult</code> 的模板扩展能力</li>
+					<li>强化了模板渲染异常的处理逻辑</li>
+				</ul>
+				<h4 id="1-0-2-rc-37">1.0.2-rc.37</h4>
+				<ul>
+					<li>增加 <code>atc-cli</code> 对 <code>router</code> 命令的config文件支持</li>
+					<li>调整配置文件参数</li>
+				</ul>
+				<h4 id="1-0-2-rc-35">1.0.2-rc.35</h4>
+				<ul>
+					<li>去除 <code>atc-cli</code> 对js的支持，去掉参数 <code>--ts</code> </li>
+					<li>调整视觉风格</li>
+				</ul>
+				<h4 id="1-0-2-rc-31">1.0.2-rc.31</h4>
+				<ul>
+					<li>修复找不到 <code>Controller</code> 的问题</li>
+					<li>修复 <code>nunjunks</code> 默认模板root路径不正确的问题</li>
+				</ul>
+				<h4 id="1-0-2-rc-29">1.0.2-rc.29</h4>
+				<ul>
+					<li>内置 <code>nunjunks</code> 模板渲染引擎</li>
+					<li>新增 <code>Render</code> DI渲染服务，可以自定义实现</li>
+				</ul>
+				<h4 id="1-0-2-rc-28">1.0.2-rc.28</h4>
+				<ul>
+					<li><code>astt</code> 新增 <code>--config</code> 指令，允许使用配置文件启动cli</li>
+				</ul>
+				<h4 id="1-0-2-rc-24">1.0.2-rc.24</h4>
+				<ul>
+					<li><code>astt</code> 更名 <code>atc</code> ，并支持新的 <code>dev</code> 命令</li>
+				</ul>
+				<h4 id="1-0-2-rc-23">1.0.2-rc.23</h4>
+				<ul>
+					<li><code>astt-cli</code> 新增 <code>tsconfig</code> 配置支持</li>
+					<li><code>astt-cli</code> 新增 <code>details</code> 配置支持</li>
+				</ul>
+				<h4 id="1-0-2-rc-20">1.0.2-rc.20</h4>
+				<ul>
+					<li><code>JsonResult</code> 内置了支持模板定制的能力</li>
+					<li>新增 <code>RenderResult</code> 对象能力</li>
+					<li>新增 <code>CONFIG_VIEW</code> config描述astroboy的view配置</li>
+				</ul>
+				<h4 id="1-0-2-rc-18">1.0.2-rc.18</h4>
+				<ul>
+					<li>新增 <code>__BASE_ROUTE_DECO_FACTORY</code> 装饰器，为 <code>Route</code> 自定义提供最高扩展性</li>
+				</ul>
+				<h4 id="1-0-2-rc-16">1.0.2-rc.16</h4>
+				<ul>
+					<li><code>astt-cli</code> 工具已加入，支持生成routers</li>
+				</ul>
+				<h4 id="1-0-2-rc-1">1.0.2-rc.1</h4>
+				<ul>
+					<li>锁定1.02功能，开始新一轮rc</li>
+				</ul>
+				<h4 id="1-0-1-rc-30">1.0.1-rc.30</h4>
+				<ul>
+					<li>针对 <code>@Controller</code> 修饰过的ts控制器，将自动生成对应的router.ts文件</li>
+					<li>当不存在 <code>app/routers</code> 文件夹的时候自动创建</li>
+					<li>提供了一个独立的初始化<code>routers</code>的函数来支持进行发布前的预处理</li>
+					<li>默认不执行初始化动作，可以选择预处理或是动态处理任意一种方式来实现</li>
+				</ul>
+				<h4 id="1-0-1-rc-22">1.0.1-rc.22</h4>
+				<ul>
+					<li>重新调整 <code>Context</code> 和 <code>AstroboyContext</code> 对于 <code>ctx</code> 类型复写的行为</li>
+					<li><code>AstroboyContext</code> 现在支持复写 <code>app</code> 和 <code>config</code> 字段的类型</li>
+					<li><code>Context</code> 取消在 <code>AstroboyContext</code> 中公开，只在继承链路中可见</li>
+				</ul>
+				<h4 id="1-0-1-rc-20">1.0.1-rc.20</h4>
+				<ul>
+					<li>支持DI多重继承的能力</li>
+				</ul>
+				<h4 id="1-0-1-rc-18">1.0.1-rc.18</h4>
+				<ul>
+					<li>修复 <code>astroboy-router</code> 的一个兼容问题</li>
+					<li>移除 <code>@bonbons/di</code> 的定义输出，并修复部分接口</li>
+				</ul>
+				<h4 id="1-0-1-rc-15">1.0.1-rc.15</h4>
+				<ul>
+					<li>实现路由参数注入和类型安全映射</li>
+					<li>支持扩展基础注入器，实现路由参数字段注入</li>
+				</ul>
+				<h4 id="1-0-1-rc-14">1.0.1-rc.14</h4>
+				<ul>
+					<li>基本功能完成</li>
+					<li>修复一些问题</li>
+				</ul>
+				<hr>
+				<h3 id="-">安装</h3>
+				<pre><code>npm <span class="hljs-keyword">install</span> astroboy.ts</code></pre><pre><code>yarn <span class="hljs-keyword">add</span><span class="bash"> astroboy.ts</span></code></pre><h3 id="-">接入说明</h3>
+				<h4 id="1-astroboy-">1. 按照astroboy框架要求创建应用程序目录（略）</h4>
+				<h4 id="2-app-ts">2. 调整app.ts</h4>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">"path"</span>;
+<span class="hljs-keyword">import</span> { Server, Astroboy } <span class="hljs-keyword">from</span> <span class="hljs-string">"astroboy.ts"</span>;
+
+Server.Create(Astroboy, {
+  ROOT_PATH: path.resolve(__dirname, <span class="hljs-string">".."</span>)
+}).run({
+  onStart: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"hello world!"</span>),
+  onError: <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`oh shit : <span class="hljs-subst">${String(err)}</span>`</span>)
+});
+</code></pre>
+				<h4 id="3-">3. 配置初始化中间件</h4>
+				<blockquote>
+					<p>app/middleware/server-init.ts
+					<code>`</code>typescript</p>
+				</blockquote>
+				<p>import { serverInit } from &quot;astroboy.ts&quot;;</p>
+				<p>export = () =&gt; serverInit;</p>
+				<pre><code>&gt; config/middleware<span class="hljs-selector-class">.default</span><span class="hljs-selector-class">.js</span>
+```javascript
+
+module<span class="hljs-selector-class">.exports</span> = {
+
+  <span class="hljs-string">"server-init"</span>: {
+    priority: <span class="hljs-number">0.1</span>,
+    enable: true
+  }
+
+}</code></pre><blockquote>
+					<p>config/config.default.js
+						<code>`</code>javascript
+					/**</p>
+					<ul>
+						<li>默认配置文件
+							*/
+						const path = require(&#39;path&#39;);</li>
+					</ul>
+				</blockquote>
+				<p>module.exports = {</p>
+				<p>  &quot;@astroboy.ts&quot;: {
+					showTrace: false,
+					diType: &quot;proxy&quot;
+				}</p>
+				<p>};</p>
+				<pre><code>
+#### <span class="hljs-number">4.</span> 启动</code></pre><h1 id="-astrpboy-ts">本地安装astrpboy.ts</h1>
+				<p>./node_modules/.bin/atc dev --inspect --tsconfig app/tsconfig.json</p>
+				<h1 id="-astrpboy-ts">全局装过astrpboy.ts</h1>
+				<p>atc dev --inspect --tsconfig app/tsconfig.json</p>
+				<pre><code>
+<span class="hljs-meta">### 开发姿势</span>
+
+<span class="hljs-meta">#### 0.cli配置文件</span>
+
+astroboy.ts开放了一个配置文件，用来简化cli参数的使用，类似webpack，可以使用--config参数修改配置文件的名字。
+&gt; atc.config.js - 一个简单的配置文件
+```javascript
+const path = require(<span class="hljs-string">"path"</span>);
+
+module.exports = {
+<span class="hljs-symbol">  tsconfig:</span> <span class="hljs-string">"tsconfig.json"</span>,
+<span class="hljs-symbol">  inspect:</span> true,
+<span class="hljs-symbol">  debug:</span> <span class="hljs-string">"*"</span>,
+<span class="hljs-symbol">  mock:</span> <span class="hljs-string">"http://127.0.0.1:8001"</span>,
+  <span class="hljs-comment">// atc router 的命令配置</span>
+<span class="hljs-symbol">  routers:</span> {
+<span class="hljs-symbol">    enabled:</span> true,
+<span class="hljs-symbol">    always:</span> false,
+<span class="hljs-symbol">    approot:</span> <span class="hljs-string">"/v1"</span>,
+<span class="hljs-symbol">    filetype:</span> <span class="hljs-string">"ts"</span>,
+<span class="hljs-symbol">    details:</span> true
+  },
+  <span class="hljs-comment">// atc-cli监控的文件修改列表，自动重启node服务</span>
+<span class="hljs-symbol">  watch:</span> [
+    path.join(__dirname, <span class="hljs-string">"app/**/*.*"</span>),
+    path.join(__dirname, <span class="hljs-string">"config/**/*.*"</span>),
+    path.join(__dirname, <span class="hljs-string">"plugins/**/*.*"</span>)
+  ],
+  <span class="hljs-comment">// 忽略的文件列表</span>
+<span class="hljs-symbol">  ignore:</span> []
+};
+</code></pre><h4 id="1-">1.编写路由控制器</h4>
+				<p>控制器方面使用装饰器来定制Router的业务层级，确定Route的url和method，提供params和body的注入获取能力，并抽象了响应中body的写入能力。</p>
+				<blockquote>
+					<p>app/controllers/test.ts
+						<code>`</code>typescript
+						import {
+						Controller, Configs, AstroboyContext,
+						ENV, JsonResult, GET, POST, FromParams,
+						FromBody, Deserialize, IContext
+					} from &quot;astroboy.ts&quot;;</p>
+				</blockquote>
+				<p>interface GetQuery {
+					id: string;
+					name: string;
+					type: string;
+				}</p>
+				<p>interface PostData {
+					id: number;
+					name: string;
+				}</p>
+				<p>@Controller(&quot;test&quot;)
+				class TestController {</p>
+				<p>  // 构造函数注入能力
+					constructor(
+					private configs: Configs,
+				private base: AstroboyContext<IContext>) {</p>
+				<p>  }</p>
+				<p>  // GET: {项目前缀}/api/test/testGet/:type?id=xxxx&amp;name=xxxx
+					@GET(&quot;testGet/:type&quot;)
+					// 显式进行params参数前提，作为路由方法参数
+					// 使用接口为了更好的类型描述，不会进行任何运行时类型处理
+					public methodGet(@FromParams() params: GetQuery) {
+					const { ctx } = this.base;
+					const { id, name, type } = params;
+					ctx.type = &quot;application/json&quot;;
+					// JsonResult实现了IResult接口，提供将json内容编程化写入body的能力，同时提供了Configs容器的配置化支持
+					// 你可以自己实现自定义逻辑，只要实现IResult接口即可
+					return new JsonResult({
+					id,
+					name,
+					type,
+					url: ctx.url,
+					});
+				}</p>
+				<p>  // POST: {项目前缀}/api/post/:type?id=xxxx&amp;name=xxxx
+					@POST(&quot;post/:type&quot;)
+					// body也能进行相似的流程实现参数前提
+					// 你仍然可以进行直接解构
+					public async methodPost(@FromParams() params: GetQuery, @FromBody() { id, name }: PostData) {
+					const { name, id: id2, type } = params;
+					return new JsonResult({
+					id,
+					name,
+					type,
+					id2,
+					name
+					});
+				}</p>
+				<p>}</p>
+				<p>export = TestController;</p>
+				<pre><code>
+到此一个业务路由层级的构建并没有完成，和原生astroboy开发类似，相应的需要一个router文件来创建astroboy的router数组定义。
+
+&gt; app/routers/test.ts
+```typescript
+<span class="hljs-keyword">import</span> TEST <span class="hljs-keyword">from</span> <span class="hljs-string">"../controllers/test"</span>;
+<span class="hljs-keyword">import</span> { buildRouter } <span class="hljs-keyword">from</span> <span class="hljs-string">"astroboy.ts"</span>;
+
+<span class="hljs-comment">// “test”代表controllers内的文件级别</span>
+<span class="hljs-comment">// “/v1”代表应用的路由前缀，这里只作为示例</span>
+<span class="hljs-keyword">export</span> = buildRouter(TEST, <span class="hljs-string">"test"</span>, <span class="hljs-string">"/v1"</span>);
+</code></pre><blockquote>
+					<p>注：1.0.1-rc.27版本以后已经支持自动生成router，不需再要上述步骤，有两种模式任选其一，操作如下：</p>
+				</blockquote>
+				<h5 id="1-routers-">1. routers预处理模式</h5>
+				<ul>
+					<li>使用 <code>astroboy.ts</code> 提供的命令行工具<pre><code class="language-bash"><span class="hljs-comment"># 在开发启动或者生产打包前确保执行即可</span>
+./node_modules/.bin/atc router --always --filetype ts</code></pre>
+					</li>
+				</ul>
+				<h5 id="2-">2. 动态初始化(不推荐)</h5>
+				<ul>
+					<li>配置 <code>app/app.ts</code> 文件 (但是在删除控制器后，需要手动删除routers中多余的文件)<pre><code class="language-typescript">Server.Create(..., {
+...
+})
+.option(ROUTER_OPTIONS, { appRoot: <span class="hljs-string">"/v1"</span>, enabled: <span class="hljs-literal">true</span> })
+...</code></pre>
+					</li>
+				</ul>
+				<p>到此一个完整的业务级别的router构造完成了。</p>
+				<h4 id="2-">2.编写可注入服务</h4>
+				<p>astroboy.ts按照IoC模式的指导思路进行设计，所有的服务都应该按照DI的方式（无论是手动还是自动）获取、组装和构造逻辑层级。</p>
+				<blockquote>
+					<p>app/services/test.ts
+						<code>`</code>typescript
+					import { Injectable } from &quot;astroboy.ts&quot;;</p>
+				</blockquote>
+				<p>@Injectable()
+				class TestService {</p>
+				<p>  private value = 98765;</p>
+				<p>  public add(v: number) {
+					this.value += v;
+				}</p>
+				<p>  public showValue() {
+					return this.value;
+				}</p>
+				<p>}</p>
+				<p>export = TestService;</p>
+				<pre><code>
+astroboy.ts服务的默认行为是范围单例（scoped），简单的描述来说，一个服务在同一个请求流程中总是保持单例状态，并在请求结束后释放。scoped服务可以在请求流程中的任意位置获取，并承担数据传输载体的职责。
+
+你当然可以手动改变这一默认行为：
+```typescript
+<span class="hljs-comment">// 请确保你了解type的含义，以免服务出现不符合预期的行为</span>
+@Injectable({ type: InjectScope.Singleton })
+<span class="hljs-keyword">class</span> Test02Service {
+  ...
+}</code></pre><p>其他行为：</p>
+				<ul>
+					<li>new（每次获取总是创建一个全新的对象）</li>
+					<li>singleton（在整个应用中保持唯一并积累副作用）</li>
+				</ul>
+				<p>服务还具有其他高级功能（包括依赖注入分离和实现多重继承），这里不一一展开了。</p>
+				<h4 id="3-astroboy-">3.对接astroboy的配置</h4>
+				<p>创建接口来描述astroboy的配置中的各个业务部分：</p>
+				<blockquote>
+					<p>config/options/demo.ts
+					<code>`</code>typescript</p>
+				</blockquote>
+				<p>import { createConfig } from &quot;astroboy.ts&quot;;</p>
+				<p>interface DemoOptions {
+					/** ccccc */
+					key01: number;
+					key02: string;
+				}</p>
+				<p>export const DEMO_OPTIONS = createConfig<DemoOptions>(&quot;demo&quot;);</p>
+				<pre><code>&gt; <span class="hljs-built_in">config</span>/<span class="hljs-built_in">config</span>.<span class="hljs-built_in">default</span>.js
+```javascript
+<span class="hljs-comment">/**
+ * 默认配置文件
+ */</span>
+<span class="hljs-keyword">const</span> path = require(<span class="hljs-string">'path'</span>);
+
+<span class="hljs-keyword">module</span>.exports = {
+
+  <span class="hljs-string">"@astroboy.ts"</span>: {
+    showTrace: true,
+    diType: <span class="hljs-string">"proxy"</span>
+  },
+
+  demo: {
+    key01: <span class="hljs-number">12345</span>,
+    key02: <span class="hljs-string">"woshinidie"</span>
+  },
+
+  strOpt: <span class="hljs-string">"test_string_config"</span>
+
+};
+</code></pre><p>这样既可以更好的描述原本混乱的config文件，同时可以在对config访问的时候提供定义支持。</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">// 注入Configs服务，然后获取配置</span>
+<span class="hljs-comment">// opts变量将会被正确的绑定上类型信息</span>
+<span class="hljs-keyword">const</span> opts = <span class="hljs-keyword">this</span>.configs.get(DEMO_OPTIONS);</code></pre>
+				<h4 id="4-">4.在中间件中使用依赖注入</h4>
+				<p>过程比较轻量，废话不多，直接上demo：</p>
+				<blockquote>
+					<p>app/middlewares/demo.ts
+						<code>`</code>typescript
+						import { injectScope, ENV, Context } from &quot;astroboy.ts&quot;;
+					import DataService from &quot;../services/Data&quot;;</p>
+				</blockquote>
+				<p>export = () =&gt; injectScope(async ({ injector, configs, ctx, next }) =&gt; {
+					// console.log(configs.get(ENV).showTrace);
+					const data = injector.get(DataService);
+					data.setStamp(new Date().getTime());
+					await next();
+					// console.log(&quot;fuck&quot;);
+					});
+				<code>`</code></p>
+				<blockquote>
+					<p>文档完善中...</p>
+				</blockquote>
+				<hr>
+				<h2 id="mit-license">MIT License</h2>
+				<p>Copyright (c) 2018 NODE.Mogician &lt;<a href="bigmogician@outlook.com">bigmogician@outlook.com</a>&gt;</p>
+				<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+					of this software and associated documentation files (the &quot;Software&quot;), to deal
+					in the Software without restriction, including without limitation the rights
+					to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+					copies of the Software, and to permit persons to whom the Software is
+				furnished to do so, subject to the following conditions:</p>
+				<p>The above copyright notice and this permission notice shall be included in all
+				copies or substantial portions of the Software.</p>
+				<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+					IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+					FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+					AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+					LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+					OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+				SOFTWARE.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_builders_.html">"builders"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cmd_dev_actions_.html">"cmd/dev/actions"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cmd_dev_index_.html">"cmd/dev/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cmd_dev_options_.html">"cmd/dev/options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cmd_index_.html">"cmd/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cmd_init_.html">"cmd/init"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cmd_register_.html">"cmd/register"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cmd_router_actions_.html">"cmd/router/actions"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cmd_router_index_.html">"cmd/router/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cmd_router_options_.html">"cmd/router/options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_configs_env_config_.html">"configs/env.config"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_configs_index_.html">"configs/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_configs_view_config_.html">"configs/view.config"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_decorators_controller_.html">"decorators/controller"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_decorators_index_.html">"decorators/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_decorators_injectable_.html">"decorators/injectable"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_decorators_route_.html">"decorators/route"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_index_.html">"index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_index_spec_.html">"index.spec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_middlewares_core_.html">"middlewares/core"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_middlewares_index_.html">"middlewares/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_options_errors_options_.html">"options/errors.options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_options_index_.html">"options/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_options_json_options_.html">"options/json.options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_options_render_options_.html">"options/render.options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_options_router_options_.html">"options/router.options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_options_typed_serialize_options_.html">"options/typed-<wbr>serialize.options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_nunjunks_core_.html">"plugins/nunjunks/core"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_nunjunks_index_.html">"plugins/nunjunks/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_nunjunks_options_.html">"plugins/nunjunks/options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_simple_logger_base_.html">"plugins/simple-<wbr>logger/base"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_simple_logger_index_.html">"plugins/simple-<wbr>logger/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_simple_logger_logger_.html">"plugins/simple-<wbr>logger/logger"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_simple_logger_options_.html">"plugins/simple-<wbr>logger/options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_typed_serializer_core_.html">"plugins/typed-<wbr>serializer/core"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_typed_serializer_defines_.html">"plugins/typed-<wbr>serializer/defines"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_plugins_typed_serializer_index_.html">"plugins/typed-<wbr>serializer/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_results_json_.html">"results/json"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_results_render_.html">"results/render"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_server_.html">"server"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_services_astroboycontext_.html">"services/<wbr>Astroboy<wbr>Context"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_services_baseclass_.html">"services/<wbr>Base<wbr>Class"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_services_configs_.html">"services/<wbr>Configs"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_services_context_.html">"services/<wbr>Context"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_services_injector_.html">"services/<wbr>Injector"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_services_render_.html">"services/<wbr>Render"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_services_scope_.html">"services/<wbr>Scope"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_typings_icontext_.html">"typings/IContext"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_typings_iresult_.html">"typings/IResult"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_typings_istatictyperesolver_.html">"typings/IStatic<wbr>Type<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_typings_iviewengine_.html">"typings/IView<wbr>Engine"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_.html">"utils"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
