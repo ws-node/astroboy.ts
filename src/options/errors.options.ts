@@ -22,12 +22,13 @@ export const defaultGlobalError: IGlobalErrorHandler = {
     try {
       const path = !args.path ? undefined : args.path;
       const tpl = !args.tplStr ? undefined : args.tplStr;
+      if (!path && !tpl) throw new Error("No template provided for global error handler.");
       const result = new RenderResult({ path, tplStr: tpl });
       ctx.body = await result.toResult({ injector, configs });
     } catch (_) {
       const logger = injector.get(SimpleLogger);
       logger.trace("GLOBAL_ERROR render failed", _);
-      ctx.body = defaultRender(error);
+      ctx.body = defaultRender(error, "Internal Server Error");
     }
   }
 };

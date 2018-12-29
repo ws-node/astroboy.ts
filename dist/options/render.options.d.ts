@@ -17,7 +17,7 @@ interface IErrorHandler {
      * * 默认(prod)：`() => "Internal Server Error"`
      * * 通常不要复写此字段，除非`path`或`tplStr`能够提供可用的内容
      */
-    content: (error: Error) => string;
+    content: (error: Error, title?: string) => string;
 }
 /**
  * ## 配置RenderResult的解析方式

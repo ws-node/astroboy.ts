@@ -24,9 +24,15 @@ exports.defaultRenderResultOptions = {
     onDevError: {
         path: undefined,
         tplStr: undefined,
-        content: (e) => `<h3 style="color: red">${(e.name && `模板渲染错误: ${e.name}`) || "模板渲染错误"}<h3><pre>${e.stack}</pre>`
+        content: (e, title) => `
+      <h3 style="color: #ff3355;font-size: 32px;font-family: monospace;">${(checkCustomError(e) && `${title || "Render Error"} -- ${e.name}`) || (title || "Render Error")}</h3>
+      <pre style="font-size: 13px;color: #606060;background: #f6f6f6;padding: 12px;overflow-x: auto;">${e.stack}</pre>
+    `
     }
 };
+function checkCustomError(error) {
+    return error && error.name && error.name !== "Error";
+}
 /** RenderResult配置token */
 exports.RENDER_RESULT_OPTIONS = Configs_1.createOptions("RENDER_RESULT_OPTIONS");
 //# sourceMappingURL=render.options.js.map

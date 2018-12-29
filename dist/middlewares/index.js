@@ -15,6 +15,18 @@ const Configs_1 = require("../services/Configs");
  * @param next 下一个中间件
  */
 exports.serverInit = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+    const { injector, scope, logger } = initRequestScope(ctx);
+    try {
+        yield next();
+    }
+    catch (error) {
+        yield tryCatchGlobalError(injector, error);
+    }
+    finally {
+        disposeRequestScope(scope, logger, injector);
+    }
+});
+function initRequestScope(ctx) {
     const scopeId = utils_1.setScopeId(ctx);
     utils_1.GlobalDI.createScope(scopeId, { ctx });
     const injector = utils_1.GlobalDI.get(Injector_1.InjectService, scopeId);
@@ -22,24 +34,23 @@ exports.serverInit = (ctx, next) => tslib_1.__awaiter(this, void 0, void 0, func
     const scope = injector.get(Scope_1.Scope);
     scope["init"](scopeId)["begin"]();
     logger.trace(`scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(scopeId))} is init.`);
-    try {
-        yield next();
-    }
-    catch (error) {
+    return { injector, scope, logger };
+}
+function tryCatchGlobalError(injector, error) {
+    return tslib_1.__awaiter(this, void 0, void 0, function* () {
         const configs = injector.get(Configs_1.Configs);
         const { handler } = configs.get(errors_options_1.GLOBAL_ERROR);
         if (handler) {
             yield handler(error, injector, configs);
         }
-    }
-    finally {
-        const scope = injector.get(Scope_1.Scope);
-        scope["end"]();
-        const duration = scope.diration();
-        logger.trace(`scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(injector.scopeId))} is [${utils_1.setColor(duration > 500 ? "red" : duration > 200 ? "yellow" : "green", duration)} ms] disposed.`);
-        injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
-    }
-});
+    });
+}
+function disposeRequestScope(scope, logger, injector) {
+    scope["end"]();
+    const duration = scope.diration();
+    logger.trace(`scope ${utils_1.setColor("cyan", utils_1.getShortScopeId(injector.scopeId))} is [${utils_1.setColor(duration > 500 ? "red" : duration > 200 ? "yellow" : "green", duration)} ms] disposed.`);
+    injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
+}
 var core_1 = require("./core");
 exports.injectScope = core_1.createMiddleware;
 //# sourceMappingURL=index.js.map

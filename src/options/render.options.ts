@@ -20,7 +20,7 @@ interface IErrorHandler {
    * * 默认(prod)：`() => "Internal Server Error"`
    * * 通常不要复写此字段，除非`path`或`tplStr`能够提供可用的内容
    */
-  content: (error: Error) => string;
+  content: (error: Error, title?: string) => string;
 }
 
 /**
@@ -82,9 +82,16 @@ export const defaultRenderResultOptions: RenderResultOptions<"nunjunks"> = {
   onDevError: {
     path: undefined,
     tplStr: undefined,
-    content: (e) => `<h3 style="color: red">${(e.name && `模板渲染错误: ${e.name}`) || "模板渲染错误"}<h3><pre>${e.stack}</pre>`
+    content: (e, title) => `
+      <h3 style="color: #ff3355;font-size: 32px;font-family: monospace;">${(checkCustomError(e) && `${title || "Render Error"} -- ${e.name}`) || (title || "Render Error")}</h3>
+      <pre style="font-size: 13px;color: #606060;background: #f6f6f6;padding: 12px;overflow-x: auto;">${e.stack}</pre>
+    `
   }
 };
+
+function checkCustomError(error: Error) {
+  return error && error.name && error.name !== "Error";
+}
 
 /** RenderResult配置token */
 export const RENDER_RESULT_OPTIONS = createOptions<RenderResultOptions>("RENDER_RESULT_OPTIONS");
