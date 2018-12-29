@@ -17,7 +17,7 @@ exec("npm publish", (error, stdout, stderr) => {
     fs.writeFileSync("./package.json", JSON.stringify(package, null, "  "));
     throw error;
   } else {
-    console.log(stdout);
-    console.log(stderr);
+    console.log(stdout || "no std output.");
+    console.log(stderr || "no std error.");
   }
 });
