@@ -53,6 +53,7 @@ type DIPair = [any, any];
 /**
  * ## astroboy.ts服务
  * @description
+ * @module Server
  * @author Big Mogician
  * @export
  * @class Server

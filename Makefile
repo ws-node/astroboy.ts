@@ -3,7 +3,7 @@ build:
 	rm -rf dist
 	tsc
 
-doc:
+document:
 	rm -rf doc
 	node_modules/.bin/typedoc --out ./doc/ ./src/
 
