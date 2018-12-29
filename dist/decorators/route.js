@@ -64,7 +64,7 @@ function addMagicForRoute(method, path) {
     };
 }
 /**
- * 最高扩展性的路由声明
+ * ## 最高扩展性的路由声明
  * * 使用这个扩展工厂构造Route声明
  * @description
  * @author Big Mogician
@@ -83,18 +83,50 @@ function __BASE_ROUTE_DECO_FACTORY(configs) {
     };
 }
 exports.__BASE_ROUTE_DECO_FACTORY = __BASE_ROUTE_DECO_FACTORY;
+/**
+ * ## 定义GET请求
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {string} path
+ * @returns {IRouteFactory}
+ */
 function GET(path) {
     return addMagicForRoute("GET", path);
 }
 exports.GET = GET;
+/**
+ * ## 定义PUT请求
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {string} path
+ * @returns {IRouteFactory}
+ */
 function PUT(path) {
     return addMagicForRoute("PUT", path);
 }
 exports.PUT = PUT;
+/**
+ * ## 定义POST请求
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {string} path
+ * @returns {IRouteFactory}
+ */
 function POST(path) {
     return addMagicForRoute("POST", path);
 }
 exports.POST = POST;
+/**
+ * ## 定义DELETE请求
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {string} path
+ * @returns {IRouteFactory}
+ */
 function DELETE(path) {
     return addMagicForRoute("DELETE", path);
 }

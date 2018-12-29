@@ -5,6 +5,15 @@ import { IResult, IResultScope } from "../typings/IResult";
 import { JsonResultOptions, JSON_RESULT_OPTIONS } from "../options";
 import { resolveKeys } from "../utils";
 
+/**
+ * ## Body序列化约定实现
+ * * 按照约定将内容序列化到body响应中
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class JsonResult
+ * @implements {IResult}
+ */
 export class JsonResult implements IResult {
 
   constructor(private value: any, private configs?: Partial<JsonResultOptions>) { }

@@ -5,4 +5,5 @@ tslib_1.__exportStar(require("./json.options"), exports);
 tslib_1.__exportStar(require("./render.options"), exports);
 tslib_1.__exportStar(require("./router.options"), exports);
 tslib_1.__exportStar(require("./typed-serialize.options"), exports);
+tslib_1.__exportStar(require("./errors.options"), exports);
 //# sourceMappingURL=index.js.map

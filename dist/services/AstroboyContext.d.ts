@@ -1,6 +1,19 @@
 import Koa from "koa";
 import { IContext } from "../typings/IContext";
 import { Context } from "./Context";
+export declare namespace AstroboyContext {
+    interface Contract<T = IContext, A = Koa, C = any> {
+        readonly ctx: T;
+        readonly app: A;
+        readonly config: C;
+        getConfig(...args: any[]): any;
+        getServiceClass(...args: any[]): any;
+        getService(...args: any[]): any;
+        callService(...args: any[]): any;
+        invokeServiceMethod(...args: any[]): any;
+        getLib(...args: any[]): any;
+    }
+}
 /**
  * ## Astroboy.ts基础上下文服务
  * * `ctx` 承载Koa.Context，可定制类型
@@ -14,7 +27,7 @@ import { Context } from "./Context";
  * @template A typeof `app` 类型
  * @template C typeof `config` 类型
  */
-export declare class AstroboyContext<T = IContext, A = Koa, C = any> {
+export declare class AstroboyContext<T = IContext, A = Koa, C = any> implements AstroboyContext.Contract<T, A, C> {
     protected context: Context<T>;
     /** BaseClass.ctx */
     readonly ctx: T;

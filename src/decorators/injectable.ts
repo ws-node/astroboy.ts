@@ -1,6 +1,11 @@
 import { Constructor, IBaseInjectable, InjectScope, InjectToken, getDependencies } from "@bonbons/di";
 import { GlobalDI } from "../utils";
 
+interface IInjectableConfigs {
+  type: InjectScope;
+  token: InjectToken;
+}
+
 /**
  * ## 定义服务
  * @description
@@ -12,15 +17,27 @@ import { GlobalDI } from "../utils";
  * }>} [config]
  * @returns
  */
-export function Injectable(config?: Partial<{
-  type: InjectScope,
-  token: InjectToken
-}>) {
+export function Injectable(): <T>(target: Constructor<T>) => Constructor<T>;
+export function Injectable(scope: InjectScope): <T>(target: Constructor<T>) => Constructor<T>;
+export function Injectable(config: Partial<IInjectableConfigs>): <T>(target: Constructor<T>) => Constructor<T>;
+export function Injectable(config?: InjectScope | Partial<IInjectableConfigs>) {
   return function <T>(target: Constructor<T>) {
-    const { token = undefined, type = InjectScope.Scope } = config || {};
+    let token: InjectToken = undefined;
+    let scope: InjectScope = InjectScope.Scope;
+    switch (config) {
+      case InjectScope.Scope:
+      case InjectScope.Singleton:
+      case InjectScope.New:
+        scope = <InjectScope>config;
+        break;
+      default:
+        const { token: tk = undefined, type: tp = InjectScope.Scope } = config || {};
+        scope = tp || InjectScope.Scope;
+        token = tk;
+    }
     const prototype: IBaseInjectable = target.prototype;
     prototype.__valid = true;
-    GlobalDI.register(token || target, target, type);
-    return <Constructor<T>>(token || target);
+    GlobalDI.register(token || target, target, scope);
+    return <Constructor<T>>(target);
   };
 }

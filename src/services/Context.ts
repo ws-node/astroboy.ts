@@ -1,6 +1,12 @@
 import Koa from "koa";
 import { IContext } from "../typings/IContext";
 
+export namespace Context {
+  export interface Contract<T = IContext> {
+    ctx: T;
+  }
+}
+
 /**
  * ## 基础上下文服务
  * @description
@@ -9,7 +15,7 @@ import { IContext } from "../typings/IContext";
  * @class Context
  * @template T typeof `ctx` 类型
  */
-export class Context<T = IContext> {
+export class Context<T = IContext> implements Context.Contract<T> {
   /**
    * ### Koa上下文对象
    * * 有可能被astroboy和后续框架扩展

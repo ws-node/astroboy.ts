@@ -1,6 +1,11 @@
 /// <reference types="koa-router" />
 import Koa from "koa";
 import { IContext } from "../typings/IContext";
+export declare namespace Context {
+    interface Contract<T = IContext> {
+        ctx: T;
+    }
+}
 /**
  * ## 基础上下文服务
  * @description
@@ -9,7 +14,7 @@ import { IContext } from "../typings/IContext";
  * @class Context
  * @template T typeof `ctx` 类型
  */
-export declare class Context<T = IContext> {
+export declare class Context<T = IContext> implements Context.Contract<T> {
     private _ctx;
     /**
      * ### Koa上下文对象

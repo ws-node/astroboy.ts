@@ -214,6 +214,10 @@ export declare class Server {
      * @memberof BonbonsServer
      */
     singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: TImplement): this;
+    /** 预注册，会覆盖装饰器的定义注册 */
+    private preInject;
+    /** 直接注册，允许`@Injectable()`装饰器之后进行定义复写 */
+    private directInject;
     /**
      * ### 启动app
      * @description

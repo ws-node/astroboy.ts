@@ -38,6 +38,10 @@ export class RealConfigCollection implements IConfigCollection {
 
 }
 
+export namespace Configs {
+  export interface Contract extends ReadonlyConfigs { }
+}
+
 /**
  * ## 全局配置容器
  * @description
@@ -47,7 +51,7 @@ export class RealConfigCollection implements IConfigCollection {
  * @class Configs
  * @implements {ReadonlyConfigs}
  */
-export abstract class Configs implements ReadonlyConfigs {
+export abstract class Configs implements Configs.Contract {
   /**
    * ### 解析并获得token对应的配置信息
    * @description

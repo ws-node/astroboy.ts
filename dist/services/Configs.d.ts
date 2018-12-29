@@ -16,6 +16,10 @@ export declare class RealConfigCollection implements IConfigCollection {
     get<T>(token: ConfigToken<T>): T;
     toArray(): ConfigEntry<any>[];
 }
+export declare namespace Configs {
+    interface Contract extends ReadonlyConfigs {
+    }
+}
 /**
  * ## 全局配置容器
  * @description
@@ -25,7 +29,7 @@ export declare class RealConfigCollection implements IConfigCollection {
  * @class Configs
  * @implements {ReadonlyConfigs}
  */
-export declare abstract class Configs implements ReadonlyConfigs {
+export declare abstract class Configs implements Configs.Contract {
     /**
      * ### 解析并获得token对应的配置信息
      * @description

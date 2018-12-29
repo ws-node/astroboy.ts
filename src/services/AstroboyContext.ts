@@ -3,6 +3,20 @@ import { Injectable } from "../decorators/injectable";
 import { IContext } from "../typings/IContext";
 import { Context } from "./Context";
 
+export namespace AstroboyContext {
+  export interface Contract<T = IContext, A = Koa, C = any> {
+    readonly ctx: T;
+    readonly app: A;
+    readonly config: C;
+    getConfig(...args: any[]): any;
+    getServiceClass(...args: any[]): any;
+    getService(...args: any[]): any;
+    callService(...args: any[]): any;
+    invokeServiceMethod(...args: any[]): any;
+    getLib(...args: any[]): any;
+  }
+}
+
 /**
  * ## Astroboy.ts基础上下文服务
  * * `ctx` 承载Koa.Context，可定制类型
@@ -17,7 +31,7 @@ import { Context } from "./Context";
  * @template C typeof `config` 类型
  */
 @Injectable()
-export class AstroboyContext<T = IContext, A = Koa, C = any> {
+export class AstroboyContext<T = IContext, A = Koa, C = any> implements AstroboyContext.Contract<T, A, C> {
 
   /** BaseClass.ctx */
   public get ctx(): T { return <any>this.context.ctx || {}; }

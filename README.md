@@ -4,6 +4,7 @@
 [![NPM][npm-icon]][npm-url]
 
 [![Build status][ci-image]][ci-url]
+[![Coverage Status][cover-image]][cover-url]
 
 
 ### 已经实现的功能
@@ -23,8 +24,9 @@
 > 😨更多功能正在开发中...
 
 ### Wiki + Demo
-* [Demo](https://github.com/ws-node/demo2.astroboy.ts) - astroboy.ts 最新功能预览(可以切换本地和npm导包方式)
-* [Demo](https://github.com/ws-node/demo.astroboy.ts) - astroboy.ts 最大兼容预览(可以切换本地和npm导包方式)
+* [Demo1:多版本并存](https://github.com/ws-node/demo.astroboy.ts) - 最大兼容预览(多重代码风格可以共存)
+* [Demo2:全量astroboy.ts+构建base项目包](https://github.com/ws-node/demo2.astroboy.ts) - base仓库预览(构建继承astroboy.ts的base项目)
+* [Demo3:使用base仓库构建应用](https://github.com/ws-node/demo3.astroboy.ts) - 最大预览(使用base项目构建应用)
 * [Core](https://github.com/ws-node/astroboy.ts/wiki/Core) - 核心组件
 * [Services](https://github.com/ws-node/astroboy.ts/wiki/Services) - 内置服务列表
 * [Configs/Options](https://github.com/ws-node/astroboy.ts/wiki/Configs-Options) - 配置列表
@@ -33,6 +35,34 @@
 * [Interfaces](https://github.com/ws-node/astroboy.ts/wiki/Interfaces) - 公开接口列表
 
 ### 迭代记录
+
+#### 1.0.4
+* 1.0.4功能锁定
+
+#### 1.0.3-rc.21
+* 细节优化
+
+#### 1.0.3-rc.16
+* 新增全局错误处理
+
+#### 1.0.3-rc.12
+* 修复 `Injectable` 装饰器故障
+
+#### 1.0.3-rc.9
+* 增强多重继承的类型化写法
+* `Render` 新增 `init` 重载钩子
+
+#### 1.0.3-rc.7
+* 所有基础服务全部完成契约化，可以通过class本身的 `Contract` 拿到其公共接口
+* 调整 `RenderResult` 的原生参数配置
+* 增加大量文档和注释
+
+#### 1.0.3-rc.5
+* DI接入的重构
+* `Injectable` 装饰器赠加新的重载
+
+#### 1.0.3-rc.4
+* 增加单元测试
 
 #### 1.0.3-rc.1
 * 功能锁定1.0.3，开始新一轮rc
@@ -465,3 +495,5 @@ SOFTWARE.
 [npm-url]: https://npmjs.org/package/astroboy.ts
 [ci-image]: https://travis-ci.org/ws-node/astroboy.ts.svg?branch=master
 [ci-url]: https://travis-ci.org/ws-node/astroboy.ts
+[cover-image]: https://coveralls.io/repos/github/ws-node/astroboy.ts/badge.svg?branch=master
+[cover-url]: https://coveralls.io/github/ws-node/astroboy.ts?branch=master

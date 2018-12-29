@@ -55,11 +55,34 @@ class Server {
         return this;
     }
     scoped(...args) {
-        this.preScopeds.push([args[0], args[1] || args[0]]);
-        return this;
+        return this.preInject(di_1.InjectScope.Scope, args);
     }
     singleton(...args) {
-        this.preSingletons.push([args[0], args[1] || args[0]]);
+        return this.preInject(di_1.InjectScope.Singleton, args);
+    }
+    preInject(type, p) {
+        const args = p instanceof Array ? p : [p, p];
+        switch (type) {
+            case di_1.InjectScope.Scope:
+                this.preScopeds.push([args[0], args[1] || args[0]]);
+                break;
+            case di_1.InjectScope.Singleton:
+                this.preSingletons.push([args[0], args[1] || args[0]]);
+                break;
+            default: break;
+        }
+        return this;
+    }
+    directInject(type, args) {
+        switch (type) {
+            case di_1.InjectScope.Scope:
+                this.di.register(args[0], args[1] || args[0], di_1.InjectScope.Scope);
+                break;
+            case di_1.InjectScope.Singleton:
+                this.di.register(args[0], args[1] || args[0], di_1.InjectScope.Singleton);
+                break;
+            default: break;
+        }
         return this;
     }
     /**
@@ -92,6 +115,8 @@ class Server {
         this.option(options_1.STATIC_RESOLVER, typed_serializer_1.TypedSerializer);
         this.option(options_1.ROUTER_OPTIONS, options_1.defaultRouterOptions);
         this.option(nunjunks_1.NUNJUNKS_OPTIONS, nunjunks_1.defaultNunjunksOptions);
+        this.option(simple_logger_1.SIMPLE_LOGGER_OPTIONS, simple_logger_1.defaultSimpleLoggerOptions);
+        this.option(options_1.GLOBAL_ERROR, options_1.defaultGlobalError);
     }
     initInjections() {
         // 不允许装饰器复写
@@ -99,8 +124,8 @@ class Server {
         this.scoped(Scope_1.Scope);
         this.singleton(simple_logger_1.SimpleLogger);
         // 允许被装饰器复写
-        this.di.register(nunjunks_1.NunjunksEngine, nunjunks_1.NunjunksEngine, di_1.InjectScope.Scope);
-        this.di.register(Render_1.Render, Render_1.Render, di_1.InjectScope.Scope);
+        this.directInject(di_1.InjectScope.Scope, [nunjunks_1.NunjunksEngine]);
+        this.directInject(di_1.InjectScope.Scope, [Render_1.Render]);
     }
     initRouters() {
         builders_1.initRouters(this.configs.get(options_1.ROUTER_OPTIONS));

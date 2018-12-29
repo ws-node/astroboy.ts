@@ -7,12 +7,29 @@ const decorators_1 = require("../decorators");
 const AstroboyContext_1 = require("./AstroboyContext");
 const utils_1 = require("../utils");
 const json_1 = require("../results/json");
+/**
+ * ## 统一渲染服务
+ * @description
+ * @author Big Mogician
+ * @export
+ * @class Render
+ */
 let Render = class Render {
     constructor(context) {
         this.context = context;
         this._views = {};
+        this.init();
     }
     get views() { return this._views; }
+    /**
+     * ## Render init
+     * * 重载方法已实现新的初始化逻辑
+     * @description
+     * @author Big Mogician
+     * @protected
+     * @memberof Render
+     */
+    init() { }
     setView(...args) {
         const [p1, p2, p3] = args;
         let toSnake = false;

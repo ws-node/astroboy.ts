@@ -1,4 +1,10 @@
 import { InjectDIToken, ScopeID } from "@bonbons/di";
+export declare namespace InjectService {
+    interface Contract {
+        readonly scopeId: ScopeID;
+        get<T>(token: InjectDIToken<T>): T;
+    }
+}
 /**
  * ## 依赖注入服务
  * * 手动注入器
@@ -8,7 +14,7 @@ import { InjectDIToken, ScopeID } from "@bonbons/di";
  * @abstract
  * @class InjectService
  */
-export declare abstract class InjectService {
+export declare abstract class InjectService implements InjectService.Contract {
     abstract readonly scopeId: ScopeID;
     /**
      * ### 解析并获得类型实例
@@ -41,3 +47,8 @@ export declare abstract class InjectService {
  * @param {string[]} depts 所有祖先实例在内部的字段名
  */
 export declare function createInjectMixin<T extends object>(target: T, depts: string[]): T;
+export declare function createInjectMixin<T extends object, P1>(target: T, ...depts: [P1]): T & P1;
+export declare function createInjectMixin<T extends object, P1, P2>(target: T, ...depts: [P1, P2]): T & P1 & P2;
+export declare function createInjectMixin<T extends object, P1, P2, P3>(target: T, ...depts: [P1, P2, P3]): T & P1 & P2 & P3;
+export declare function createInjectMixin<T extends object, P1, P2, P3, P4>(target: T, ...depts: [P1, P2, P3, P4]): T & P1 & P2 & P3 & P4;
+export declare function createInjectMixin<T extends object>(target: T, ...depts: any[]): T;
