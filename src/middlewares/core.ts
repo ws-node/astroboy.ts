@@ -14,7 +14,7 @@ type ProvideInvoker<T extends IContext = IContext> = (bunddle: IMiddlewaresScope
 
 /**
  * 创建具有依赖注入能力的中间件
- * @description
+ *
  * @author Big Mogician
  * @export
  * @template T extends IContext
