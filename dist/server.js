@@ -19,6 +19,7 @@ const builders_1 = require("./builders");
 /**
  * ## astroboy.ts服务
  * @description
+ * @module Server
  * @author Big Mogician
  * @export
  * @class Server

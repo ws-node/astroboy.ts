@@ -6,7 +6,7 @@ const Configs_1 = require("../services/Configs");
 const utils_1 = require("../utils");
 /**
  * 创建具有依赖注入能力的中间件
- * @description
+ *
  * @author Big Mogician
  * @export
  * @template T extends IContext

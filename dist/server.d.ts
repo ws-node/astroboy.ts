@@ -3,6 +3,7 @@ import { ConfigToken } from "./services/Configs";
 /**
  * ## astroboy.ts服务
  * @description
+ * @module Server
  * @author Big Mogician
  * @export
  * @class Server

@@ -6,7 +6,7 @@ const [_, __, rctokrn, rcadd] = process.argv;
 
 const { version } = package;
 const [main, oldrc] = (version || "").split("-");
-let [___, rc] = oldrc.split(".");
+let [___, rc = 0] = (oldrc || "").split(".");
 rc = Number(rc) + Number(rcadd);
 package.version = `${main}${!!rctokrn ? `-rc.${rc}` : ""}`
 fs.writeFileSync("./package.json", JSON.stringify(package, null, "  "));
