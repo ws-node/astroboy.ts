@@ -4,6 +4,7 @@ const path_1 = tslib_1.__importDefault(require("path"));
 const fs_1 = tslib_1.__importDefault(require("fs"));
 const nodemon_1 = tslib_1.__importDefault(require("nodemon"));
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
+const child_process_1 = require("child_process");
 module.exports = function (_, command) {
     if (_ !== "dev")
         return;
@@ -45,7 +46,9 @@ module.exports = function (_, command) {
         config = {};
     }
     if (config.env) {
-        config.env = Object.assign({}, config.env, { NODE_ENV: command.env ? command.env : (config.env.NODE_ENV || "development"), NODE_PORT: command.port ? command.port : (config.env.NODE_PORT || 8201) });
+        config.env = Object.assign({}, config.env, { NODE_ENV: command.env
+                ? command.env
+                : config.env.NODE_ENV || "development", NODE_PORT: command.port ? command.port : config.env.NODE_PORT || 8201 });
     }
     else {
         config.env = {
@@ -73,6 +76,8 @@ module.exports = function (_, command) {
     if (command.mock)
         config.mock = command.mock;
     config.inspect = String(config.inspect) === "true";
+    const checkStr = String(config.typeCheck);
+    config.typeCheck = checkStr === "undefined" ? true : checkStr === "true";
     // 传递了 --debug 参数，示例：
     // atc dev --debug
     // atc dev --debug koa:application
@@ -90,7 +95,9 @@ module.exports = function (_, command) {
         const astroboy_ts = require.resolve("astroboy.ts");
         const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
         const ts_node = `-r ${registerFile}`;
-        const tsc_path_map = `-r ${require.resolve("tsconfig-paths").replace("/lib/index.js", "")}/register`;
+        const tsc_path_map = `-r ${require
+            .resolve("tsconfig-paths")
+            .replace("/lib/index.js", "")}/register`;
         // 传递了 --tsconfig 参数，示例：
         // atc dev --tsconfig app/tsconfig.json
         if (config.tsconfig) {
@@ -117,7 +124,34 @@ module.exports = function (_, command) {
         config.env.HTTP_PROXY = url;
         config.env.HTTPS_PROXY = url;
     }
-    nodemon_1.default(config).on("start", () => {
+    let checkProcess;
+    const astroboy_ts = require.resolve("astroboy.ts");
+    const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
+    const typeCheckCmd = astroboy_ts.replace("/index.js", "/cmd/typeCheck");
+    nodemon_1.default(config)
+        .on("start", () => {
+        if (config.typeCheck) {
+            checkProcess && checkProcess.kill();
+            checkProcess = child_process_1.exec(`node -r ${registerFile} ${typeCheckCmd}`, {
+                env: {
+                    TSCONFIG: config.tsconfig || "-",
+                    INDEX: `${projectRoot}/app/app.ts`
+                }
+            }, (error, stdout, stderr) => {
+                if (error) {
+                    console.log(chalk_1.default.yellow("类型检查失败"));
+                    console.log(chalk_1.default.red(error));
+                    return;
+                }
+                if (stderr) {
+                    console.log(chalk_1.default.yellow("类型检查失败"));
+                    console.log(chalk_1.default.red(stderr));
+                    console.log("--------------------");
+                    return;
+                }
+                console.log("类型检查完成");
+            });
+        }
         console.log(chalk_1.default.yellow("开始运行应用执行脚本："));
         console.log(`script ==> ${chalk_1.default.grey(config.exec)}\n`);
         console.log(chalk_1.default.green("应用启动中...\n"));
@@ -137,10 +171,12 @@ module.exports = function (_, command) {
         for (let i = 0; i < config.watch.length; i++) {
             console.log(chalk_1.default.yellow(config.watch[i]));
         }
-    }).on("quit", () => {
+    })
+        .on("quit", () => {
         console.log(chalk_1.default.green("应用退出成功"));
         process.kill(process.pid);
-    }).on("restart", (files) => {
+    })
+        .on("restart", (files) => {
         console.log(chalk_1.default.yellow("监听到文件修改：", files));
     });
 };
