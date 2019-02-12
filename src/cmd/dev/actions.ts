@@ -15,11 +15,29 @@ export = function (_, command: IDevCmdOptions) {
   }
   const fileName = command.config || "atc.config.js";
   console.log(`${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`);
+  const _name = path.join(projectRoot, fileName);
   let config: any;
   try {
-    config = require(path.join(projectRoot, fileName)) || {};
-  } catch (_) {
-    console.log(chalk.yellow("未找到配置文件"));
+    config = require(_name) || {};
+  } catch (error) {
+    // only check if throwing is an error.
+    if (error.message && typeof error.message === "string") {
+      // import errors occures.
+      if (error.message.startsWith("Cannot find module")) {
+        // use custom atc.config file.
+        if (fileName === "atc.config.js") {
+          // maybe syntax error, throws.
+          throw error;
+        } else {
+          // maybe filename error, throws.
+          throw new Error(`未找到atc配置文件：[${_name}]`);
+        }
+      } else {
+        // throws anyway.
+        throw error;
+      }
+    }
+    console.log(chalk.yellow("未配置atc配置文件, 使用默认配置"));
     config = {};
   }
 
