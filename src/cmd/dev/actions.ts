@@ -2,8 +2,10 @@ import path from "path";
 import fs from "fs";
 import nodemon from "nodemon";
 import chalk from "chalk";
-import { exec, ChildProcess } from "child_process";
+// import { exec, ChildProcess } from "child_process";
+import async from "async";
 import { IDevCmdOptions } from "./options";
+import { readTsConfig, compile } from "../typeCheck";
 
 export = function(_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
@@ -123,36 +125,58 @@ export = function(_, command: IDevCmdOptions) {
     config.env.HTTPS_PROXY = url;
   }
 
-  let checkProcess: ChildProcess;
-  const astroboy_ts = require.resolve("astroboy.ts");
-  const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
-  const typeCheckCmd = astroboy_ts.replace("/index.js", "/cmd/typeCheck");
+  // let checkProcess: ChildProcess;
+  // const astroboy_ts = require.resolve("astroboy.ts");
+  // const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
+  // const typeCheckCmd = astroboy_ts.replace("/index.js", "/cmd/typeCheck");
 
   nodemon(config)
     .on("start", () => {
       if (config.typeCheck) {
-        checkProcess && checkProcess.kill();
-        checkProcess = exec(
-          `node -r ${registerFile} ${typeCheckCmd}`,
-          {
-            env: {
-              TSCONFIG: config.tsconfig || "-",
-              INDEX: `${projectRoot}/app/app.ts`
+        // checkProcess && checkProcess.kill();
+        // checkProcess = exec(
+        //   `node -r ${registerFile} ${typeCheckCmd}`,
+        //   {
+        //     env: {
+        //       PARENT: projectRoot,
+        //       TSCONFIG: config.tsconfig || "-",
+        //       INDEX: `app/app.ts`
+        //     }
+        //   },
+        //   (error, stdout, stderr) => {
+        //     if (error) {
+        //       console.log(chalk.yellow("类型检查失败"));
+        //       console.log(chalk.red(<any>error));
+        //       return;
+        //     }
+        //     if (stderr) {
+        //       console.log(chalk.yellow("类型检查失败"));
+        //       console.log(chalk.red(stderr));
+        //       console.log("--------------------");
+        //       return;
+        //     }
+        //     console.log("类型检查完成");
+        //   }
+        // );
+        async.parallel(
+          [
+            callback => {
+              const opt = readTsConfig(
+                config.tsconfig || "tsconfig.json",
+                projectRoot
+              );
+              compile(
+                opt.fileNames,
+                {
+                  ...opt.options,
+                  noEmit: true
+                },
+                m => callback(undefined, m)
+              );
             }
-          },
-          (error, stdout, stderr) => {
-            if (error) {
-              console.log(chalk.yellow("类型检查失败"));
-              console.log(chalk.red(<any>error));
-              return;
-            }
-            if (stderr) {
-              console.log(chalk.yellow("类型检查失败"));
-              console.log(chalk.red(stderr));
-              console.log("--------------------");
-              return;
-            }
-            console.log("类型检查完成");
+          ],
+          (err, resp) => {
+            console.log([err, resp]);
           }
         );
       }

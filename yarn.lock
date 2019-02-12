@@ -99,6 +99,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/async@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@types/async/-/async-2.4.0.tgz#2d707a0127a4fe45877c3152d813e4b23c6ce160"
+  integrity sha512-1/6EglKPJZjkj2KWSFrvbOeqDZTb+KEiU293MUwc/z3/g4a+jOPADHfcOzt/EbY0uEEr+dkUWTYQfVDzzOrMaw==
+
 "@types/body-parser@*":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.17.0.tgz#9f5c9d9bd04bb54be32d5eb9fc0d8c974e6cf58c"

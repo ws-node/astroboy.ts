@@ -65,6 +65,7 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
+    "@types/async": "^2.4.0",
     "@types/camelcase": "4.1.0",
     "@types/chai": "^4.1.6",
     "@types/chalk": "2.2.0",

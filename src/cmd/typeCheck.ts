@@ -1,8 +1,12 @@
-import * as ts from "typescript";
+import * as ts from "typescript/lib/tsserverlibrary";
 
-const { TSCONFIG, INDEX } = process.env;
+// const { TSCONFIG, INDEX, PARENT } = process.env;
 
-function compile(fileNames: string[], options: ts.CompilerOptions) {
+export function compile(
+  fileNames: string[],
+  options: ts.CompilerOptions,
+  notify: (msg: string) => void
+) {
   const program = ts.createProgram(fileNames, options);
   const emitResult = program.emit();
 
@@ -19,11 +23,11 @@ function compile(fileNames: string[], options: ts.CompilerOptions) {
         diagnostic.messageText,
         "\n"
       );
-      console.log(
+      notify(
         `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`
       );
     } else {
-      console.log(
+      notify(
         `${ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n")}`
       );
     }
@@ -34,9 +38,36 @@ function compile(fileNames: string[], options: ts.CompilerOptions) {
   process.exit(exitCode);
 }
 
-const tsconfig = TSCONFIG === "-" ? {} : require(TSCONFIG);
+export function readTsConfig(
+  path: string,
+  parent: string
+): ts.ParsedCommandLine {
+  const i = path.lastIndexOf("/");
+  const prefix = path.substr(0, i);
+  const root = prefix.length > 0 ? `${parent}/${prefix}` : parent;
+  const configFile = ts.readJsonConfigFile(path, ts.sys.readFile);
+  const compilerOptions = ts.parseJsonSourceFileConfigFileContent(
+    configFile,
+    {
+      fileExists: ts.sys.fileExists,
+      readFile: ts.sys.readFile,
+      readDirectory: ts.sys.readDirectory,
+      useCaseSensitiveFileNames: true
+    },
+    root
+  );
+  return compilerOptions;
+}
+// const result = readTsConfig(
+//   TSCONFIG === "-" ? "tsconfig.json" : TSCONFIG,
+//   PARENT
+// );
 
-compile([INDEX], {
-  ...tsconfig,
-  noEmit: true
-});
+// try {
+//   compile(result.fileNames, {
+//     ...result.options,
+//     noEmit: true
+//   });
+// } catch (err) {
+//   console.log(err);
+// }
