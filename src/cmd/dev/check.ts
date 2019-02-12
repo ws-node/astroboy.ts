@@ -35,7 +35,8 @@ async function run(cancellationToken: CancellationToken) {
               ),
               file: i.file.fileName,
               line: i.file.getLineAndCharacterOfPosition(i.start).line + 1,
-              character: i.file.getLineAndCharacterOfPosition(i.start).character
+              character:
+                i.file.getLineAndCharacterOfPosition(i.start).character + 1
             })
         )
       );

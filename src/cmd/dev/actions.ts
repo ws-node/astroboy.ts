@@ -126,70 +126,14 @@ export = function(_, command: IDevCmdOptions) {
     config.env.HTTPS_PROXY = url;
   }
 
-  // let checkProcess: ChildProcess;
-  // const astroboy_ts = require.resolve("astroboy.ts");
-  // const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
-  // const typeCheckCmd = astroboy_ts.replace("/index.js", "/cmd/typeCheck");
-
   nodemon(config)
     .on("start", () => {
-      if (config.typeCheck) {
-        // checkProcess && checkProcess.kill();
-        // checkProcess = exec(
-        //   `node -r ${registerFile} ${typeCheckCmd}`,
-        //   {
-        //     env: {
-        //       PARENT: projectRoot,
-        //       TSCONFIG: config.tsconfig || "-",
-        //       INDEX: `app/app.ts`
-        //     }
-        //   },
-        //   (error, stdout, stderr) => {
-        //     if (error) {
-        //       console.log(chalk.yellow("类型检查失败"));
-        //       console.log(chalk.red(<any>error));
-        //       return;
-        //     }
-        //     if (stderr) {
-        //       console.log(chalk.yellow("类型检查失败"));
-        //       console.log(chalk.red(stderr));
-        //       console.log("--------------------");
-        //       return;
-        //     }
-        //     console.log("类型检查完成");
-        //   }
-        // );
-        const child = childProcess.fork(
-          path.resolve(__dirname, "./check.js"),
-          [],
-          {
-            env: {
-              TSCONFIG: path.resolve(
-                projectRoot,
-                config.tsconfig || "tsconfig.json"
-              )
-            }
-          }
-        );
-        child.on(
-          "message",
-          (message: { diagnostics?: NormalizedMessage[] }) => {
-            const { diagnostics } = message;
-            if (diagnostics) {
-              if (diagnostics.length === 0) {
-                console.log("类型检查通过");
-              }
-              message.diagnostics.forEach(item =>
-                console.log(chalk.yellow(JSON.stringify(item)))
-              );
-              child.kill();
-            } else {
-              console.log(message);
-            }
-          }
-        );
-        child.on("exit", () => console.log("类型检查已结束"));
-        child.send(new CancellationToken(typescript));
+      try {
+        if (config.typeCheck) startTypeCheck(projectRoot, config);
+      } catch (error) {
+        console.log(error);
+        process.kill(process.pid);
+        return;
       }
       console.log(chalk.yellow("开始运行应用执行脚本："));
       console.log(`script ==> ${chalk.grey(config.exec)}\n`);
@@ -219,3 +163,47 @@ export = function(_, command: IDevCmdOptions) {
       console.log(chalk.yellow("监听到文件修改：", files));
     });
 };
+
+function startTypeCheck(projectRoot: string, config: any) {
+  console.log(chalk.blue("开始执行类型检查...\n"));
+  const child = childProcess.fork(path.resolve(__dirname, "./check.js"), [], {
+    env: {
+      TSCONFIG: path.resolve(projectRoot, config.tsconfig || "tsconfig.json")
+    }
+  });
+  child.on("message", (message: { diagnostics?: NormalizedMessage[] }) => {
+    const { diagnostics } = message;
+    if (diagnostics) {
+      if (diagnostics.length === 0) {
+        console.log(chalk.blue("类型检查通过，没有发现语法错误"));
+        child.kill();
+        return;
+      }
+      console.log(chalk.blue(`发现${diagnostics.length}个语法错误\n`));
+      diagnostics.forEach(item => {
+        const {
+          type: _,
+          code,
+          severity,
+          content,
+          file,
+          line,
+          character
+        } = item;
+        console.log(
+          chalk[severity === "error" ? "red" : "yellow"](
+            `${String(
+              severity
+            ).toUpperCase()} in ${file}[${line},${character}] \nts${code ||
+              0} : ${content}\n`
+          )
+        );
+      });
+      child.kill();
+    } else {
+      console.log(message);
+    }
+  });
+  child.on("exit", () => console.log("类型检查已结束"));
+  child.send(new CancellationToken(typescript));
+}
