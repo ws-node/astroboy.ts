@@ -126,10 +126,12 @@ export = function(_, command: IDevCmdOptions) {
     config.env.HTTPS_PROXY = url;
   }
 
+  let token = refreshToken();
+
   nodemon(config)
     .on("start", () => {
       try {
-        if (config.typeCheck) startTypeCheck(projectRoot, config);
+        if (config.typeCheck) startTypeCheck(projectRoot, config, token);
       } catch (error) {
         console.log(error);
         process.kill(process.pid);
@@ -160,11 +162,16 @@ export = function(_, command: IDevCmdOptions) {
       process.kill(process.pid);
     })
     .on("restart", (files: any) => {
+      token = refreshToken(token);
       console.log(chalk.yellow("监听到文件修改：", files));
     });
 };
 
-function startTypeCheck(projectRoot: string, config: any) {
+function startTypeCheck(
+  projectRoot: string,
+  config: any,
+  token: CancellationToken
+) {
   console.log(chalk.blue("开始执行类型检查...\n"));
   const child = childProcess.fork(path.resolve(__dirname, "./check.js"), [], {
     env: {
@@ -205,5 +212,10 @@ function startTypeCheck(projectRoot: string, config: any) {
     }
   });
   child.on("exit", () => console.log("类型检查已结束"));
-  child.send(new CancellationToken(typescript));
+  child.send(token);
+}
+
+function refreshToken(token?: CancellationToken) {
+  if (token && !token.isCancellationRequested()) token.cleanupCancellation();
+  return (token = new CancellationToken(typescript));
 }
