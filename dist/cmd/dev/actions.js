@@ -7,6 +7,36 @@ const chalk_1 = tslib_1.__importDefault(require("chalk"));
 const child_process_1 = tslib_1.__importDefault(require("child_process"));
 const typescript = require("typescript");
 const CancellationToken_1 = require("../utils/CancellationToken");
+function startTypeCheck(projectRoot, config) {
+    console.log(chalk_1.default.blue("开始执行类型检查...\n"));
+    const child = child_process_1.default.fork(path_1.default.resolve(__dirname, "./check.js"), [], {
+        env: {
+            TSCONFIG: path_1.default.resolve(projectRoot, config.tsconfig || "tsconfig.json")
+        }
+    });
+    child.on("message", (message) => {
+        const { diagnostics } = message;
+        if (diagnostics) {
+            if (diagnostics.length === 0) {
+                console.log(chalk_1.default.blue("类型检查通过，没有发现语法错误"));
+                child.kill();
+                return;
+            }
+            console.log(chalk_1.default.blue(`发现${diagnostics.length}个语法错误\n`));
+            diagnostics.forEach(item => {
+                const { type: _, code, severity, content, file, line, character } = item;
+                console.log(chalk_1.default[severity === "error" ? "red" : "yellow"](`${String(severity).toUpperCase()} in ${file}[${line},${character}] \nts${code ||
+                    0} : ${content}\n`));
+            });
+            child.kill();
+        }
+        else {
+            console.log(message);
+        }
+    });
+    child.on("exit", () => console.log("类型检查已结束"));
+    child.send(new CancellationToken_1.CancellationToken(typescript));
+}
 module.exports = function (_, command) {
     if (_ !== "dev")
         return;
@@ -126,58 +156,16 @@ module.exports = function (_, command) {
         config.env.HTTP_PROXY = url;
         config.env.HTTPS_PROXY = url;
     }
-    // let checkProcess: ChildProcess;
-    // const astroboy_ts = require.resolve("astroboy.ts");
-    // const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
-    // const typeCheckCmd = astroboy_ts.replace("/index.js", "/cmd/typeCheck");
     nodemon_1.default(config)
         .on("start", () => {
-        if (config.typeCheck) {
-            // checkProcess && checkProcess.kill();
-            // checkProcess = exec(
-            //   `node -r ${registerFile} ${typeCheckCmd}`,
-            //   {
-            //     env: {
-            //       PARENT: projectRoot,
-            //       TSCONFIG: config.tsconfig || "-",
-            //       INDEX: `app/app.ts`
-            //     }
-            //   },
-            //   (error, stdout, stderr) => {
-            //     if (error) {
-            //       console.log(chalk.yellow("类型检查失败"));
-            //       console.log(chalk.red(<any>error));
-            //       return;
-            //     }
-            //     if (stderr) {
-            //       console.log(chalk.yellow("类型检查失败"));
-            //       console.log(chalk.red(stderr));
-            //       console.log("--------------------");
-            //       return;
-            //     }
-            //     console.log("类型检查完成");
-            //   }
-            // );
-            const child = child_process_1.default.fork(path_1.default.resolve(__dirname, "./check.js"), [], {
-                env: {
-                    TSCONFIG: path_1.default.resolve(projectRoot, config.tsconfig || "tsconfig.json")
-                }
-            });
-            child.on("message", (message) => {
-                const { diagnostics } = message;
-                if (diagnostics) {
-                    if (diagnostics.length === 0) {
-                        console.log("类型检查通过");
-                    }
-                    message.diagnostics.forEach(item => console.log(chalk_1.default.yellow(JSON.stringify(item))));
-                    child.kill();
-                }
-                else {
-                    console.log(message);
-                }
-            });
-            child.on("exit", () => console.log("类型检查已结束"));
-            child.send(new CancellationToken_1.CancellationToken(typescript));
+        try {
+            if (config.typeCheck)
+                startTypeCheck(projectRoot, config);
+        }
+        catch (error) {
+            console.log(error);
+            process.kill(process.pid);
+            return;
         }
         console.log(chalk_1.default.yellow("开始运行应用执行脚本："));
         console.log(`script ==> ${chalk_1.default.grey(config.exec)}\n`);

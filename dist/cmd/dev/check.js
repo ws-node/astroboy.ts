@@ -27,7 +27,7 @@ function run(cancellationToken) {
                     content: typescript.flattenDiagnosticMessageText(i.messageText, "\n"),
                     file: i.file.fileName,
                     line: i.file.getLineAndCharacterOfPosition(i.start).line + 1,
-                    character: i.file.getLineAndCharacterOfPosition(i.start).character
+                    character: i.file.getLineAndCharacterOfPosition(i.start).character + 1
                 })));
             });
         }
