@@ -51,6 +51,7 @@
     "@types/uuid": "3.4.4",
     "astroboy": "0.0.35",
     "astroboy-router": "1.2.0-rc.1",
+    "async": "^2.6.1",
     "camelcase": "4.1.0",
     "cerialize": "0.1.18",
     "chalk": "2.4.1",
