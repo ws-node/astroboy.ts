@@ -4,9 +4,7 @@ const path_1 = tslib_1.__importDefault(require("path"));
 const fs_1 = tslib_1.__importDefault(require("fs"));
 const nodemon_1 = tslib_1.__importDefault(require("nodemon"));
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
-// import { exec, ChildProcess } from "child_process";
-const async_1 = tslib_1.__importDefault(require("async"));
-const typeCheck_1 = require("../typeCheck");
+const child_process_1 = tslib_1.__importDefault(require("child_process"));
 module.exports = function (_, command) {
     if (_ !== "dev")
         return;
@@ -158,14 +156,13 @@ module.exports = function (_, command) {
             //     console.log("类型检查完成");
             //   }
             // );
-            async_1.default.parallel([
-                callback => {
-                    const opt = typeCheck_1.readTsConfig(config.tsconfig || "tsconfig.json", projectRoot);
-                    typeCheck_1.compile(opt.fileNames, Object.assign({}, opt.options, { noEmit: true }), m => callback(undefined, m));
+            const child = child_process_1.default.fork(path_1.default.resolve(__dirname, "./check.js"), [], {
+                env: {
+                    TSCONFIG: path_1.default.resolve(projectRoot, config.tsconfig || "tsconfig.json")
                 }
-            ], (err, resp) => {
-                console.log([err, resp]);
             });
+            child.on("message", (message) => console.log(message));
+            child.on("exit", (code, signal) => console.log([code, signal]));
         }
         console.log(chalk_1.default.yellow("开始运行应用执行脚本："));
         console.log(`script ==> ${chalk_1.default.grey(config.exec)}\n`);

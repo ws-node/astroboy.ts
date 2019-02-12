@@ -1,3 +1,12 @@
-import * as ts from "typescript/lib/tsserverlibrary";
-export declare function compile(fileNames: string[], options: ts.CompilerOptions, notify: (msg: string) => void): void;
-export declare function readTsConfig(path: string, parent: string): ts.ParsedCommandLine;
+import * as typescript from "typescript";
+import { Configuration } from "tslint";
+export declare function loadProgramConfig(configFile: string, compilerOptions: typescript.CompilerOptions): typescript.ParsedCommandLine;
+interface ConfigurationFile extends Configuration.IConfigurationFile {
+    linterOptions?: {
+        typeCheck?: boolean;
+        exclude?: string[];
+    };
+}
+export declare function loadLinterConfig(configFile: string): ConfigurationFile;
+export declare function createProgram(programConfig: typescript.ParsedCommandLine, oldProgram?: typescript.Program): typescript.Program;
+export {};

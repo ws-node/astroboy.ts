@@ -1,53 +1,49 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const ts = tslib_1.__importStar(require("typescript/lib/tsserverlibrary"));
-// const { TSCONFIG, INDEX, PARENT } = process.env;
-function compile(fileNames, options, notify) {
-    const program = ts.createProgram(fileNames, options);
-    const emitResult = program.emit();
-    const allDiagnostics = ts
-        .getPreEmitDiagnostics(program)
-        .concat(emitResult.diagnostics);
-    allDiagnostics.forEach(diagnostic => {
-        if (diagnostic.file) {
-            const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
-            const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
-            notify(`${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
-        }
-        else {
-            notify(`${ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n")}`);
-        }
-    });
-    const exitCode = emitResult.emitSkipped ? 1 : 0;
-    console.log(`Process exiting with code '${exitCode}'.`);
-    process.exit(exitCode);
+const typescript = tslib_1.__importStar(require("typescript"));
+const path_1 = tslib_1.__importDefault(require("path"));
+function loadProgramConfig(configFile, compilerOptions) {
+    const tsconfig = typescript.readConfigFile(configFile, typescript.sys.readFile).config;
+    tsconfig.compilerOptions = tsconfig.compilerOptions || {};
+    tsconfig.compilerOptions = Object.assign({}, tsconfig.compilerOptions, compilerOptions);
+    const parsed = typescript.parseJsonConfigFileContent(tsconfig, typescript.sys, path_1.default.dirname(configFile));
+    return parsed;
 }
-exports.compile = compile;
-function readTsConfig(path, parent) {
-    const i = path.lastIndexOf("/");
-    const prefix = path.substr(0, i);
-    const root = prefix.length > 0 ? `${parent}/${prefix}` : parent;
-    const configFile = ts.readJsonConfigFile(path, ts.sys.readFile);
-    const compilerOptions = ts.parseJsonSourceFileConfigFileContent(configFile, {
-        fileExists: ts.sys.fileExists,
-        readFile: ts.sys.readFile,
-        readDirectory: ts.sys.readDirectory,
-        useCaseSensitiveFileNames: true
-    }, root);
-    return compilerOptions;
+exports.loadProgramConfig = loadProgramConfig;
+function loadLinterConfig(configFile) {
+    // tslint:disable-next-line:no-implicit-dependencies
+    const tslint = require("tslint");
+    return tslint.Configuration.loadConfigurationFromPath(configFile);
 }
-exports.readTsConfig = readTsConfig;
-// const result = readTsConfig(
-//   TSCONFIG === "-" ? "tsconfig.json" : TSCONFIG,
-//   PARENT
-// );
-// try {
-//   compile(result.fileNames, {
-//     ...result.options,
-//     noEmit: true
-//   });
-// } catch (err) {
-//   console.log(err);
-// }
+exports.loadLinterConfig = loadLinterConfig;
+function createProgram(programConfig, 
+//   files: FilesRegister,
+//   watcher: FilesWatcher,
+oldProgram) {
+    const host = typescript.createCompilerHost(programConfig.options);
+    //   const realGetSourceFile = host.getSourceFile;
+    //   host.getSourceFile = (filePath, languageVersion, onError) => {
+    // first check if watcher is watching file - if not - check it's mtime
+    // if (!watcher.isWatchingFile(filePath)) {
+    //   try {
+    //     const stats = fs.statSync(filePath);
+    //     files.setMtime(filePath, stats.mtime.valueOf());
+    //   } catch (e) {
+    //     // probably file does not exists
+    //     files.remove(filePath);
+    //   }
+    // }
+    // // get source file only if there is no source in files register
+    // if (!files.has(filePath) || !files.getData(filePath).source) {
+    //   files.mutateData(filePath, data => {
+    //     data.source = realGetSourceFile(filePath, languageVersion, onError);
+    //   });
+    // }
+    // return files.getData(filePath).source;
+    //   };
+    return typescript.createProgram(programConfig.fileNames, programConfig.options, host, oldProgram // re-use old program
+    );
+}
+exports.createProgram = createProgram;
 //# sourceMappingURL=typeCheck.js.map
