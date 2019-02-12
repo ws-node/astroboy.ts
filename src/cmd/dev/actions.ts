@@ -4,6 +4,9 @@ import nodemon from "nodemon";
 import chalk from "chalk";
 import childProcess from "child_process";
 import { IDevCmdOptions } from "./options";
+import typescript = require("typescript");
+import { CancellationToken } from "../utils/CancellationToken";
+import { NormalizedMessage } from "../utils/NormalizedMessage";
 
 export = function(_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
@@ -168,11 +171,25 @@ export = function(_, command: IDevCmdOptions) {
             }
           }
         );
-
-        child.on("message", (message: any) => console.log(message));
-        child.on("exit", (code: string | number, signal: string) =>
-          console.log([code, signal])
+        child.on(
+          "message",
+          (message: { diagnostics?: NormalizedMessage[] }) => {
+            const { diagnostics } = message;
+            if (diagnostics) {
+              if (diagnostics.length === 0) {
+                console.log("类型检查通过");
+              }
+              message.diagnostics.forEach(item =>
+                console.log(chalk.yellow(JSON.stringify(item)))
+              );
+              child.kill();
+            } else {
+              console.log(message);
+            }
+          }
         );
+        child.on("exit", () => console.log("类型检查已结束"));
+        child.send(new CancellationToken(typescript));
       }
       console.log(chalk.yellow("开始运行应用执行脚本："));
       console.log(`script ==> ${chalk.grey(config.exec)}\n`);

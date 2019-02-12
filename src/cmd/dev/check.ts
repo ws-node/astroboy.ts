@@ -1,4 +1,5 @@
 import { CancellationToken } from "../utils/CancellationToken";
+import { NormalizedMessage, Severity } from "../utils/NormalizedMessage";
 import { loadProgramConfig, createProgram } from "../typeCheck";
 import * as typescript from "typescript";
 
@@ -19,7 +20,25 @@ async function run(cancellationToken: CancellationToken) {
       const register = program
         .getSemanticDiagnostics(sourceFile, cancellationToken)
         .concat(program.getSyntacticDiagnostics(sourceFile, cancellationToken));
-      diagnostics.push(...register);
+      diagnostics.push(
+        ...register.map(
+          i =>
+            new NormalizedMessage({
+              type: NormalizedMessage.TYPE_DIAGNOSTIC,
+              code: i.code,
+              severity: typescript.DiagnosticCategory[
+                i.category
+              ].toLowerCase() as Severity,
+              content: typescript.flattenDiagnosticMessageText(
+                i.messageText,
+                "\n"
+              ),
+              file: i.file.fileName,
+              line: i.file.getLineAndCharacterOfPosition(i.start).line + 1,
+              character: i.file.getLineAndCharacterOfPosition(i.start).character
+            })
+        )
+      );
     });
   } catch (error) {
     if (error instanceof typescript.OperationCanceledException) {
@@ -31,7 +50,7 @@ async function run(cancellationToken: CancellationToken) {
   if (!cancellationToken.isCancellationRequested()) {
     try {
       process.send!({
-        diagnostics: []
+        diagnostics
       });
     } catch (e) {
       // channel closed...
