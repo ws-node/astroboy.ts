@@ -1,73 +1,83 @@
-import * as ts from "typescript/lib/tsserverlibrary";
+import * as typescript from "typescript";
+import { Configuration } from "tslint";
+import path from "path";
 
-// const { TSCONFIG, INDEX, PARENT } = process.env;
-
-export function compile(
-  fileNames: string[],
-  options: ts.CompilerOptions,
-  notify: (msg: string) => void
+export function loadProgramConfig(
+  configFile: string,
+  compilerOptions: typescript.CompilerOptions
 ) {
-  const program = ts.createProgram(fileNames, options);
-  const emitResult = program.emit();
-
-  const allDiagnostics = ts
-    .getPreEmitDiagnostics(program)
-    .concat(emitResult.diagnostics);
-
-  allDiagnostics.forEach(diagnostic => {
-    if (diagnostic.file) {
-      const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
-        diagnostic.start!
-      );
-      const message = ts.flattenDiagnosticMessageText(
-        diagnostic.messageText,
-        "\n"
-      );
-      notify(
-        `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`
-      );
-    } else {
-      notify(
-        `${ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n")}`
-      );
-    }
-  });
-
-  const exitCode = emitResult.emitSkipped ? 1 : 0;
-  console.log(`Process exiting with code '${exitCode}'.`);
-  process.exit(exitCode);
-}
-
-export function readTsConfig(
-  path: string,
-  parent: string
-): ts.ParsedCommandLine {
-  const i = path.lastIndexOf("/");
-  const prefix = path.substr(0, i);
-  const root = prefix.length > 0 ? `${parent}/${prefix}` : parent;
-  const configFile = ts.readJsonConfigFile(path, ts.sys.readFile);
-  const compilerOptions = ts.parseJsonSourceFileConfigFileContent(
+  const tsconfig = typescript.readConfigFile(
     configFile,
-    {
-      fileExists: ts.sys.fileExists,
-      readFile: ts.sys.readFile,
-      readDirectory: ts.sys.readDirectory,
-      useCaseSensitiveFileNames: true
-    },
-    root
-  );
-  return compilerOptions;
-}
-// const result = readTsConfig(
-//   TSCONFIG === "-" ? "tsconfig.json" : TSCONFIG,
-//   PARENT
-// );
+    typescript.sys.readFile
+  ).config;
 
-// try {
-//   compile(result.fileNames, {
-//     ...result.options,
-//     noEmit: true
-//   });
-// } catch (err) {
-//   console.log(err);
-// }
+  tsconfig.compilerOptions = tsconfig.compilerOptions || {};
+  tsconfig.compilerOptions = {
+    ...tsconfig.compilerOptions,
+    ...compilerOptions
+  };
+
+  const parsed = typescript.parseJsonConfigFileContent(
+    tsconfig,
+    typescript.sys,
+    path.dirname(configFile)
+  );
+
+  return parsed;
+}
+
+interface ConfigurationFile extends Configuration.IConfigurationFile {
+  linterOptions?: {
+    typeCheck?: boolean;
+    exclude?: string[];
+  };
+}
+
+export function loadLinterConfig(configFile: string): ConfigurationFile {
+  // tslint:disable-next-line:no-implicit-dependencies
+  const tslint = require("tslint");
+
+  return tslint.Configuration.loadConfigurationFromPath(
+    configFile
+  ) as ConfigurationFile;
+}
+
+export function createProgram(
+  programConfig: typescript.ParsedCommandLine,
+  //   files: FilesRegister,
+  //   watcher: FilesWatcher,
+  oldProgram?: typescript.Program
+) {
+  const host = typescript.createCompilerHost(programConfig.options);
+  //   const realGetSourceFile = host.getSourceFile;
+
+  //   host.getSourceFile = (filePath, languageVersion, onError) => {
+  // first check if watcher is watching file - if not - check it's mtime
+  // if (!watcher.isWatchingFile(filePath)) {
+  //   try {
+  //     const stats = fs.statSync(filePath);
+
+  //     files.setMtime(filePath, stats.mtime.valueOf());
+  //   } catch (e) {
+  //     // probably file does not exists
+  //     files.remove(filePath);
+  //   }
+  // }
+
+  // // get source file only if there is no source in files register
+  // if (!files.has(filePath) || !files.getData(filePath).source) {
+  //   files.mutateData(filePath, data => {
+  //     data.source = realGetSourceFile(filePath, languageVersion, onError);
+  //   });
+  // }
+
+  // return files.getData(filePath).source;
+  //   };
+
+  return typescript.createProgram(
+    programConfig.fileNames,
+    programConfig.options,
+    host,
+    oldProgram // re-use old program
+  );
+}

@@ -2,10 +2,8 @@ import path from "path";
 import fs from "fs";
 import nodemon from "nodemon";
 import chalk from "chalk";
-// import { exec, ChildProcess } from "child_process";
-import async from "async";
+import childProcess from "child_process";
 import { IDevCmdOptions } from "./options";
-import { readTsConfig, compile } from "../typeCheck";
 
 export = function(_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
@@ -158,26 +156,22 @@ export = function(_, command: IDevCmdOptions) {
         //     console.log("类型检查完成");
         //   }
         // );
-        async.parallel(
-          [
-            callback => {
-              const opt = readTsConfig(
-                config.tsconfig || "tsconfig.json",
-                projectRoot
-              );
-              compile(
-                opt.fileNames,
-                {
-                  ...opt.options,
-                  noEmit: true
-                },
-                m => callback(undefined, m)
-              );
+        const child = childProcess.fork(
+          path.resolve(__dirname, "./check.js"),
+          [],
+          {
+            env: {
+              TSCONFIG: path.resolve(
+                projectRoot,
+                config.tsconfig || "tsconfig.json"
+              )
             }
-          ],
-          (err, resp) => {
-            console.log([err, resp]);
           }
+        );
+
+        child.on("message", (message: any) => console.log(message));
+        child.on("exit", (code: string | number, signal: string) =>
+          console.log([code, signal])
         );
       }
       console.log(chalk.yellow("开始运行应用执行脚本："));
