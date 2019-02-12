@@ -10,7 +10,7 @@ export interface IMiddlewaresScope<T = IContext> {
 declare type ProvideInvoker<T extends IContext = IContext> = (bunddle: IMiddlewaresScope<T>) => void | Promise<void>;
 /**
  * 创建具有依赖注入能力的中间件
- * @description
+ *
  * @author Big Mogician
  * @export
  * @template T extends IContext

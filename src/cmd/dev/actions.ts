@@ -2,9 +2,13 @@ import path from "path";
 import fs from "fs";
 import nodemon from "nodemon";
 import chalk from "chalk";
+import childProcess, { ChildProcess } from "child_process";
 import { IDevCmdOptions } from "./options";
+import typescript = require("typescript");
+import { CancellationToken } from "../utils/CancellationToken";
+import { NormalizedMessage } from "../utils/NormalizedMessage";
 
-export = function (_, command: IDevCmdOptions) {
+export = function(_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
   console.log(chalk.green("========= [ASTROBOY.TS] <==> DEVTOOL ========"));
   const projectRoot = process.cwd();
@@ -15,19 +19,39 @@ export = function (_, command: IDevCmdOptions) {
   }
   const fileName = command.config || "atc.config.js";
   console.log(`${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`);
+  const _name = path.join(projectRoot, fileName);
   let config: any;
   try {
-    config = require(path.join(projectRoot, fileName)) || {};
-  } catch (_) {
-    console.log(chalk.yellow("未找到配置文件"));
+    config = require(_name) || {};
+  } catch (error) {
+    // only check if throwing is an error.
+    if (error.message && typeof error.message === "string") {
+      // import errors occures.
+      if (error.message.startsWith("Cannot find module")) {
+        // use custom atc.config file.
+        if (fileName === "atc.config.js") {
+          // maybe syntax error, throws.
+          throw error;
+        } else {
+          // maybe filename error, throws.
+          throw new Error(`未找到atc配置文件：[${_name}]`);
+        }
+      } else {
+        // throws anyway.
+        throw error;
+      }
+    }
+    console.log(chalk.yellow("未配置atc配置文件, 使用默认配置"));
     config = {};
   }
 
   if (config.env) {
     config.env = {
       ...config.env,
-      NODE_ENV: command.env ? command.env : (config.env.NODE_ENV || "development"),
-      NODE_PORT: command.port ? command.port : (config.env.NODE_PORT || 8201)
+      NODE_ENV: command.env
+        ? command.env
+        : config.env.NODE_ENV || "development",
+      NODE_PORT: command.port ? command.port : config.env.NODE_PORT || 8201
     };
   } else {
     config.env = {
@@ -49,6 +73,15 @@ export = function (_, command: IDevCmdOptions) {
   if (command.tsconfig) config.tsconfig = command.tsconfig;
   if (command.mock) config.mock = command.mock;
   config.inspect = String(config.inspect) === "true";
+  const checkStr = String(config.typeCheck);
+  const transpile = String(config.transpile);
+  config.typeCheck = checkStr === "undefined" ? true : checkStr === "true";
+  config.transpile = transpile === "undefined" ? true : transpile === "true";
+
+  // ts-node register
+  config.env.__TSCONFIG = config.tsconfig || "-";
+  config.env.__TRANSPILE =
+    config.typeCheck && !config.transpile ? "false" : "true";
 
   // 传递了 --debug 参数，示例：
   // atc dev --debug
@@ -68,14 +101,14 @@ export = function (_, command: IDevCmdOptions) {
     const astroboy_ts = require.resolve("astroboy.ts");
     const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
     const ts_node = `-r ${registerFile}`;
-    const tsc_path_map = `-r ${require.resolve("tsconfig-paths").replace("/lib/index.js", "")}/register`;
-    // 传递了 --tsconfig 参数，示例：
-    // atc dev --tsconfig app/tsconfig.json
-    if (config.tsconfig) {
-      config.env.__TSCONFIG = config.tsconfig || "-";
-    }
+    const tsc_path_map = `-r ${require
+      .resolve("tsconfig-paths")
+      .replace("/lib/index.js", "")}/register`;
     config.env.APP_EXTENSIONS = JSON.stringify(["js", "ts"]);
-    config.exec = `${node} ${ts_node} ${tsc_path_map} ${path.join(projectRoot, "app/app.ts")}`;
+    config.exec = `${node} ${ts_node} ${tsc_path_map} ${path.join(
+      projectRoot,
+      "app/app.ts"
+    )}`;
   } catch (error) {
     if ((<string>error.message || "").includes("ts-node")) {
       console.log(chalk.red("请安装ts-node"));
@@ -95,31 +128,99 @@ export = function (_, command: IDevCmdOptions) {
     config.env.HTTPS_PROXY = url;
   }
 
-  nodemon(config).on("start", () => {
-    console.log(chalk.yellow("开始运行应用执行脚本："));
-    console.log(`script ==> ${chalk.grey(config.exec)}\n`);
-    console.log(chalk.green("应用启动中...\n"));
-    console.log(chalk.green("环境变量："));
-    console.log(chalk.cyan(`NODE_ENV: \t${config.env.NODE_ENV}`));
-    console.log(chalk.cyan(`NODE_PORT: \t${config.env.NODE_PORT}`));
-    if (config.env.DEBUG) {
-      console.log(chalk.yellow(`DEBUG: \t${config.env.DEBUG}`));
-    }
-    if (config.env.HTTP_PROXY) {
-      console.log(chalk.cyan(`HTTP_PROXY: \t${config.env.HTTP_PROXY}`));
-    }
-    if (config.env.HTTPS_PROXY) {
-      console.log(chalk.cyan(`HTTPS_PROXY: \t${config.env.HTTPS_PROXY}`));
-    }
-    console.log(chalk.green("\n监听目录变化："));
-    for (let i = 0; i < config.watch.length; i++) {
-      console.log(chalk.yellow(config.watch[i]));
-    }
-  }).on("quit", () => {
-    console.log(chalk.green("应用退出成功"));
-    process.kill(process.pid);
-  }).on("restart", (files: any) => {
-    console.log(chalk.yellow("监听到文件修改：", files));
-  });
+  let token = refreshToken();
+  let checkProcess: ChildProcess;
+
+  nodemon(config)
+    .on("start", () => {
+      try {
+        if (config.typeCheck && config.transpile) {
+          checkProcess = startTypeCheck(projectRoot, config, token);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      console.log(chalk.yellow("开始运行应用执行脚本："));
+      console.log(`script ==> ${chalk.grey(config.exec)}\n`);
+      console.log(chalk.green("应用启动中...\n"));
+      console.log(chalk.green("环境变量："));
+      console.log(chalk.cyan(`NODE_ENV: \t${config.env.NODE_ENV}`));
+      console.log(chalk.cyan(`NODE_PORT: \t${config.env.NODE_PORT}`));
+      if (config.env.DEBUG) {
+        console.log(chalk.yellow(`DEBUG: \t${config.env.DEBUG}`));
+      }
+      if (config.env.HTTP_PROXY) {
+        console.log(chalk.cyan(`HTTP_PROXY: \t${config.env.HTTP_PROXY}`));
+      }
+      if (config.env.HTTPS_PROXY) {
+        console.log(chalk.cyan(`HTTPS_PROXY: \t${config.env.HTTPS_PROXY}`));
+      }
+      console.log(chalk.green("\n监听目录变化："));
+      for (let i = 0; i < config.watch.length; i++) {
+        console.log(chalk.yellow(config.watch[i]));
+      }
+    })
+    .on("quit", () => {
+      console.log(chalk.green("应用退出成功"));
+      process.kill(process.pid);
+    })
+    .on("restart", (files: any) => {
+      token = refreshToken(token);
+      checkProcess && checkProcess.kill();
+      console.log(chalk.yellow("监听到文件修改：", files));
+    });
 };
 
+function startTypeCheck(
+  projectRoot: string,
+  config: any,
+  token: CancellationToken
+) {
+  console.log(chalk.blue("开始执行类型检查...\n"));
+  const child = childProcess.fork(path.resolve(__dirname, "./check.js"), [], {
+    env: {
+      TSCONFIG: path.resolve(projectRoot, config.tsconfig || "tsconfig.json")
+    }
+  });
+  child.on("message", (message: { diagnostics?: NormalizedMessage[] }) => {
+    const { diagnostics } = message;
+    if (diagnostics) {
+      if (diagnostics.length === 0) {
+        console.log(chalk.blue("类型检查通过，没有发现语法错误"));
+        child.kill();
+        return;
+      }
+      console.log(chalk.blue(`发现${diagnostics.length}个语法错误\n`));
+      diagnostics.forEach(item => {
+        const {
+          type: _,
+          code,
+          severity,
+          content,
+          file,
+          line,
+          character
+        } = item;
+        console.log(
+          chalk[severity === "error" ? "red" : "yellow"](
+            `${String(
+              severity
+            ).toUpperCase()} in ${file}[${line},${character}] \nts${code ||
+              0} : ${content}\n`
+          )
+        );
+      });
+      child.kill();
+    } else {
+      console.log(message);
+    }
+  });
+  child.on("exit", () => console.log("类型检查已结束"));
+  child.send(token);
+  return child;
+}
+
+function refreshToken(token?: CancellationToken) {
+  if (token && !token.isCancellationRequested()) token.cleanupCancellation();
+  return (token = new CancellationToken(typescript));
+}
