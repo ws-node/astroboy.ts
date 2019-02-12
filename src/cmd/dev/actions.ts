@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 import nodemon from "nodemon";
 import chalk from "chalk";
-import childProcess from "child_process";
+import childProcess, { ChildProcess } from "child_process";
 import { IDevCmdOptions } from "./options";
 import typescript = require("typescript");
 import { CancellationToken } from "../utils/CancellationToken";
@@ -74,7 +74,9 @@ export = function(_, command: IDevCmdOptions) {
   if (command.mock) config.mock = command.mock;
   config.inspect = String(config.inspect) === "true";
   const checkStr = String(config.typeCheck);
+  const transpile = String(config.transpile);
   config.typeCheck = checkStr === "undefined" ? true : checkStr === "true";
+  config.transpile = transpile === "undefined" ? true : transpile === "true";
 
   // 传递了 --debug 参数，示例：
   // atc dev --debug
@@ -97,11 +99,8 @@ export = function(_, command: IDevCmdOptions) {
     const tsc_path_map = `-r ${require
       .resolve("tsconfig-paths")
       .replace("/lib/index.js", "")}/register`;
-    // 传递了 --tsconfig 参数，示例：
-    // atc dev --tsconfig app/tsconfig.json
-    if (config.tsconfig) {
-      config.env.__TSCONFIG = config.tsconfig || "-";
-    }
+    config.env.__TSCONFIG = config.tsconfig || "-";
+    config.env.__TRANSPILE = String(config.transpile || false);
     config.env.APP_EXTENSIONS = JSON.stringify(["js", "ts"]);
     config.exec = `${node} ${ts_node} ${tsc_path_map} ${path.join(
       projectRoot,
@@ -127,15 +126,16 @@ export = function(_, command: IDevCmdOptions) {
   }
 
   let token = refreshToken();
+  let checkProcess: ChildProcess;
 
   nodemon(config)
     .on("start", () => {
       try {
-        if (config.typeCheck) startTypeCheck(projectRoot, config, token);
+        if (config.typeCheck) {
+          checkProcess = startTypeCheck(projectRoot, config, token);
+        }
       } catch (error) {
         console.log(error);
-        process.kill(process.pid);
-        return;
       }
       console.log(chalk.yellow("开始运行应用执行脚本："));
       console.log(`script ==> ${chalk.grey(config.exec)}\n`);
@@ -163,6 +163,7 @@ export = function(_, command: IDevCmdOptions) {
     })
     .on("restart", (files: any) => {
       token = refreshToken(token);
+      checkProcess && checkProcess.kill();
       console.log(chalk.yellow("监听到文件修改：", files));
     });
 };
@@ -213,6 +214,7 @@ function startTypeCheck(
   });
   child.on("exit", () => console.log("类型检查已结束"));
   child.send(token);
+  return child;
 }
 
 function refreshToken(token?: CancellationToken) {
