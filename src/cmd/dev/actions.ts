@@ -2,9 +2,10 @@ import path from "path";
 import fs from "fs";
 import nodemon from "nodemon";
 import chalk from "chalk";
+import { exec, ChildProcess } from "child_process";
 import { IDevCmdOptions } from "./options";
 
-export = function (_, command: IDevCmdOptions) {
+export = function(_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
   console.log(chalk.green("========= [ASTROBOY.TS] <==> DEVTOOL ========"));
   const projectRoot = process.cwd();
@@ -44,8 +45,10 @@ export = function (_, command: IDevCmdOptions) {
   if (config.env) {
     config.env = {
       ...config.env,
-      NODE_ENV: command.env ? command.env : (config.env.NODE_ENV || "development"),
-      NODE_PORT: command.port ? command.port : (config.env.NODE_PORT || 8201)
+      NODE_ENV: command.env
+        ? command.env
+        : config.env.NODE_ENV || "development",
+      NODE_PORT: command.port ? command.port : config.env.NODE_PORT || 8201
     };
   } else {
     config.env = {
@@ -67,6 +70,8 @@ export = function (_, command: IDevCmdOptions) {
   if (command.tsconfig) config.tsconfig = command.tsconfig;
   if (command.mock) config.mock = command.mock;
   config.inspect = String(config.inspect) === "true";
+  const checkStr = String(config.typeCheck);
+  config.typeCheck = checkStr === "undefined" ? true : checkStr === "true";
 
   // 传递了 --debug 参数，示例：
   // atc dev --debug
@@ -86,14 +91,19 @@ export = function (_, command: IDevCmdOptions) {
     const astroboy_ts = require.resolve("astroboy.ts");
     const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
     const ts_node = `-r ${registerFile}`;
-    const tsc_path_map = `-r ${require.resolve("tsconfig-paths").replace("/lib/index.js", "")}/register`;
+    const tsc_path_map = `-r ${require
+      .resolve("tsconfig-paths")
+      .replace("/lib/index.js", "")}/register`;
     // 传递了 --tsconfig 参数，示例：
     // atc dev --tsconfig app/tsconfig.json
     if (config.tsconfig) {
       config.env.__TSCONFIG = config.tsconfig || "-";
     }
     config.env.APP_EXTENSIONS = JSON.stringify(["js", "ts"]);
-    config.exec = `${node} ${ts_node} ${tsc_path_map} ${path.join(projectRoot, "app/app.ts")}`;
+    config.exec = `${node} ${ts_node} ${tsc_path_map} ${path.join(
+      projectRoot,
+      "app/app.ts"
+    )}`;
   } catch (error) {
     if ((<string>error.message || "").includes("ts-node")) {
       console.log(chalk.red("请安装ts-node"));
@@ -113,31 +123,64 @@ export = function (_, command: IDevCmdOptions) {
     config.env.HTTPS_PROXY = url;
   }
 
-  nodemon(config).on("start", () => {
-    console.log(chalk.yellow("开始运行应用执行脚本："));
-    console.log(`script ==> ${chalk.grey(config.exec)}\n`);
-    console.log(chalk.green("应用启动中...\n"));
-    console.log(chalk.green("环境变量："));
-    console.log(chalk.cyan(`NODE_ENV: \t${config.env.NODE_ENV}`));
-    console.log(chalk.cyan(`NODE_PORT: \t${config.env.NODE_PORT}`));
-    if (config.env.DEBUG) {
-      console.log(chalk.yellow(`DEBUG: \t${config.env.DEBUG}`));
-    }
-    if (config.env.HTTP_PROXY) {
-      console.log(chalk.cyan(`HTTP_PROXY: \t${config.env.HTTP_PROXY}`));
-    }
-    if (config.env.HTTPS_PROXY) {
-      console.log(chalk.cyan(`HTTPS_PROXY: \t${config.env.HTTPS_PROXY}`));
-    }
-    console.log(chalk.green("\n监听目录变化："));
-    for (let i = 0; i < config.watch.length; i++) {
-      console.log(chalk.yellow(config.watch[i]));
-    }
-  }).on("quit", () => {
-    console.log(chalk.green("应用退出成功"));
-    process.kill(process.pid);
-  }).on("restart", (files: any) => {
-    console.log(chalk.yellow("监听到文件修改：", files));
-  });
-};
+  let checkProcess: ChildProcess;
+  const astroboy_ts = require.resolve("astroboy.ts");
+  const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
+  const typeCheckCmd = astroboy_ts.replace("/index.js", "/cmd/typeCheck");
 
+  nodemon(config)
+    .on("start", () => {
+      if (config.typeCheck) {
+        checkProcess && checkProcess.kill();
+        checkProcess = exec(
+          `node -r ${registerFile} ${typeCheckCmd}`,
+          {
+            env: {
+              TSCONFIG: config.tsconfig || "-",
+              INDEX: `${projectRoot}/app/app.ts`
+            }
+          },
+          (error, stdout, stderr) => {
+            if (error) {
+              console.log(chalk.yellow("类型检查失败"));
+              console.log(chalk.red(<any>error));
+              return;
+            }
+            if (stderr) {
+              console.log(chalk.yellow("类型检查失败"));
+              console.log(chalk.red(stderr));
+              console.log("--------------------");
+              return;
+            }
+            console.log("类型检查完成");
+          }
+        );
+      }
+      console.log(chalk.yellow("开始运行应用执行脚本："));
+      console.log(`script ==> ${chalk.grey(config.exec)}\n`);
+      console.log(chalk.green("应用启动中...\n"));
+      console.log(chalk.green("环境变量："));
+      console.log(chalk.cyan(`NODE_ENV: \t${config.env.NODE_ENV}`));
+      console.log(chalk.cyan(`NODE_PORT: \t${config.env.NODE_PORT}`));
+      if (config.env.DEBUG) {
+        console.log(chalk.yellow(`DEBUG: \t${config.env.DEBUG}`));
+      }
+      if (config.env.HTTP_PROXY) {
+        console.log(chalk.cyan(`HTTP_PROXY: \t${config.env.HTTP_PROXY}`));
+      }
+      if (config.env.HTTPS_PROXY) {
+        console.log(chalk.cyan(`HTTPS_PROXY: \t${config.env.HTTPS_PROXY}`));
+      }
+      console.log(chalk.green("\n监听目录变化："));
+      for (let i = 0; i < config.watch.length; i++) {
+        console.log(chalk.yellow(config.watch[i]));
+      }
+    })
+    .on("quit", () => {
+      console.log(chalk.green("应用退出成功"));
+      process.kill(process.pid);
+    })
+    .on("restart", (files: any) => {
+      console.log(chalk.yellow("监听到文件修改：", files));
+    });
+};
