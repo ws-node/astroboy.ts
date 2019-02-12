@@ -78,6 +78,11 @@ export = function(_, command: IDevCmdOptions) {
   config.typeCheck = checkStr === "undefined" ? true : checkStr === "true";
   config.transpile = transpile === "undefined" ? true : transpile === "true";
 
+  // ts-node register
+  config.env.__TSCONFIG = config.tsconfig || "-";
+  config.env.__TRANSPILE =
+    config.typeCheck && !config.transpile ? "false" : "true";
+
   // 传递了 --debug 参数，示例：
   // atc dev --debug
   // atc dev --debug koa:application
@@ -99,8 +104,6 @@ export = function(_, command: IDevCmdOptions) {
     const tsc_path_map = `-r ${require
       .resolve("tsconfig-paths")
       .replace("/lib/index.js", "")}/register`;
-    config.env.__TSCONFIG = config.tsconfig || "-";
-    config.env.__TRANSPILE = String(config.transpile || false);
     config.env.APP_EXTENSIONS = JSON.stringify(["js", "ts"]);
     config.exec = `${node} ${ts_node} ${tsc_path_map} ${path.join(
       projectRoot,
@@ -131,7 +134,7 @@ export = function(_, command: IDevCmdOptions) {
   nodemon(config)
     .on("start", () => {
       try {
-        if (config.typeCheck) {
+        if (config.typeCheck && config.transpile) {
           checkProcess = startTypeCheck(projectRoot, config, token);
         }
       } catch (error) {
