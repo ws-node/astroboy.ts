@@ -36,6 +36,7 @@ function startTypeCheck(projectRoot, config, token) {
     });
     child.on("exit", () => console.log("类型检查已结束"));
     child.send(token);
+    return child;
 }
 function refreshToken(token) {
     if (token && !token.isCancellationRequested())
@@ -114,7 +115,9 @@ module.exports = function (_, command) {
         config.mock = command.mock;
     config.inspect = String(config.inspect) === "true";
     const checkStr = String(config.typeCheck);
+    const transpile = String(config.transpile);
     config.typeCheck = checkStr === "undefined" ? true : checkStr === "true";
+    config.transpile = transpile === "undefined" ? true : transpile === "true";
     // 传递了 --debug 参数，示例：
     // atc dev --debug
     // atc dev --debug koa:application
@@ -135,11 +138,8 @@ module.exports = function (_, command) {
         const tsc_path_map = `-r ${require
             .resolve("tsconfig-paths")
             .replace("/lib/index.js", "")}/register`;
-        // 传递了 --tsconfig 参数，示例：
-        // atc dev --tsconfig app/tsconfig.json
-        if (config.tsconfig) {
-            config.env.__TSCONFIG = config.tsconfig || "-";
-        }
+        config.env.__TSCONFIG = config.tsconfig || "-";
+        config.env.__TRANSPILE = String(config.transpile || false);
         config.env.APP_EXTENSIONS = JSON.stringify(["js", "ts"]);
         config.exec = `${node} ${ts_node} ${tsc_path_map} ${path_1.default.join(projectRoot, "app/app.ts")}`;
     }
@@ -162,16 +162,16 @@ module.exports = function (_, command) {
         config.env.HTTPS_PROXY = url;
     }
     let token = refreshToken();
+    let checkProcess;
     nodemon_1.default(config)
         .on("start", () => {
         try {
-            if (config.typeCheck)
-                startTypeCheck(projectRoot, config, token);
+            if (config.typeCheck) {
+                checkProcess = startTypeCheck(projectRoot, config, token);
+            }
         }
         catch (error) {
             console.log(error);
-            process.kill(process.pid);
-            return;
         }
         console.log(chalk_1.default.yellow("开始运行应用执行脚本："));
         console.log(`script ==> ${chalk_1.default.grey(config.exec)}\n`);
@@ -199,6 +199,7 @@ module.exports = function (_, command) {
     })
         .on("restart", (files) => {
         token = refreshToken(token);
+        checkProcess && checkProcess.kill();
         console.log(chalk_1.default.yellow("监听到文件修改：", files));
     });
 };
