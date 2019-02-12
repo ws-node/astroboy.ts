@@ -7,7 +7,7 @@ const chalk_1 = tslib_1.__importDefault(require("chalk"));
 const child_process_1 = tslib_1.__importDefault(require("child_process"));
 const typescript = require("typescript");
 const CancellationToken_1 = require("../utils/CancellationToken");
-function startTypeCheck(projectRoot, config) {
+function startTypeCheck(projectRoot, config, token) {
     console.log(chalk_1.default.blue("开始执行类型检查...\n"));
     const child = child_process_1.default.fork(path_1.default.resolve(__dirname, "./check.js"), [], {
         env: {
@@ -35,7 +35,12 @@ function startTypeCheck(projectRoot, config) {
         }
     });
     child.on("exit", () => console.log("类型检查已结束"));
-    child.send(new CancellationToken_1.CancellationToken(typescript));
+    child.send(token);
+}
+function refreshToken(token) {
+    if (token && !token.isCancellationRequested())
+        token.cleanupCancellation();
+    return (token = new CancellationToken_1.CancellationToken(typescript));
 }
 module.exports = function (_, command) {
     if (_ !== "dev")
@@ -156,11 +161,12 @@ module.exports = function (_, command) {
         config.env.HTTP_PROXY = url;
         config.env.HTTPS_PROXY = url;
     }
+    let token = refreshToken();
     nodemon_1.default(config)
         .on("start", () => {
         try {
             if (config.typeCheck)
-                startTypeCheck(projectRoot, config);
+                startTypeCheck(projectRoot, config, token);
         }
         catch (error) {
             console.log(error);
@@ -192,6 +198,7 @@ module.exports = function (_, command) {
         process.kill(process.pid);
     })
         .on("restart", (files) => {
+        token = refreshToken(token);
         console.log(chalk_1.default.yellow("监听到文件修改：", files));
     });
 };
