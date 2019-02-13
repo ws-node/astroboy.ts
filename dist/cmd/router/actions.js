@@ -3,6 +3,7 @@ const tslib_1 = require("tslib");
 const path_1 = tslib_1.__importDefault(require("path"));
 const get_1 = tslib_1.__importDefault(require("lodash/get"));
 const child_process_1 = require("child_process");
+const loadConfig_1 = require("../utils/loadConfig");
 const chalk_1 = tslib_1.__importDefault(require("chalk"));
 function showRoutes(obj, preK) {
     let count = 0;
@@ -32,14 +33,8 @@ module.exports = function (_, command) {
         details: false,
         tsconfig: undefined
     };
-    try {
-        const req = require(path_1.default.join(process.cwd(), fileName)) || {};
-        config = Object.assign({}, defaultConfigs, get_1.default(req, "routers", {}), { tsconfig: req.tsconfig || config.tsconfig });
-    }
-    catch (_) {
-        console.log(chalk_1.default.yellow("未找到配置文件"));
-        config = defaultConfigs;
-    }
+    const req = loadConfig_1.loadConfig(process.cwd(), fileName);
+    config = Object.assign({}, defaultConfigs, get_1.default(req, "routers", {}), { tsconfig: req.tsconfig || config.tsconfig });
     if (command.enabled)
         config.enabled = String(command.enabled) === "true";
     if (command.always)
@@ -64,13 +59,15 @@ module.exports = function (_, command) {
             env: {
                 CTOR_PATH: path_1.default.resolve(process.cwd(), "app/controllers"),
                 ROUTER_PATH: path_1.default.resolve(process.cwd(), "app/routers"),
-                ASTT_ENABLED: config.enabled === undefined ? "true" : String(!!config.enabled === true),
+                ASTT_ENABLED: config.enabled === undefined
+                    ? "true"
+                    : String(!!config.enabled === true),
                 ASTT_ALWAYS: String(!!config.always),
                 APP_ROOT: config.approot || "",
                 FILE_TYPE: config.filetype || "js",
                 SHOW_ROUTERS: String(!!config.details),
                 __TSCONFIG: config.tsconfig || "_"
-            },
+            }
         }, (error, stdout, stderr) => {
             if (error) {
                 console.log(chalk_1.default.yellow("初始化routers失败"));

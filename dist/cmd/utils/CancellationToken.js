@@ -5,7 +5,20 @@ const crypto = tslib_1.__importStar(require("crypto"));
 const fs = tslib_1.__importStar(require("fs"));
 const os = tslib_1.__importStar(require("os"));
 const path = tslib_1.__importStar(require("path"));
-const FsHelper_1 = require("./FsHelper");
+function existsSync(filePath) {
+    try {
+        fs.statSync(filePath);
+    }
+    catch (err) {
+        if (err.code === "ENOENT") {
+            return false;
+        }
+        else {
+            throw err;
+        }
+    }
+    return true;
+}
 class CancellationToken {
     constructor(typescript, cancellationFileName, isCancelled) {
         this.typescript = typescript;
@@ -35,7 +48,7 @@ class CancellationToken {
         if (duration > 10) {
             // check no more than once every 10ms
             this.lastCancellationCheckTime = time;
-            this.isCancelled = FsHelper_1.FsHelper.existsSync(this.getCancellationFilePath());
+            this.isCancelled = existsSync(this.getCancellationFilePath());
         }
         return this.isCancelled;
     }
@@ -49,8 +62,7 @@ class CancellationToken {
         this.isCancelled = true;
     }
     cleanupCancellation() {
-        if (this.isCancelled &&
-            FsHelper_1.FsHelper.existsSync(this.getCancellationFilePath())) {
+        if (this.isCancelled && existsSync(this.getCancellationFilePath())) {
             fs.unlinkSync(this.getCancellationFilePath());
             this.isCancelled = false;
         }
