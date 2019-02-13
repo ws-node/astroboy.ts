@@ -58,7 +58,7 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     NODE_ENV: newEnv = undefined,
     NODE_PORT: newPort = undefined,
     ...newEnvs
-  }: IENV = get(merge, "env", {});
+  }: IENV = get(config, "env", {});
   const envIsEmpty = !merge.env && !config.env;
   return {
     tsconfig: get(merge, "tsconfig", config.tsconfig),
