@@ -19,12 +19,16 @@ export = function(_, command: IRouterCmdOptions) {
     details: false,
     tsconfig: undefined
   };
-  const req = loadConfig(process.cwd(), fileName);
-  config = {
-    ...defaultConfigs,
-    ...get(req, "routers", {}),
-    tsconfig: req.tsconfig || config.tsconfig
-  };
+  try {
+    const req = loadConfig(process.cwd(), fileName);
+    config = {
+      ...defaultConfigs,
+      ...get(req, "routers", {}),
+      tsconfig: req.tsconfig || config.tsconfig
+    };
+  } catch (_) {
+    config = defaultConfigs;
+  }
 
   if (command.enabled) config.enabled = String(command.enabled) === "true";
   if (command.always) config.always = String(command.always) === "true";
