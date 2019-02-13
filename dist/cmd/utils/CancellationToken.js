@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const crypto = tslib_1.__importStar(require("crypto"));
 const fs = tslib_1.__importStar(require("fs"));
 const os = tslib_1.__importStar(require("os"));
 const path = tslib_1.__importStar(require("path"));
+const uuid = require("uuid/v4");
 function existsSync(filePath) {
     try {
         fs.statSync(filePath);
@@ -23,8 +23,7 @@ class CancellationToken {
     constructor(typescript, cancellationFileName, isCancelled) {
         this.typescript = typescript;
         this.isCancelled = !!isCancelled;
-        this.cancellationFileName =
-            cancellationFileName || crypto.randomBytes(64).toString("hex");
+        this.cancellationFileName = cancellationFileName || uuid();
         this.lastCancellationCheckTime = 0;
     }
     static createFromJSON(typescript, json) {
