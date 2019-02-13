@@ -39,9 +39,8 @@ export = function(_, command: IRouterCmdOptions) {
   try {
     const tsnode = require.resolve("ts-node");
     console.log(chalk.cyan("正在构建路由，请稍候...\n"));
-    const astroboy_ts = require.resolve("astroboy.ts");
-    const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
-    const initFile = astroboy_ts.replace("/index.js", "/cmd/init");
+    const registerFile = path.resolve(__dirname, "../register");
+    const initFile = path.resolve(__dirname, "../init");
     console.log(chalk.yellow("开始执行路由初始化逻辑："));
     console.log(`script ==> ${chalk.grey(initFile)}`);
     exec(
