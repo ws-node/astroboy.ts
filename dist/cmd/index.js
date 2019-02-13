@@ -4,18 +4,6 @@ const tslib_1 = require("tslib");
 const commander_1 = tslib_1.__importDefault(require("commander"));
 const router_1 = require("./router");
 const dev_1 = require("./dev");
-const base_1 = require("./base");
-var CMD;
-(function (CMD) {
-    function create(config) {
-        return base_1.createCmdConfig(config);
-    }
-    CMD.create = create;
-    function merge(merge, config) {
-        return base_1.mergeCmdConfig(merge, config);
-    }
-    CMD.merge = merge;
-})(CMD = exports.CMD || (exports.CMD = {}));
 function initCommand(plugin) {
     const program = commander_1.default.name(plugin.name).description(plugin.description);
     if (plugin.options) {

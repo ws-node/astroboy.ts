@@ -57,6 +57,6 @@ exports.Configs = Configs_1.Configs;
 exports.createOptions = Configs_1.createOptions;
 exports.createConfig = Configs_1.createConfig;
 exports.InjectScope = Configs_1.InjectScope;
-var cmd_1 = require("./cmd");
+var cmd_1 = require("./cmd/cmd");
 exports.CMD = cmd_1.CMD;
 //# sourceMappingURL=index.js.map

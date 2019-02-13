@@ -57,5 +57,5 @@ export { TypedSerializer, Serialize, Deserialize, Extends } from "./plugins/type
 export { NUNJUNKS_OPTIONS } from "./plugins/nunjunks";
 export { SIMPLE_LOGGER_OPTIONS } from "./plugins/simple-logger";
 export { Configs, ConfigToken, ConfigEntry, createOptions, createConfig, TokenGenerator, InjectScope } from "./services/Configs";
-export { CMD } from "./cmd";
+export { CMD } from "./cmd/cmd";
 export { Astroboy };

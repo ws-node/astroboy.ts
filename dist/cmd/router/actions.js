@@ -75,13 +75,13 @@ module.exports = function (_, command) {
             }
         }, (error, stdout, stderr) => {
             if (error) {
-                console.log(chalk_1.default.yellow("初始化routers失败"));
+                console.log(chalk_1.default.yellow("初始化routers失败."));
                 console.log(chalk_1.default.red(error));
                 console.log("--------------------");
                 return;
             }
             if (stderr) {
-                console.log(chalk_1.default.yellow("初始化routers失败"));
+                console.log(chalk_1.default.yellow("初始化routers失败.."));
                 console.log(chalk_1.default.red(stderr));
                 console.log("--------------------");
                 return;
@@ -91,7 +91,7 @@ module.exports = function (_, command) {
                 console.log(chalk_1.default.green(`路由初始化完成${chalk_1.default.white(`[${count}]`)}`));
             }
             catch (_) {
-                console.log(chalk_1.default.yellow("初始化routers失败"));
+                console.log(chalk_1.default.yellow("初始化routers失败..."));
                 console.log(chalk_1.default.red(_));
                 console.log("--------------------");
             }
