@@ -2,10 +2,21 @@ import commander from "commander";
 import { CommandPlugin } from "./base";
 import { RouterPlugin } from "./router";
 import { DevPlugin } from "./dev";
-import { CmdConfig, createCmdConfig, mergeCmdConfig } from "./base";
+import {
+  CmdConfig,
+  createCmdConfig,
+  mergeCmdConfig,
+  RouterConfig as RConfig,
+  IENV as E
+} from "./base";
 
 export namespace CMD {
-  export interface Config extends CmdConfig {}
+  export interface Env extends E {}
+  export interface RouterConfig extends RConfig {}
+  export interface Config extends CmdConfig {
+    env?: Env;
+    routers?: RouterConfig;
+  }
 
   export function create(config: Config) {
     return createCmdConfig(config);

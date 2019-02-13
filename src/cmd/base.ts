@@ -8,10 +8,19 @@ export interface CommandPlugin {
   help: (...args: any[]) => void;
 }
 
-interface IENV {
+export interface IENV {
   NODE_ENV?: string;
   NODE_PORT?: number | string;
   [key: string]: any;
+}
+
+export interface RouterConfig {
+  enabled?: boolean;
+  always?: boolean;
+  approot?: string;
+  filetype?: "js" | "ts";
+  details?: boolean;
+  tsconfig?: string;
 }
 
 export interface CmdConfig {
@@ -25,6 +34,7 @@ export interface CmdConfig {
   mock?: boolean | string;
   typeCheck?: boolean;
   transpile?: boolean;
+  routers?: RouterConfig;
 }
 
 export interface InnerCmdConfig extends CmdConfig {
@@ -75,6 +85,10 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     debug: get(merge, "debug", config.debug),
     mock: get(merge, "mock", config.mock),
     typeCheck: get(merge, "typeCheck", config.typeCheck),
-    transpile: get(merge, "transpile", config.transpile)
+    transpile: get(merge, "transpile", config.transpile),
+    routers: {
+      ...get(merge, "routers", {}),
+      ...get(config, "routers", {})
+    }
   };
 }

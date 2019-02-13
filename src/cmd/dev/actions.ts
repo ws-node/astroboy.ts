@@ -3,11 +3,11 @@ import fs from "fs";
 import nodemon from "nodemon";
 import chalk from "chalk";
 import childProcess, { ChildProcess } from "child_process";
-import { IDevCmdOptions } from "./options";
 import typescript = require("typescript");
+import { IDevCmdOptions } from "./options";
 import { CancellationToken } from "../utils/CancellationToken";
 import { NormalizedMessage } from "../utils/NormalizedMessage";
-import { InnerCmdConfig } from "../base";
+import { loadConfig } from "../utils/loadConfig";
 
 export = function(_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
@@ -20,31 +20,7 @@ export = function(_, command: IDevCmdOptions) {
   }
   const fileName = command.config || "atc.config.js";
   console.log(`${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`);
-  const _name = path.join(projectRoot, fileName);
-  let config: InnerCmdConfig;
-  try {
-    config = require(_name) || {};
-  } catch (error) {
-    // only check if throwing is an error.
-    if (error.message && typeof error.message === "string") {
-      // import errors occures.
-      if (error.message.startsWith("Cannot find module")) {
-        // use custom atc.config file.
-        if (fileName === "atc.config.js") {
-          // maybe syntax error, throws.
-          throw error;
-        } else {
-          // maybe filename error, throws.
-          throw new Error(`未找到atc配置文件：[${_name}]`);
-        }
-      } else {
-        // throws anyway.
-        throw error;
-      }
-    }
-    console.log(chalk.yellow("未配置atc配置文件, 使用默认配置"));
-    config = {};
-  }
+  const config = loadConfig(projectRoot, fileName);
 
   if (config.env) {
     config.env = {
