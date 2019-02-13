@@ -33,8 +33,13 @@ module.exports = function (_, command) {
         details: false,
         tsconfig: undefined
     };
-    const req = loadConfig_1.loadConfig(process.cwd(), fileName);
-    config = Object.assign({}, defaultConfigs, get_1.default(req, "routers", {}), { tsconfig: req.tsconfig || config.tsconfig });
+    try {
+        const req = loadConfig_1.loadConfig(process.cwd(), fileName);
+        config = Object.assign({}, defaultConfigs, get_1.default(req, "routers", {}), { tsconfig: req.tsconfig || config.tsconfig });
+    }
+    catch (_) {
+        config = defaultConfigs;
+    }
     if (command.enabled)
         config.enabled = String(command.enabled) === "true";
     if (command.always)
