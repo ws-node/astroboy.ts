@@ -6,7 +6,7 @@ import "mocha";
 describe("astroboy.ts/src/index.ts", () => {
 
   it("test astroboy.ts package exports", () => {
-    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(59);
+    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(58);
     expect(typeof Pkg.API, "[astroboy.ts].API").to.equal("function");
     expect(typeof Pkg.Astroboy, "[astroboy.ts].Astroboy").to.equal("function");
     expect(typeof Pkg.AstroboyContext, "[astroboy.ts].AstroboyContext").to.equal("function");
@@ -67,8 +67,6 @@ describe("astroboy.ts/src/index.ts", () => {
     // 20181227
     expect(typeof Pkg.GLOBAL_ERROR, "[astroboy.ts].GLOBAL_ERROR").to.equal("object");
     expect(typeof Pkg.defaultGlobalError, "[astroboy.ts].defaultGlobalError").to.equal("object");
-    // 20190213
-    expect(typeof Pkg.CMD, "[astroboy.ts].CMD").to.equal("object");
   });
 
 });

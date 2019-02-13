@@ -81,8 +81,7 @@ export = function(_, command: IDevCmdOptions) {
 
   try {
     const tsnode = require.resolve("ts-node");
-    const astroboy_ts = require.resolve("astroboy.ts");
-    const registerFile = astroboy_ts.replace("/index.js", "/cmd/register");
+    const registerFile = path.resolve(__dirname, "../register");
     const ts_node = `-r ${registerFile}`;
     const tsc_path_map = `-r ${require
       .resolve("tsconfig-paths")
