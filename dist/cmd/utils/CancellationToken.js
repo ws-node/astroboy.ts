@@ -1,17 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const crypto = tslib_1.__importStar(require("crypto"));
 const fs = tslib_1.__importStar(require("fs"));
 const os = tslib_1.__importStar(require("os"));
 const path = tslib_1.__importStar(require("path"));
-const FsHelper_1 = require("./FsHelper");
+const uuid = require("uuid/v4");
+function existsSync(filePath) {
+    try {
+        fs.statSync(filePath);
+    }
+    catch (err) {
+        if (err.code === "ENOENT") {
+            return false;
+        }
+        else {
+            throw err;
+        }
+    }
+    return true;
+}
 class CancellationToken {
     constructor(typescript, cancellationFileName, isCancelled) {
         this.typescript = typescript;
         this.isCancelled = !!isCancelled;
-        this.cancellationFileName =
-            cancellationFileName || crypto.randomBytes(64).toString("hex");
+        this.cancellationFileName = cancellationFileName || uuid();
         this.lastCancellationCheckTime = 0;
     }
     static createFromJSON(typescript, json) {
@@ -35,7 +47,7 @@ class CancellationToken {
         if (duration > 10) {
             // check no more than once every 10ms
             this.lastCancellationCheckTime = time;
-            this.isCancelled = FsHelper_1.FsHelper.existsSync(this.getCancellationFilePath());
+            this.isCancelled = existsSync(this.getCancellationFilePath());
         }
         return this.isCancelled;
     }
@@ -49,8 +61,7 @@ class CancellationToken {
         this.isCancelled = true;
     }
     cleanupCancellation() {
-        if (this.isCancelled &&
-            FsHelper_1.FsHelper.existsSync(this.getCancellationFilePath())) {
+        if (this.isCancelled && existsSync(this.getCancellationFilePath())) {
             fs.unlinkSync(this.getCancellationFilePath());
             this.isCancelled = false;
         }

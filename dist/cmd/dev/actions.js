@@ -7,6 +7,7 @@ const chalk_1 = tslib_1.__importDefault(require("chalk"));
 const child_process_1 = tslib_1.__importDefault(require("child_process"));
 const typescript = require("typescript");
 const CancellationToken_1 = require("../utils/CancellationToken");
+const loadConfig_1 = require("../utils/loadConfig");
 function startTypeCheck(projectRoot, config, token) {
     console.log(chalk_1.default.blue("开始执行类型检查...\n"));
     const child = child_process_1.default.fork(path_1.default.resolve(__dirname, "./check.js"), [], {
@@ -55,34 +56,7 @@ module.exports = function (_, command) {
     }
     const fileName = command.config || "atc.config.js";
     console.log(`${chalk_1.default.white("尝试加载配置文件 : ")}${chalk_1.default.yellow(fileName)}`);
-    const _name = path_1.default.join(projectRoot, fileName);
-    let config;
-    try {
-        config = require(_name) || {};
-    }
-    catch (error) {
-        // only check if throwing is an error.
-        if (error.message && typeof error.message === "string") {
-            // import errors occures.
-            if (error.message.startsWith("Cannot find module")) {
-                // use custom atc.config file.
-                if (fileName === "atc.config.js") {
-                    // maybe syntax error, throws.
-                    throw error;
-                }
-                else {
-                    // maybe filename error, throws.
-                    throw new Error(`未找到atc配置文件：[${_name}]`);
-                }
-            }
-            else {
-                // throws anyway.
-                throw error;
-            }
-        }
-        console.log(chalk_1.default.yellow("未配置atc配置文件, 使用默认配置"));
-        config = {};
-    }
+    const config = loadConfig_1.loadConfig(projectRoot, fileName);
     if (config.env) {
         config.env = Object.assign({}, config.env, { NODE_ENV: command.env
                 ? command.env
@@ -94,17 +68,24 @@ module.exports = function (_, command) {
             NODE_PORT: command.port ? command.port : 8201
         };
     }
-    if (!config.watch) {
+    if (config.watch === false) {
+        config.watch = [];
+    }
+    else if (!config.watch) {
         config.watch = [
             path_1.default.join(projectRoot, "app/**/*.*"),
             path_1.default.join(projectRoot, "config/**/*.*"),
             path_1.default.join(projectRoot, "plugins/**/*.*")
         ];
     }
+    if (config.ignore === false) {
+        config.ignore = [];
+    }
+    else if (!config.ignore) {
+        config.ignore = [];
+    }
     if (config.verbose === undefined)
         config.verbose = true;
-    if (!config.ignore)
-        config.ignore = [];
     if (config.inspect === undefined)
         config.inspect = true;
     if (command.debug)
@@ -191,7 +172,8 @@ module.exports = function (_, command) {
             console.log(chalk_1.default.cyan(`HTTPS_PROXY: \t${config.env.HTTPS_PROXY}`));
         }
         console.log(chalk_1.default.green("\n监听目录变化："));
-        for (let i = 0; i < config.watch.length; i++) {
+        const LENGTH = config.watch && config.watch.length;
+        for (let i = 0; i < LENGTH; i++) {
             console.log(chalk_1.default.yellow(config.watch[i]));
         }
     })

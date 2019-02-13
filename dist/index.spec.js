@@ -6,7 +6,7 @@ const chai_1 = require("chai");
 require("mocha");
 describe("astroboy.ts/src/index.ts", () => {
     it("test astroboy.ts package exports", () => {
-        chai_1.expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(58);
+        chai_1.expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(59);
         chai_1.expect(typeof Pkg.API, "[astroboy.ts].API").to.equal("function");
         chai_1.expect(typeof Pkg.Astroboy, "[astroboy.ts].Astroboy").to.equal("function");
         chai_1.expect(typeof Pkg.AstroboyContext, "[astroboy.ts].AstroboyContext").to.equal("function");
@@ -67,6 +67,8 @@ describe("astroboy.ts/src/index.ts", () => {
         // 20181227
         chai_1.expect(typeof Pkg.GLOBAL_ERROR, "[astroboy.ts].GLOBAL_ERROR").to.equal("object");
         chai_1.expect(typeof Pkg.defaultGlobalError, "[astroboy.ts].defaultGlobalError").to.equal("object");
+        // 20190213
+        chai_1.expect(typeof Pkg.CMD, "[astroboy.ts].CMD").to.equal("object");
     });
 });
 //# sourceMappingURL=index.spec.js.map

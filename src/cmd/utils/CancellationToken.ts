@@ -1,11 +1,21 @@
-import * as crypto from "crypto";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-// tslint:disable-next-line:no-implicit-dependencies
-import * as ts from "typescript"; // Imported for types alone
+import * as ts from "typescript";
+import uuid = require("uuid/v4");
 
-import { FsHelper } from "./FsHelper";
+function existsSync(filePath: fs.PathLike) {
+  try {
+    fs.statSync(filePath);
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      return false;
+    } else {
+      throw err;
+    }
+  }
+  return true;
+}
 
 interface CancellationTokenData {
   isCancelled: boolean;
@@ -22,8 +32,7 @@ export class CancellationToken {
     isCancelled?: boolean
   ) {
     this.isCancelled = !!isCancelled;
-    this.cancellationFileName =
-      cancellationFileName || crypto.randomBytes(64).toString("hex");
+    this.cancellationFileName = cancellationFileName || uuid();
     this.lastCancellationCheckTime = 0;
   }
 
@@ -60,7 +69,7 @@ export class CancellationToken {
     if (duration > 10) {
       // check no more than once every 10ms
       this.lastCancellationCheckTime = time;
-      this.isCancelled = FsHelper.existsSync(this.getCancellationFilePath());
+      this.isCancelled = existsSync(this.getCancellationFilePath());
     }
 
     return this.isCancelled;
@@ -78,10 +87,7 @@ export class CancellationToken {
   }
 
   public cleanupCancellation() {
-    if (
-      this.isCancelled &&
-      FsHelper.existsSync(this.getCancellationFilePath())
-    ) {
+    if (this.isCancelled && existsSync(this.getCancellationFilePath())) {
       fs.unlinkSync(this.getCancellationFilePath());
       this.isCancelled = false;
     }

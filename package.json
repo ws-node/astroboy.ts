@@ -1,6 +1,6 @@
 {
   "name": "astroboy.ts",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "基于[astroboy]的DI版本，TypeScript3.2信仰加成",
   "main": "./dist/index.js",
   "scripts": {
@@ -49,7 +49,7 @@
     "@types/koa-router": "^7.0.35",
     "@types/node": "^10.12.10",
     "@types/uuid": "3.4.4",
-    "astroboy": "0.0.35",
+    "astroboy": "0.0.37",
     "astroboy-router": "1.2.0-rc.1",
     "camelcase": "4.1.0",
     "cerialize": "0.1.18",

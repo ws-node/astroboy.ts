@@ -2,9 +2,10 @@ import path from "path";
 import get from "lodash/get";
 import { IRouterCmdOptions } from "./options";
 import { exec } from "child_process";
+import { loadConfig } from "../utils/loadConfig";
 import chalk from "chalk";
 
-export = function (_, command: IRouterCmdOptions) {
+export = function(_, command: IRouterCmdOptions) {
   if (_ !== "router") return;
   console.log(chalk.green("========= [ASTROBOY.TS] <==> ROUTER ========"));
   const fileName = command.config || "atc.config.js";
@@ -19,16 +20,16 @@ export = function (_, command: IRouterCmdOptions) {
     tsconfig: undefined
   };
   try {
-    const req = require(path.join(process.cwd(), fileName)) || {};
+    const req = loadConfig(process.cwd(), fileName);
     config = {
       ...defaultConfigs,
       ...get(req, "routers", {}),
       tsconfig: req.tsconfig || config.tsconfig
     };
   } catch (_) {
-    console.log(chalk.yellow("未找到配置文件"));
     config = defaultConfigs;
   }
+
   if (command.enabled) config.enabled = String(command.enabled) === "true";
   if (command.always) config.always = String(command.always) === "true";
   if (command.details) config.details = String(command.details) === "true";
@@ -43,39 +44,48 @@ export = function (_, command: IRouterCmdOptions) {
     const initFile = astroboy_ts.replace("/index.js", "/cmd/init");
     console.log(chalk.yellow("开始执行路由初始化逻辑："));
     console.log(`script ==> ${chalk.grey(initFile)}`);
-    exec(`node -r ${registerFile} ${initFile}`, {
-      env: {
-        CTOR_PATH: path.resolve(process.cwd(), "app/controllers"),
-        ROUTER_PATH: path.resolve(process.cwd(), "app/routers"),
-        ASTT_ENABLED: config.enabled === undefined ? "true" : String(!!config.enabled === true),
-        ASTT_ALWAYS: String(!!config.always),
-        APP_ROOT: config.approot || "",
-        FILE_TYPE: config.filetype || "js",
-        SHOW_ROUTERS: String(!!config.details),
-        __TSCONFIG: config.tsconfig || "_"
+    exec(
+      `node -r ${registerFile} ${initFile}`,
+      {
+        env: {
+          CTOR_PATH: path.resolve(process.cwd(), "app/controllers"),
+          ROUTER_PATH: path.resolve(process.cwd(), "app/routers"),
+          ASTT_ENABLED:
+            config.enabled === undefined
+              ? "true"
+              : String(!!config.enabled === true),
+          ASTT_ALWAYS: String(!!config.always),
+          APP_ROOT: config.approot || "",
+          FILE_TYPE: config.filetype || "js",
+          SHOW_ROUTERS: String(!!config.details),
+          __TSCONFIG: config.tsconfig || "_"
+        }
       },
-    }, (error, stdout, stderr) => {
-      if (error) {
-        console.log(chalk.yellow("初始化routers失败"));
-        console.log(chalk.red(<any>error));
-        console.log("--------------------");
-        return;
+      (error, stdout, stderr) => {
+        if (error) {
+          console.log(chalk.yellow("初始化routers失败."));
+          console.log(chalk.red(<any>error));
+          console.log("--------------------");
+          return;
+        }
+        if (stderr) {
+          console.log(chalk.yellow("初始化routers失败.."));
+          console.log(chalk.red(stderr));
+          console.log("--------------------");
+          return;
+        }
+        try {
+          const count = showRoutes(JSON.parse(stdout || "{}") || {});
+          console.log(
+            chalk.green(`路由初始化完成${chalk.white(`[${count}]`)}`)
+          );
+        } catch (_) {
+          console.log(chalk.yellow("初始化routers失败..."));
+          console.log(chalk.red(_));
+          console.log("--------------------");
+        }
       }
-      if (stderr) {
-        console.log(chalk.yellow("初始化routers失败"));
-        console.log(chalk.red(stderr));
-        console.log("--------------------");
-        return;
-      }
-      try {
-        const count = showRoutes(JSON.parse(stdout || "{}") || {});
-        console.log(chalk.green(`路由初始化完成${chalk.white(`[${count}]`)}`));
-      } catch (_) {
-        console.log(chalk.yellow("初始化routers失败"));
-        console.log(chalk.red(_));
-        console.log("--------------------");
-      }
-    });
+    );
   } catch (e) {
     console.log(chalk.yellow("初始化routers失败"));
     if (((<Error>e).message || "").includes("ts-node")) {

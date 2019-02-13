@@ -3,10 +3,11 @@ import fs from "fs";
 import nodemon from "nodemon";
 import chalk from "chalk";
 import childProcess, { ChildProcess } from "child_process";
-import { IDevCmdOptions } from "./options";
 import typescript = require("typescript");
+import { IDevCmdOptions } from "./options";
 import { CancellationToken } from "../utils/CancellationToken";
 import { NormalizedMessage } from "../utils/NormalizedMessage";
+import { loadConfig } from "../utils/loadConfig";
 
 export = function(_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
@@ -19,31 +20,7 @@ export = function(_, command: IDevCmdOptions) {
   }
   const fileName = command.config || "atc.config.js";
   console.log(`${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`);
-  const _name = path.join(projectRoot, fileName);
-  let config: any;
-  try {
-    config = require(_name) || {};
-  } catch (error) {
-    // only check if throwing is an error.
-    if (error.message && typeof error.message === "string") {
-      // import errors occures.
-      if (error.message.startsWith("Cannot find module")) {
-        // use custom atc.config file.
-        if (fileName === "atc.config.js") {
-          // maybe syntax error, throws.
-          throw error;
-        } else {
-          // maybe filename error, throws.
-          throw new Error(`未找到atc配置文件：[${_name}]`);
-        }
-      } else {
-        // throws anyway.
-        throw error;
-      }
-    }
-    console.log(chalk.yellow("未配置atc配置文件, 使用默认配置"));
-    config = {};
-  }
+  const config = loadConfig(projectRoot, fileName);
 
   if (config.env) {
     config.env = {
@@ -59,15 +36,21 @@ export = function(_, command: IDevCmdOptions) {
       NODE_PORT: command.port ? command.port : 8201
     };
   }
-  if (!config.watch) {
+  if (config.watch === false) {
+    config.watch = [];
+  } else if (!config.watch) {
     config.watch = [
       path.join(projectRoot, "app/**/*.*"),
       path.join(projectRoot, "config/**/*.*"),
       path.join(projectRoot, "plugins/**/*.*")
     ];
   }
+  if (config.ignore === false) {
+    config.ignore = [];
+  } else if (!config.ignore) {
+    config.ignore = [];
+  }
   if (config.verbose === undefined) config.verbose = true;
-  if (!config.ignore) config.ignore = [];
   if (config.inspect === undefined) config.inspect = true;
   if (command.debug) config.debug = command.debug;
   if (command.tsconfig) config.tsconfig = command.tsconfig;
@@ -156,7 +139,8 @@ export = function(_, command: IDevCmdOptions) {
         console.log(chalk.cyan(`HTTPS_PROXY: \t${config.env.HTTPS_PROXY}`));
       }
       console.log(chalk.green("\n监听目录变化："));
-      for (let i = 0; i < config.watch.length; i++) {
+      const LENGTH = config.watch && config.watch.length;
+      for (let i = 0; i < LENGTH; i++) {
         console.log(chalk.yellow(config.watch[i]));
       }
     })
