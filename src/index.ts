@@ -17,7 +17,11 @@ import { initRouters } from "./builders";
  * @param {string} root
  * @returns
  */
-export function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string) {
+export function buildRouter<T>(
+  ctor: ControllerConstructor<T>,
+  name: string,
+  root: string
+) {
   const sourceCtor = GlobalImplements.get(ctor);
   const result = createRouter(sourceCtor, name, root);
   copyPrototype(<any>ctor, sourceCtor);
@@ -51,7 +55,6 @@ export function preInitFn(configs: Partial<IPreProcess>): void;
 export function preInitFn(configs: Partial<IPreProcess>, inEnd?) {
   return initRouters(configs, inEnd);
 }
-
 
 export * from "astroboy-router";
 export * from "./decorators";
@@ -90,6 +93,6 @@ export {
   InjectScope
 } from "./services/Configs";
 
-export {
-  Astroboy
-};
+export { CMD } from "./cmd";
+
+export { Astroboy };

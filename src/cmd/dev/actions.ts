@@ -7,6 +7,7 @@ import { IDevCmdOptions } from "./options";
 import typescript = require("typescript");
 import { CancellationToken } from "../utils/CancellationToken";
 import { NormalizedMessage } from "../utils/NormalizedMessage";
+import { InnerCmdConfig } from "../base";
 
 export = function(_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
@@ -20,7 +21,7 @@ export = function(_, command: IDevCmdOptions) {
   const fileName = command.config || "atc.config.js";
   console.log(`${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`);
   const _name = path.join(projectRoot, fileName);
-  let config: any;
+  let config: InnerCmdConfig;
   try {
     config = require(_name) || {};
   } catch (error) {
@@ -59,15 +60,21 @@ export = function(_, command: IDevCmdOptions) {
       NODE_PORT: command.port ? command.port : 8201
     };
   }
-  if (!config.watch) {
+  if (config.watch === false) {
+    config.watch = [];
+  } else if (!config.watch) {
     config.watch = [
       path.join(projectRoot, "app/**/*.*"),
       path.join(projectRoot, "config/**/*.*"),
       path.join(projectRoot, "plugins/**/*.*")
     ];
   }
+  if (config.ignore === false) {
+    config.ignore = [];
+  } else if (!config.ignore) {
+    config.ignore = [];
+  }
   if (config.verbose === undefined) config.verbose = true;
-  if (!config.ignore) config.ignore = [];
   if (config.inspect === undefined) config.inspect = true;
   if (command.debug) config.debug = command.debug;
   if (command.tsconfig) config.tsconfig = command.tsconfig;
@@ -156,7 +163,8 @@ export = function(_, command: IDevCmdOptions) {
         console.log(chalk.cyan(`HTTPS_PROXY: \t${config.env.HTTPS_PROXY}`));
       }
       console.log(chalk.green("\n监听目录变化："));
-      for (let i = 0; i < config.watch.length; i++) {
+      const LENGTH = config.watch && config.watch.length;
+      for (let i = 0; i < LENGTH; i++) {
         console.log(chalk.yellow(config.watch[i]));
       }
     })
