@@ -17,7 +17,11 @@ import { initRouters } from "./builders";
  * @param {string} root
  * @returns
  */
-export function buildRouter<T>(ctor: ControllerConstructor<T>, name: string, root: string) {
+export function buildRouter<T>(
+  ctor: ControllerConstructor<T>,
+  name: string,
+  root: string
+) {
   const sourceCtor = GlobalImplements.get(ctor);
   const result = createRouter(sourceCtor, name, root);
   copyPrototype(<any>ctor, sourceCtor);
@@ -52,7 +56,6 @@ export function preInitFn(configs: Partial<IPreProcess>, inEnd?) {
   return initRouters(configs, inEnd);
 }
 
-
 export * from "astroboy-router";
 export * from "./decorators";
 export * from "./middlewares";
@@ -70,7 +73,15 @@ export * from "./typings/IViewEngine";
 export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
 export * from "./results/render";
-export * from "./plugins/typed-serializer";
+
+export {
+  TypedSerializer,
+  Serialize,
+  Deserialize,
+  Extends
+} from "./plugins/typed-serializer";
+export { NUNJUNKS_OPTIONS } from "./plugins/nunjunks";
+export { SIMPLE_LOGGER_OPTIONS } from "./plugins/simple-logger";
 
 export {
   Configs,
@@ -82,6 +93,4 @@ export {
   InjectScope
 } from "./services/Configs";
 
-export {
-  Astroboy
-};
+export { Astroboy };

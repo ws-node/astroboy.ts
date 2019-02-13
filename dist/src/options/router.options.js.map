@@ -1,0 +1,1 @@
+{"version":3,"file":"router.options.js","sourceRoot":"","sources":["../../../src/options/router.options.ts"],"names":[],"mappings":";;AAAA,iDAAoD;AAkBvC,QAAA,oBAAoB,GAAuB;IACtD,OAAO,EAAE,KAAK;IACd,MAAM,EAAE,KAAK;IACb,UAAU,EAAE,iBAAiB;IAC7B,YAAY,EAAE,aAAa;IAC3B,OAAO,EAAE,GAAG;IACZ,QAAQ,EAAE,IAAI;CACf,CAAC;AAEW,QAAA,cAAc,GAAG,uBAAa,CAAgB,gBAAgB,CAAC,CAAC"}
