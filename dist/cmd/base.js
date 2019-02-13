@@ -21,12 +21,12 @@ function mergeCmdConfig(merge, config) {
         watch: !watch
             ? config.watch
             : config.watch !== false
-                ? [...watch, ...config.watch]
+                ? [...watch, ...(config.watch || [])]
                 : false,
         ignore: !ignore
             ? config.ignore
             : config.ignore !== false
-                ? [...ignore, ...config.ignore]
+                ? [...ignore, ...(config.ignore || [])]
                 : false,
         verbose: get_1.default(merge, "verbose", config.verbose),
         debug: get_1.default(merge, "debug", config.debug),

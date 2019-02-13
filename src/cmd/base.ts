@@ -74,12 +74,12 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     watch: !watch
       ? config.watch
       : config.watch !== false
-      ? [...watch, ...config.watch]
+      ? [...watch, ...(config.watch || [])]
       : false,
     ignore: !ignore
       ? config.ignore
       : config.ignore !== false
-      ? [...ignore, ...config.ignore]
+      ? [...ignore, ...(config.ignore || [])]
       : false,
     verbose: get(merge, "verbose", config.verbose),
     debug: get(merge, "debug", config.debug),
