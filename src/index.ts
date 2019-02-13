@@ -93,6 +93,6 @@ export {
   InjectScope
 } from "./services/Configs";
 
-export { CMD } from "./cmd";
+export { CMD } from "./cmd/cmd";
 
 export { Astroboy };

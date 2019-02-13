@@ -63,13 +63,13 @@ export = function(_, command: IRouterCmdOptions) {
       },
       (error, stdout, stderr) => {
         if (error) {
-          console.log(chalk.yellow("初始化routers失败"));
+          console.log(chalk.yellow("初始化routers失败."));
           console.log(chalk.red(<any>error));
           console.log("--------------------");
           return;
         }
         if (stderr) {
-          console.log(chalk.yellow("初始化routers失败"));
+          console.log(chalk.yellow("初始化routers失败.."));
           console.log(chalk.red(stderr));
           console.log("--------------------");
           return;
@@ -80,7 +80,7 @@ export = function(_, command: IRouterCmdOptions) {
             chalk.green(`路由初始化完成${chalk.white(`[${count}]`)}`)
           );
         } catch (_) {
-          console.log(chalk.yellow("初始化routers失败"));
+          console.log(chalk.yellow("初始化routers失败..."));
           console.log(chalk.red(_));
           console.log("--------------------");
         }
