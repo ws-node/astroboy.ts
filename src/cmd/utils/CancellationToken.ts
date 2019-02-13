@@ -1,8 +1,8 @@
-import * as crypto from "crypto";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as ts from "typescript";
+import uuid = require("uuid/v4");
 
 function existsSync(filePath: fs.PathLike) {
   try {
@@ -32,8 +32,7 @@ export class CancellationToken {
     isCancelled?: boolean
   ) {
     this.isCancelled = !!isCancelled;
-    this.cancellationFileName =
-      cancellationFileName || crypto.randomBytes(64).toString("hex");
+    this.cancellationFileName = cancellationFileName || uuid();
     this.lastCancellationCheckTime = 0;
   }
 
