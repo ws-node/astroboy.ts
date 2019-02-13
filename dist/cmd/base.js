@@ -10,7 +10,7 @@ function mergeCmdConfig(merge, config) {
     const watch = get_1.default(merge, "watch", undefined);
     const ignore = get_1.default(merge, "ignore", undefined);
     const _a = get_1.default(merge, "env", {}), { NODE_ENV: env = undefined, NODE_PORT: port = undefined } = _a, othersEnv = tslib_1.__rest(_a, ["NODE_ENV", "NODE_PORT"]);
-    const _b = get_1.default(merge, "env", {}), { NODE_ENV: newEnv = undefined, NODE_PORT: newPort = undefined } = _b, newEnvs = tslib_1.__rest(_b, ["NODE_ENV", "NODE_PORT"]);
+    const _b = get_1.default(config, "env", {}), { NODE_ENV: newEnv = undefined, NODE_PORT: newPort = undefined } = _b, newEnvs = tslib_1.__rest(_b, ["NODE_ENV", "NODE_PORT"]);
     const envIsEmpty = !merge.env && !config.env;
     return {
         tsconfig: get_1.default(merge, "tsconfig", config.tsconfig),
