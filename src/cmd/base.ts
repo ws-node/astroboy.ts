@@ -49,38 +49,25 @@ export function createCmdConfig(config: CmdConfig): CmdConfig {
 export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
   const watch = get(merge, "watch", undefined);
   const ignore = get(merge, "ignore", undefined);
-  const {
-    NODE_ENV: env = undefined,
-    NODE_PORT: port = undefined,
-    ...othersEnv
-  }: IENV = get(merge, "env", {});
-  const {
-    NODE_ENV: newEnv = undefined,
-    NODE_PORT: newPort = undefined,
-    ...newEnvs
-  }: IENV = get(config, "env", {});
-  const envIsEmpty = !merge.env && !config.env;
+  const oldEnvs = get(merge, "env", {});
+  const newEnvs = get(config, "env", {});
   return {
     tsconfig: get(merge, "tsconfig", config.tsconfig),
     inspect: get(merge, "inspect", config.inspect),
-    env: envIsEmpty
-      ? undefined
-      : {
-          NODE_ENV: env === undefined ? newEnv : env,
-          NODE_PORT: port === undefined ? newPort : port,
-          ...othersEnv,
-          ...newEnvs
-        },
+    env: {
+      ...oldEnvs,
+      ...newEnvs
+    },
     watch: !watch
       ? config.watch
       : config.watch !== false
       ? [...watch, ...(config.watch || [])]
-      : false,
+      : [],
     ignore: !ignore
       ? config.ignore
       : config.ignore !== false
       ? [...ignore, ...(config.ignore || [])]
-      : false,
+      : [],
     verbose: get(merge, "verbose", config.verbose),
     debug: get(merge, "debug", config.debug),
     mock: get(merge, "mock", config.mock),
