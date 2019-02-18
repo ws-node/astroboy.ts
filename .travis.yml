@@ -4,9 +4,9 @@ node_js:
 branches:
   only:
     - master
-    - rc/1.0.3
-    - rc/1.0.4
 before_script:
   - yarn
+  - yarn global add typescript
 script:
   - make build
+after_success: yarn run coverage
