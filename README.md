@@ -6,6 +6,7 @@
 
 [![Build status][ci-image]][ci-url]
 [![Coverage Status][cover-image]][cover-url]
+[![package version][pkg-url]][pkg-image]
 
 ### 已经实现的功能
 
@@ -577,3 +578,5 @@ SOFTWARE.
 [ci-url]: https://travis-ci.org/ws-node/astroboy.ts
 [cover-image]: https://coveralls.io/repos/github/ws-node/astroboy.ts/badge.svg?branch=master
 [cover-url]: https://coveralls.io/github/ws-node/astroboy.ts?branch=master
+[pkg-url]: https://badge.fury.io/js/astroboy.ts.svg?branch=master
+[pkg-image]: https://badge.fury.io/js/astroboy.ts.svg?branch=master
