@@ -384,18 +384,22 @@ export class Server {
   }
 
   private sendInjection(token: any, inject: any, scope: InjectScope) {
-    if (DIContainer.isFactory(inject)) {
-      return this.di.register(
-        token,
-        (scopeId, metadata) => {
-          const injector = this.di.get(token, scopeId);
-          const configs = this.di.get(Configs, scopeId);
-          return inject({ injector, configs });
-        },
-        scope
-      );
+    if (!DIContainer.isFactory(inject)) {
+      return this.di.register(token, inject, scope);
     }
-    return this.di.register(token, inject, scope);
+    // 底层服务，直接使用底层工厂函数
+    if (token === InjectService || token === Configs || token === Context) {
+      return this.di.register(token, inject, scope);
+    }
+    return this.di.register(
+      token,
+      (scopeId, metadata) => {
+        const injector = this.di.get(InjectService, scopeId);
+        const configs = this.di.get(Configs, scopeId);
+        return inject({ injector, configs });
+      },
+      scope
+    );
   }
 
   /**
