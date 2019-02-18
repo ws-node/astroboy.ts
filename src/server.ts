@@ -11,8 +11,8 @@ import {
   ScopeID,
   InjectToken,
   AbstractType,
-  ImplementFactory,
-  ImplementType
+  ImplementType,
+  DIContainer
 } from "@bonbons/di";
 import { ENV, defaultEnv, CONFIG_VIEW, defaultView } from "./configs";
 import {
@@ -43,6 +43,11 @@ import { Render } from "./services/Render";
 import { initRouters } from "./builders";
 
 type DIPair = [any, any];
+
+export interface FactoryContext {
+  injector: InjectService;
+  configs: Configs;
+}
 
 /**
  * ## astroboy.ts服务
@@ -188,13 +193,13 @@ export class Server {
    * @template TToken
    * @template TImplement
    * @param {InjectableToken<TToken>} token
-   * @param {InjectFactory<TImplement, ScopeID>} srv
+   * @param {(context: FactoryContext) => TImplement} srv
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
   public scoped<TToken, TImplement>(
     token: AbstractType<TToken>,
-    srv: ImplementFactory<TImplement, ScopeID>
+    srv: (context: FactoryContext) => TImplement
   ): this;
   /**
    * Set a scoped service
@@ -282,13 +287,13 @@ export class Server {
    * @template TToken
    * @template TImplement
    * @param {InjectableToken<B>} token
-   * @param {InjectFactory<TImplement, ScopeID>} srv
+   * @param {(context: FactoryContext) => TImplement} srv
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
   public singleton<TToken, TImplement>(
     token: AbstractType<TToken>,
-    srv: ImplementFactory<TImplement, ScopeID>
+    srv: (context: FactoryContext) => TImplement
   ): this;
   /**
    * Set a singleton service
@@ -325,7 +330,7 @@ export class Server {
   ): this;
   public unique<TToken, TImplement>(
     token: AbstractType<TToken>,
-    srv: ImplementFactory<TImplement, ScopeID>
+    srv: (context: FactoryContext) => TImplement
   ): this;
   public unique<TToken, TImplement>(
     token: AbstractType<TToken>,
@@ -366,16 +371,31 @@ export class Server {
   private directInject(type: InjectScope, args: [any] | [any, any]) {
     switch (type) {
       case InjectScope.Scope:
-        this.di.register(args[0], args[1] || args[0], InjectScope.Scope);
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.Scope);
         break;
       case InjectScope.Singleton:
-        this.di.register(args[0], args[1] || args[0], InjectScope.Singleton);
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.Singleton);
         break;
       default:
-        this.di.register(args[0], args[1] || args[0], InjectScope.New);
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.New);
         break;
     }
     return this;
+  }
+
+  private sendInjection(token: any, inject: any, scope: InjectScope) {
+    if (DIContainer.isFactory(inject)) {
+      return this.di.register(
+        token,
+        (scopeId, metadata) => {
+          const injector = this.di.get(token, scopeId);
+          const configs = this.di.get(Configs, scopeId);
+          return inject({ injector, configs });
+        },
+        scope
+      );
+    }
+    return this.di.register(token, inject, scope);
   }
 
   /**
@@ -497,10 +517,13 @@ export class Server {
    */
   private resolveInjections() {
     this.preSingletons.forEach(([token, srv]) =>
-      this.di.register(token, srv, InjectScope.Singleton)
+      this.sendInjection(token, srv, InjectScope.Singleton)
     );
     this.preScopeds.forEach(([token, srv]) =>
-      this.di.register(token, srv, InjectScope.Scope)
+      this.sendInjection(token, srv, InjectScope.Scope)
+    );
+    this.preUniques.forEach(([token, srv]) =>
+      this.sendInjection(token, srv, InjectScope.New)
     );
     this.di.complete();
   }
