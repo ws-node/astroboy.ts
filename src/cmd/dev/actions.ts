@@ -64,7 +64,7 @@ export = function(_, command: IDevCmdOptions) {
   // ts-node register
   config.env.__TSCONFIG = config.tsconfig || "-";
   // fix: for tsconfig-paths support
-  config.env.TS_NODE_PROJECT = command.tsconfig;
+  config.env.TS_NODE_PROJECT = command.tsconfig || "tsconfig.json";
   config.env.__TRANSPILE =
     config.typeCheck && !config.transpile ? "false" : "true";
 
