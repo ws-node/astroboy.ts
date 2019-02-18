@@ -80,9 +80,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@bonbons/di@1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@bonbons/di/-/di-1.3.3.tgz#e89baaa03464f4ae50968607aa5c51f92ae135fc"
+"@bonbons/di@1.3.4-rc.2":
+  version "1.3.4-rc.2"
+  resolved "https://registry.yarnpkg.com/@bonbons/di/-/di-1.3.4-rc.2.tgz#6dc2a3032bfe5b8d4560af8398bae91ff6644f13"
+  integrity sha512-jFLBZ9LSf3zHWmhoOo+uLYrKePZBfvwoqeLugnVIzPbUVgsY5N3cVDCQOLpB7ttwgmc96TqZsC2HwVaTOOs9Jg==
   dependencies:
     reflect-metadata "0.1.12"
 
