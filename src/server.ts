@@ -58,6 +58,7 @@ export class Server {
 
   private preSingletons: DIPair[] = [];
   private preScopeds: DIPair[] = [];
+  private preUniques: DIPair[] = [];
 
   private appBuilder!: Constructor<any>;
   private appConfigs!: any;
@@ -317,6 +318,23 @@ export class Server {
     return this.preInject(InjectScope.Singleton, <any>args);
   }
 
+  public unique<TInject>(srv: Constructor<TInject>): this;
+  public unique<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: ImplementType<TImplement>
+  ): this;
+  public unique<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: ImplementFactory<TImplement, ScopeID>
+  ): this;
+  public unique<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: TImplement
+  ): this;
+  public unique(...args: any[]): this {
+    return this.preInject(InjectScope.New, <any>args);
+  }
+
   /** 预注册，会覆盖装饰器的定义注册 */
   private preInject(type: InjectScope, service: Constructor<any>): this;
   private preInject(
@@ -333,6 +351,7 @@ export class Server {
         this.preSingletons.push([args[0], args[1] || args[0]]);
         break;
       default:
+        this.preUniques.push([args[0], args[1] || args[0]]);
         break;
     }
     return this;
@@ -353,6 +372,7 @@ export class Server {
         this.di.register(args[0], args[1] || args[0], InjectScope.Singleton);
         break;
       default:
+        this.di.register(args[0], args[1] || args[0], InjectScope.New);
         break;
     }
     return this;
