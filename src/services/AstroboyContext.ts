@@ -31,16 +31,22 @@ export namespace AstroboyContext {
  * @template C typeof `config` 类型
  */
 @Injectable()
-export class AstroboyContext<T = IContext, A = Koa, C = any> implements AstroboyContext.Contract<T, A, C> {
-
+export class AstroboyContext<T = IContext, A = Koa, C = any>
+  implements AstroboyContext.Contract<T, A, C> {
   /** BaseClass.ctx */
-  public get ctx(): T { return <any>this.context.ctx || {}; }
+  public get ctx(): T {
+    return <any>this.context.ctx || {};
+  }
   /** BaseClass.app */
-  public get app(): A { return (this.ctx && (<any>this.ctx).app) || {}; }
+  public get app(): A {
+    return (this.ctx && (<any>this.ctx).app) || {};
+  }
   /** BaseClass.config */
-  public get config(): C { return (this.app && this.app["config"]) || {}; }
+  public get config(): C {
+    return (this.app && this.app["config"]) || {};
+  }
 
-  constructor(protected context: Context<T>) { }
+  constructor(protected context: Context<T>) {}
 
   getConfig(...args: any[]) {
     // @ts-ignore 参数定义override忽略
@@ -71,5 +77,4 @@ export class AstroboyContext<T = IContext, A = Koa, C = any> implements Astroboy
     // @ts-ignore 参数定义override忽略
     return this.ctx.getLib(...args);
   }
-
 }

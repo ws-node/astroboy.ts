@@ -13,7 +13,10 @@ export namespace Render {
   export interface Contract {
     readonly views: any;
     setView(obj: { [prop: string]: any }): void;
-    setView(obj: { [prop: string]: any }, options: Partial<IGlobalSetOptions>): void;
+    setView(
+      obj: { [prop: string]: any },
+      options: Partial<IGlobalSetOptions>
+    ): void;
     setView(key: string, obj: any): void;
     setView(key: string, obj: any, options: Partial<IGlobalSetOptions>): void;
   }
@@ -28,10 +31,11 @@ export namespace Render {
  */
 @Injectable()
 export class Render implements Render.Contract {
-
   private _views: any = {};
 
-  public get views() { return this._views; }
+  public get views() {
+    return this._views;
+  }
 
   constructor(protected context: AstroboyContext) {
     this.init();
@@ -45,12 +49,19 @@ export class Render implements Render.Contract {
    * @protected
    * @memberof Render
    */
-  protected init() { }
+  protected init() {}
 
   public setView(obj: { [prop: string]: any }): void;
-  public setView(obj: { [prop: string]: any }, options: Partial<IGlobalSetOptions>): void;
+  public setView(
+    obj: { [prop: string]: any },
+    options: Partial<IGlobalSetOptions>
+  ): void;
   public setView(key: string, obj: any): void;
-  public setView(key: string, obj: any, options: Partial<IGlobalSetOptions>): void;
+  public setView(
+    key: string,
+    obj: any,
+    options: Partial<IGlobalSetOptions>
+  ): void;
   public setView(...args: any[]) {
     const [p1, p2, p3] = args;
     let toSnake = false;
@@ -71,20 +82,18 @@ export class Render implements Render.Contract {
     if (isObj) {
       this._views = {
         ...this._views,
-        ...(toSnake ?
-          resolveKeys(JsonResolvers.snakecase, toSave || {}) :
-          (toSave || {})
-        )
+        ...(toSnake
+          ? resolveKeys(JsonResolvers.snakecase, toSave || {})
+          : toSave || {})
       };
     } else {
       set(
         this._views,
         keyStr,
-        toSnake ?
-          resolveKeys(JsonResolvers.snakecase, toSave || {}) :
-          (toSave || {})
+        toSnake
+          ? resolveKeys(JsonResolvers.snakecase, toSave || {})
+          : toSave || {}
       );
     }
   }
-
 }

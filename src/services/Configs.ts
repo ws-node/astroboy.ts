@@ -16,11 +16,14 @@ export interface ConfigEntry<T> {
 
 export type TokenGenerator = <T>(key: string) => ConfigToken<T>;
 
-export const createOptions: TokenGenerator = (key: string) => ({ key: Symbol(key) });
-export const createConfig: TokenGenerator = (key: string) => ({ key: Symbol(`config::${key}`) });
+export const createOptions: TokenGenerator = (key: string) => ({
+  key: Symbol(key)
+});
+export const createConfig: TokenGenerator = (key: string) => ({
+  key: Symbol(`config::${key}`)
+});
 
 export class RealConfigCollection implements IConfigCollection {
-
   private map = new Map<symbol, { value: any }>();
 
   public set<T>(token: ConfigToken<T>, entry: T) {
@@ -33,13 +36,15 @@ export class RealConfigCollection implements IConfigCollection {
   }
 
   public toArray(): ConfigEntry<any>[] {
-    return Array.from(this.map.entries()).map(([sb, { value }]) => ({ token: { key: sb }, value }));
+    return Array.from(this.map.entries()).map(([sb, { value }]) => ({
+      token: { key: sb },
+      value
+    }));
   }
-
 }
 
 export namespace Configs {
-  export interface Contract extends ReadonlyConfigs { }
+  export interface Contract extends ReadonlyConfigs {}
 }
 
 /**

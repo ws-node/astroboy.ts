@@ -9,4 +9,6 @@ export const defaultSimpleLoggerOptions: ISimpleLoggerOptions = {
   level: SimpleLogLevel.WARN
 };
 
-export const SIMPLE_LOGGER_OPTIONS = createOptions<ISimpleLoggerOptions>("SIMPLE_LOGGER_OPTIONS");
+export const SIMPLE_LOGGER_OPTIONS = createOptions<ISimpleLoggerOptions>(
+  "SIMPLE_LOGGER_OPTIONS"
+);

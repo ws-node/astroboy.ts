@@ -15,8 +15,10 @@ import { resolveKeys } from "../utils";
  * @implements {IResult}
  */
 export class JsonResult implements IResult {
-
-  constructor(private value: any, private configs?: Partial<JsonResultOptions>) { }
+  constructor(
+    private value: any,
+    private configs?: Partial<JsonResultOptions>
+  ) {}
 
   /**
    * ### 将json对象序列化写入body
@@ -28,7 +30,13 @@ export class JsonResult implements IResult {
    * @memberof JsonResult
    */
   toResult({ configs }: IResultScope): string {
-    const { format, whiteSpace: b, keyResolver: r, jsonTemplate: tpl, jsonTplKey: tplKey } = {
+    const {
+      format,
+      whiteSpace: b,
+      keyResolver: r,
+      jsonTemplate: tpl,
+      jsonTplKey: tplKey
+    } = {
       ...configs.get(JSON_RESULT_OPTIONS),
       ...this.configs
     };
@@ -44,17 +52,21 @@ export class JsonResult implements IResult {
       decideWhiteSpace(format, b)
     );
   }
-
 }
 
 function decideWhiteSpace(format: boolean, b: 0 | 1 | 2 | 4) {
   if (!format) return "";
   switch (b) {
-    case 4: return "    ";
-    case 2: return "  ";
-    case 1: return " ";
-    case 0: return "";
-    default: return "";
+    case 4:
+      return "    ";
+    case 2:
+      return "  ";
+    case 1:
+      return " ";
+    case 0:
+      return "";
+    default:
+      return "";
   }
 }
 

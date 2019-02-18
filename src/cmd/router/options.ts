@@ -21,7 +21,7 @@ export const options: CommandPlugin = {
     ["-F, --filetype [fileType]", "set routers fileType"],
     ["-R, --approot [appRoot]", "set routers-root"],
     ["-T, --tsconfig [tsconfig]", "set tsconfig.json"],
-    ["-D, --details [showRouters]", "show building results or not"],
+    ["-D, --details [showRouters]", "show building results or not"]
   ],
   action: fn,
   help: () => {

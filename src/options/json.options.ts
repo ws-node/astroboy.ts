@@ -15,7 +15,7 @@ export interface JsonResultOptions {
   /** 对象键值处理函数 - 默认：`undefined` */
   keyResolver?: (key: string) => string;
   /** json模板 - 默认：`undefined` */
-  jsonTemplate?: { [prop: string]: any; };
+  jsonTemplate?: { [prop: string]: any };
   /** json模板上写入内容的字段位置 - 默认：`undefined` */
   jsonTplKey?: string;
 }
@@ -28,4 +28,6 @@ export const defaultJsonResultOptions: JsonResultOptions = {
   jsonTplKey: undefined
 };
 
-export const JSON_RESULT_OPTIONS = createOptions<JsonResultOptions>("JSON_RESULT_OPTIONS");
+export const JSON_RESULT_OPTIONS = createOptions<JsonResultOptions>(
+  "JSON_RESULT_OPTIONS"
+);

@@ -1,4 +1,3 @@
-
 export enum SimpleLogLevel {
   TRACE = 0,
   DEBUG = 1,

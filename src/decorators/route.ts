@@ -1,12 +1,19 @@
-import { APIFactory, CustomRouteFactory } from "astroboy-router/dist/decorators/route.factory";
+import {
+  APIFactory,
+  CustomRouteFactory
+} from "astroboy-router/dist/decorators/route.factory";
 import { METHOD, IRouteFactory, IRouter } from "astroboy-router/dist/metadata";
 import { tryGetRouter } from "astroboy-router/dist/decorators/utils";
 import { getMethodParamsType } from "../utils";
 
 const MAGIC_CONTENT = new Map<any, IRouterMagic<any>>();
 
-type ParamsFactory<T = any> = (target: T, propertyKey: string, index: number) => void;
-type ParamsResolver<T = any, R = any> = ((source: T) => R);
+type ParamsFactory<T = any> = (
+  target: T,
+  propertyKey: string,
+  index: number
+) => void;
+type ParamsResolver<T = any, R = any> = (source: T) => R;
 
 interface ParamsOptions {
   transform: ParamsResolver;
@@ -27,7 +34,7 @@ export interface IRouterMagic<T> {
   routes: {
     [prop: string]: {
       params: RouteArgument[];
-    }
+    };
   };
 }
 
@@ -45,11 +52,14 @@ export function tryGetRouteMagic<T>(prototype: T, key: string) {
 export function tryGetRouterMagic<T>(prototype: T) {
   let found = MAGIC_CONTENT.get(prototype);
   if (!found) {
-    MAGIC_CONTENT.set(prototype, found = {
+    MAGIC_CONTENT.set(
       prototype,
-      routes: {},
-      routerMeta: tryGetRouter(prototype)
-    });
+      (found = {
+        prototype,
+        routes: {},
+        routerMeta: tryGetRouter(prototype)
+      })
+    );
   }
   return found;
 }
@@ -65,8 +75,19 @@ export function FromParams(): ParamsFactory;
 export function FromParams(options: Partial<ParamsOptions>): ParamsFactory;
 export function FromParams(options?: Partial<ParamsOptions>) {
   const { transform = undefined, useStatic = undefined } = options || {};
-  return function dynamic_params<T>(prototype: T, propKey: string, index: number) {
-    route_query({ prototype, propKey, index, transform, useStatic, type: "params" });
+  return function dynamic_params<T>(
+    prototype: T,
+    propKey: string,
+    index: number
+  ) {
+    route_query({
+      prototype,
+      propKey,
+      index,
+      transform,
+      useStatic,
+      type: "params"
+    });
   };
 }
 
@@ -81,17 +102,35 @@ export function FromBody(): ParamsFactory;
 export function FromBody(options: Partial<ParamsOptions>): ParamsFactory;
 export function FromBody(options?: Partial<ParamsOptions>) {
   const { transform = undefined, useStatic = undefined } = options || {};
-  return function dynamic_params<T>(prototype: T, propKey: string, index: number) {
-    route_query({ prototype, propKey, index, transform, useStatic, type: "body" });
+  return function dynamic_params<T>(
+    prototype: T,
+    propKey: string,
+    index: number
+  ) {
+    route_query({
+      prototype,
+      propKey,
+      index,
+      transform,
+      useStatic,
+      type: "body"
+    });
   };
 }
 
-function route_query<T>({ type, prototype, propKey, index, transform, useStatic }: {
+function route_query<T>({
+  type,
+  prototype,
+  propKey,
+  index,
+  transform,
+  useStatic
+}: {
   type: "params" | "body";
   prototype: T;
   propKey: string;
   index: number;
-  transform?: any,
+  transform?: any;
   useStatic?: boolean;
 }) {
   const types = getMethodParamsType(prototype, propKey);
@@ -111,7 +150,11 @@ function resolveParamType(type?: any) {
 }
 
 function addMagicForRoute(method: METHOD, path: string): IRouteFactory {
-  return function route_magic<T>(prototype: T, propKey: string, descriptor?: PropertyDescriptor) {
+  return function route_magic<T>(
+    prototype: T,
+    propKey: string,
+    descriptor?: PropertyDescriptor
+  ) {
     APIFactory(method, path)(prototype, propKey, descriptor);
   };
 }
@@ -136,7 +179,11 @@ export function __BASE_ROUTE_DECO_FACTORY(configs: {
   name?: string;
   isIndex?: boolean;
 }) {
-  return function __route_custom<T>(prototype: T, propKey: string, descriptor?: PropertyDescriptor) {
+  return function __route_custom<T>(
+    prototype: T,
+    propKey: string,
+    descriptor?: PropertyDescriptor
+  ) {
     return CustomRouteFactory(configs)(prototype, propKey, descriptor);
   };
 }
