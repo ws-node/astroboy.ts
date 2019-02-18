@@ -1,9 +1,8 @@
 import * as Pkg from "../src/index";
-
 import { expect } from "chai";
-import "mocha";
+import { defineUnit } from "./unit";
 
-describe("astroboy.ts/src/index.ts", () => {
+defineUnit(["index", "Astroboy.ts index outputs"], () => {
   it("test astroboy.ts package exports", () => {
     expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(58);
     expect(typeof Pkg.API, "[astroboy.ts].API").to.equal("function");
