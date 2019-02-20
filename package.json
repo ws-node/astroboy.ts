@@ -66,6 +66,7 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
+    "@bigmogician/publisher": "^1.0.2",
     "@types/camelcase": "4.1.0",
     "@types/chai": "^4.1.6",
     "@types/chalk": "2.2.0",

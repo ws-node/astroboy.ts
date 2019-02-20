@@ -10,7 +10,7 @@ document:
 	node_modules/.bin/typedoc --out ./doc/ ./src/
 
 rc: build
-	node ./pkg --rc 1
+	node ./pkg.rc.js
 
 publish: build
-	node ./pkg
+	node ./pkg.build.js
