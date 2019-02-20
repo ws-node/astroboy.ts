@@ -1,7 +1,7 @@
 build:
 	yarn run test
 	rm -rf dist
-	tsc
+	npx tsc
 	mkdir dist/bin
 	cp bin/atc dist/bin
 
