@@ -37,7 +37,11 @@ function SerializeDefine<T>(name: string, type: Constructor<T>);
  */
 function SerializeDefine<T>(type: Constructor<T>);
 function SerializeDefine(...args: any[]) {
-  return function serialize_define<M>(target: M, propKey: string, descriptor?: PropertyDescriptor) {
+  return function serialize_define<M>(
+    target: M,
+    propKey: string,
+    descriptor?: PropertyDescriptor
+  ) {
     const type = getPropertyType(target, propKey);
     const [r1, r2] = args;
     if (!r1) {
@@ -87,7 +91,11 @@ function DeserializeDefine<T>(name: string, type: Constructor<T>);
  */
 function DeserializeDefine<T>(type: Constructor<T>);
 function DeserializeDefine(...args: any[]) {
-  return function deserialize_define<M>(target: M, propKey: string, descriptor?: PropertyDescriptor) {
+  return function deserialize_define<M>(
+    target: M,
+    propKey: string,
+    descriptor?: PropertyDescriptor
+  ) {
     const type = getPropertyType(target, propKey);
     const [r1, r2] = args;
     if (!r1) {

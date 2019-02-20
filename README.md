@@ -38,6 +38,15 @@
 
 ### 迭代记录
 
+### 1.0.11
+
+- 更新 `@bonbons/di` 到 1.3.5
+- 增加 UT 覆盖
+
+### 1.0.9-rc.1
+
+- [ BREAKING CHANGE ] 调整 DI 接受工厂函数的类型，工厂函数 `injector` 和 `configs`
+
 ### 1.0.8
 
 - 1.0.8 功能锁定
@@ -58,7 +67,7 @@
 
 #### 1.0.6-rc.3
 
-- rename `CMD` to `AtcCLI`
+- [ BREAKING CHANGE ] rename `CMD` to `AtcCLI`
 
 #### 1.0.6
 
@@ -96,8 +105,8 @@
 
 #### 1.0.3-rc.7
 
+- [ BREAKING CHANGE ] 调整 `RenderResult` 的原生参数配置
 - 所有基础服务全部完成契约化，可以通过 class 本身的 `Contract` 拿到其公共接口
-- 调整 `RenderResult` 的原生参数配置
 - 增加大量文档和注释
 
 #### 1.0.3-rc.5
@@ -121,12 +130,12 @@
 
 #### 1.0.2-rc.37
 
+- [ BREAKING CHANGE ] 调整配置文件参数
 - 增加 `atc-cli` 对 `router` 命令的 config 文件支持
-- 调整配置文件参数
 
 #### 1.0.2-rc.35
 
-- 去除 `atc-cli` 对 js 的支持，去掉参数 `--ts`
+- [ BREAKING CHANGE ] 去除 `atc-cli` 对 js 的支持，去掉参数 `--ts`
 - 调整视觉风格
 
 #### 1.0.2-rc.31
@@ -145,7 +154,7 @@
 
 #### 1.0.2-rc.24
 
-- `astt` 更名 `atc` ，并支持新的 `dev` 命令
+- [ BREAKING CHANGE ] `astt` 更名 `atc` ，并支持新的 `dev` 命令
 
 #### 1.0.2-rc.23
 
@@ -179,9 +188,9 @@
 
 #### 1.0.1-rc.22
 
-- 重新调整 `Context` 和 `AstroboyContext` 对于 `ctx` 类型复写的行为
+- [ BREAKING CHANGE ] 重新调整 `Context` 和 `AstroboyContext` 对于 `ctx` 类型复写的行为
+- [ BREAKING CHANGE ] `Context` 取消在 `AstroboyContext` 中公开，只在继承链路中可见
 - `AstroboyContext` 现在支持复写 `app` 和 `config` 字段的类型
-- `Context` 取消在 `AstroboyContext` 中公开，只在继承链路中可见
 
 #### 1.0.1-rc.20
 
@@ -189,8 +198,8 @@
 
 #### 1.0.1-rc.18
 
+- [ BREAKING CHANGE ] 移除 `@bonbons/di` 的定义输出，并修复部分接口
 - 修复 `astroboy-router` 的一个兼容问题
-- 移除 `@bonbons/di` 的定义输出，并修复部分接口
 
 #### 1.0.1-rc.15
 

@@ -6,7 +6,9 @@ import { SimpleLogLevel } from "./base";
 
 function createStamp(date?: Date): string {
   const tData = date || new Date();
-  return `[${chalk.cyan(`${tData.toLocaleDateString()} ${tData.toLocaleTimeString()}:${tData.getMilliseconds()}`)}]-`;
+  return `[${chalk.cyan(
+    `${tData.toLocaleDateString()} ${tData.toLocaleTimeString()}:${tData.getMilliseconds()}`
+  )}]-`;
 }
 
 function createType(type: SimpleLogLevel): string {
@@ -14,18 +16,26 @@ function createType(type: SimpleLogLevel): string {
   let tps: string;
   switch (type) {
     case SimpleLogLevel.FATAL:
-    case SimpleLogLevel.ERROR: [color, tps] = ["red", "ERROR"]; break;
-    case SimpleLogLevel.WARN: [color, tps] = ["yellow", "WARN"]; break;
-    case SimpleLogLevel.INFO: [color, tps] = ["blue", "INFO"]; break;
-    case SimpleLogLevel.DEBUG: [color, tps] = ["green", "DEBUG"]; break;
-    default: [color, tps] = ["white", "TRACE"];
+    case SimpleLogLevel.ERROR:
+      [color, tps] = ["red", "ERROR"];
+      break;
+    case SimpleLogLevel.WARN:
+      [color, tps] = ["yellow", "WARN"];
+      break;
+    case SimpleLogLevel.INFO:
+      [color, tps] = ["blue", "INFO"];
+      break;
+    case SimpleLogLevel.DEBUG:
+      [color, tps] = ["green", "DEBUG"];
+      break;
+    default:
+      [color, tps] = ["white", "TRACE"];
   }
   return `[${chalk[color](tps)}]-`;
 }
 
 @Injectable()
 export class SimpleLogger {
-
   private pkgEnv: ISimpleLoggerOptions;
 
   constructor(private configs: Configs) {
@@ -52,5 +62,4 @@ export class SimpleLogger {
   public debug(...msg: any[]) {
     return this.log(SimpleLogLevel.DEBUG, ...msg);
   }
-
 }

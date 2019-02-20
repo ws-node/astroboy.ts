@@ -24,6 +24,8 @@ export class Context<T = IContext> implements Context.Contract<T> {
    * @type {T} 聚合类型
    * @memberof Context
    */
-  public get ctx(): T { return <any>this._ctx; }
-  constructor(private _ctx: Koa.Context) { }
+  public get ctx(): T {
+    return <any>this._ctx;
+  }
+  constructor(private _ctx: Koa.Context) {}
 }

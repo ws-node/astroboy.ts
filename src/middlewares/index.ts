@@ -1,4 +1,4 @@
-import { GlobalDI, getShortScopeId, setScopeId, setColor, getScopeId } from "../utils";
+import { GlobalDI, getShortScopeId, setScopeId, setColor } from "../utils";
 import { IContext } from "../typings/IContext";
 import { InjectService } from "../services/Injector";
 import { Scope } from "../services/Scope";
@@ -14,11 +14,7 @@ import { Configs } from "../services/Configs";
  * @param next 下一个中间件
  */
 export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
-  const {
-    injector,
-    scope,
-    logger
-  } = initRequestScope(ctx);
+  const { injector, scope, logger } = initRequestScope(ctx);
   try {
     await next();
   } catch (error) {
@@ -47,14 +43,23 @@ async function tryCatchGlobalError(injector: InjectService, error: any) {
   }
 }
 
-function disposeRequestScope(scope: Scope, logger: SimpleLogger, injector: InjectService) {
+function disposeRequestScope(
+  scope: Scope,
+  logger: SimpleLogger,
+  injector: InjectService
+) {
   scope["end"]();
   const duration = scope.diration();
-  logger.trace(`scope ${setColor("cyan", getShortScopeId(injector.scopeId))} is [${setColor(duration > 500 ? "red" : duration > 200 ? "yellow" : "green", duration)} ms] disposed.`);
+  logger.trace(
+    `scope ${setColor(
+      "cyan",
+      getShortScopeId(injector.scopeId)
+    )} is [${setColor(
+      duration > 500 ? "red" : duration > 200 ? "yellow" : "green",
+      duration
+    )} ms] disposed.`
+  );
   injector["INTERNAL_dispose"] && injector["INTERNAL_dispose"]();
 }
 
-export {
-  createMiddleware as injectScope,
-  IMiddlewaresScope
-} from "./core";
+export { createMiddleware as injectScope, IMiddlewaresScope } from "./core";

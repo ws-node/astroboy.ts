@@ -17,12 +17,15 @@ export const defaultGlobalError: IGlobalErrorHandler = {
     const { ctx } = injector.get(Context);
     const { env } = configs.get(ENV);
     const { onError, onDevError } = configs.get(RENDER_RESULT_OPTIONS);
-    const { content: defaultRender, ...args } = env === "production" ? onError : onDevError;
+    const { content: defaultRender, ...args } =
+      env === "production" ? onError : onDevError;
     render.setView("__viewError", error);
     try {
       const path = !args.path ? undefined : args.path;
       const tpl = !args.tplStr ? undefined : args.tplStr;
-      if (!path && !tpl) throw new Error("No template provided for global error handler.");
+      if (!path && !tpl) {
+        throw new Error("No template provided for global error handler.");
+      }
       const result = new RenderResult({ path, tplStr: tpl });
       ctx.body = await result.toResult({ injector, configs });
     } catch (_) {

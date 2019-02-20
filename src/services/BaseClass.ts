@@ -25,6 +25,4 @@ declare class BaseClass {
 
 const BC: typeof BaseClass = C;
 
-export {
-  BC as BaseClass
-};
+export { BC as BaseClass };

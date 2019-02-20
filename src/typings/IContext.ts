@@ -24,6 +24,11 @@ export interface IContext extends Koa.Context {
    * @param {String} methodName 方法名
    * @param {Object} args 参数
    */
-  invokeServiceMethod(pkgName: string, service: string, method: string, ...args: any[]): any;
+  invokeServiceMethod(
+    pkgName: string,
+    service: string,
+    method: string,
+    ...args: any[]
+  ): any;
   getLib(...args: any[]): any;
 }

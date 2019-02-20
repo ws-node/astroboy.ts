@@ -77,14 +77,20 @@ export const defaultRenderResultOptions: RenderResultOptions<"nunjunks"> = {
   onError: {
     path: undefined,
     tplStr: undefined,
-    content: (_) => "Internal Server Error"
+    content: _ => "Internal Server Error"
   },
   onDevError: {
     path: undefined,
     tplStr: undefined,
     content: (e, title) => `
-      <h3 style="color: #ff3355;font-size: 32px;font-family: monospace;">${(checkCustomError(e) && `${title || "Render Error"} -- ${e.name}`) || (title || "Render Error")}</h3>
-      <pre style="font-size: 13px;color: #606060;background: #f6f6f6;padding: 12px;overflow-x: auto;">${e.stack}</pre>
+      <h3 style="color: #ff3355;font-size: 32px;font-family: monospace;">${(checkCustomError(
+        e
+      ) &&
+        `${title || "Render Error"} -- ${e.name}`) ||
+        (title || "Render Error")}</h3>
+      <pre style="font-size: 13px;color: #606060;background: #f6f6f6;padding: 12px;overflow-x: auto;">${
+        e.stack
+      }</pre>
     `
   }
 };
@@ -94,4 +100,6 @@ function checkCustomError(error: Error) {
 }
 
 /** RenderResult配置token */
-export const RENDER_RESULT_OPTIONS = createOptions<RenderResultOptions>("RENDER_RESULT_OPTIONS");
+export const RENDER_RESULT_OPTIONS = createOptions<RenderResultOptions>(
+  "RENDER_RESULT_OPTIONS"
+);
