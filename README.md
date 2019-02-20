@@ -38,6 +38,11 @@
 
 ### 迭代记录
 
+### 1.0.11
+
+- 更新 `@bonbons/di` 到 1.3.5
+- 增加 UT 覆盖
+
 ### 1.0.9-rc.1
 
 - [ BREAKING CHANGE ] 调整 DI 接受工厂函数的类型，工厂函数 `injector` 和 `configs`
