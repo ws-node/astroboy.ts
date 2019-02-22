@@ -6,8 +6,7 @@ build:
 	cp bin/atc dist/bin
 
 document:
-	rm -rf doc
-	node_modules/.bin/typedoc --out ./doc/ ./src/
+	npx compodoc --language zh-CN -c .compodocrc.yaml
 
 rc: build
 	node ./pkg.rc.js
