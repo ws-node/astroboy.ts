@@ -4,7 +4,7 @@ import { defineUnit } from "./unit";
 
 defineUnit(["index", "Astroboy.ts index outputs"], () => {
   it("test astroboy.ts package exports", () => {
-    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(58);
+    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(59);
     expect(typeof Pkg.API, "[astroboy.ts].API").to.equal("function");
     expect(typeof Pkg.Astroboy, "[astroboy.ts].Astroboy").to.equal("function");
     expect(
@@ -156,5 +156,7 @@ defineUnit(["index", "Astroboy.ts index outputs"], () => {
       typeof Pkg.defaultGlobalError,
       "[astroboy.ts].defaultGlobalError"
     ).to.equal("object");
+    // 20190222
+    expect(typeof Pkg.Bundles, "[astroboy.ts].Bundles").to.equal("object");
   });
 });

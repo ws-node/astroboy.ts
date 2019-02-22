@@ -4,7 +4,7 @@ import { Context } from "./services/Context";
 import { InjectService } from "./services/Injector";
 import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
-import { GlobalDI, optionAssign } from "./utils";
+import { GlobalDI, optionAssign, PartReset, ChangeReturn } from "./utils";
 import {
   Constructor,
   InjectScope,
@@ -486,6 +486,7 @@ export class Server {
         this.readConfigs(app["config"]);
         this.readRuntimeEnv(app);
         this.resetDIResolver();
+        this.resolveBundles();
         this.resolveInjections();
         onStart && onStart(app);
       })
@@ -510,6 +511,20 @@ export class Server {
   private resetDIResolver() {
     const { diType } = this.configs.get(ENV);
     this.di.resetConfigs({ type: diType });
+  }
+
+  /**
+   * ## 解析Bundles
+   *
+   * @author Big Mogician
+   * @private
+   * @memberof Server
+   */
+  private resolveBundles() {
+    _innerBundle["@singletons"].forEach(args => this.singleton(...args));
+    _innerBundle["@scopeds"].forEach(args => this.scoped(...args));
+    _innerBundle["@uniques"].forEach(args => this.unique(...args));
+    _innerBundle["@options"].forEach(args => this.option(...args));
   }
 
   /**
@@ -579,3 +594,39 @@ export class Server {
     }));
   }
 }
+
+type ServerBundle = PartReset<Server, { run: any }>;
+type InnerBundle = ServerBundle & {
+  "@options": [any, any?][];
+  "@singletons": [Constructor<any>, any?][];
+  "@scopeds": [Constructor<any>, any?][];
+  "@uniques": [Constructor<any>, any?][];
+};
+/**
+ * ## DI Bundles
+ * * 导入并移动使用DI容器的注册api
+ * * 和普通注入项解析方式相同
+ */
+export const Bundles: ChangeReturn<ServerBundle, ServerBundle> = {
+  option(...args: any[]): ServerBundle {
+    Bundles["@options"].push(args);
+    return Bundles as any;
+  },
+  scoped(...args: any[]): ServerBundle {
+    Bundles["@scopeds"].push(args);
+    return Bundles as any;
+  },
+  singleton(...args: any[]): ServerBundle {
+    Bundles["@singletons"].push(args);
+    return Bundles as any;
+  },
+  unique(...args: any[]): ServerBundle {
+    Bundles["@uniques"].push(args);
+    return Bundles as any;
+  },
+  "@options": [],
+  "@singletons": [],
+  "@scopeds": [],
+  "@uniques": []
+} as any;
+const _innerBundle: InnerBundle = Bundles as any;
