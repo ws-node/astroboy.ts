@@ -364,6 +364,46 @@ export class Server {
   //#region 支持继承树覆写和扩展
 
   /**
+   * ## 初始化Configs配置
+   * * 🌟 在继承树中重载此方法以进行框架扩展
+   * * 在 `Server.prototype.initInjections` 函数之前执行
+   *
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected initOptions() {
+    this.option(ENV, defaultEnv);
+    this.option(CONFIG_VIEW, defaultView);
+    this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
+    this.option(RENDER_RESULT_OPTIONS, defaultRenderResultOptions);
+    this.option(STATIC_RESOLVER, TypedSerializer);
+    this.option(ROUTER_OPTIONS, defaultRouterOptions);
+    this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
+    this.option(SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions);
+    this.option(GLOBAL_ERROR, defaultGlobalError);
+  }
+
+  /**
+   * ## 初始化DI注入关系配置
+   * * 🌟 在继承树中重载此方法以进行框架扩展
+   * * 在 `Server.prototype.initOptions` 函数之后执行
+   *
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected initInjections() {
+    // 不允许装饰器复写
+    this.scoped(AstroboyContext);
+    this.scoped(Scope);
+    this.singleton(SimpleLogger);
+    // 允许被装饰器复写
+    this.directInject(InjectScope.Scope, [NunjunksEngine]);
+    this.directInject(InjectScope.Scope, [Render]);
+  }
+
+  /**
    * ## 处理合并与接受configs配置
    *
    * @author Big Mogician
@@ -450,28 +490,6 @@ export class Server {
 
   private init() {
     this.initRouters();
-  }
-
-  private initOptions() {
-    this.option(ENV, defaultEnv);
-    this.option(CONFIG_VIEW, defaultView);
-    this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
-    this.option(RENDER_RESULT_OPTIONS, defaultRenderResultOptions);
-    this.option(STATIC_RESOLVER, TypedSerializer);
-    this.option(ROUTER_OPTIONS, defaultRouterOptions);
-    this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
-    this.option(SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions);
-    this.option(GLOBAL_ERROR, defaultGlobalError);
-  }
-
-  private initInjections() {
-    // 不允许装饰器复写
-    this.scoped(AstroboyContext);
-    this.scoped(Scope);
-    this.singleton(SimpleLogger);
-    // 允许被装饰器复写
-    this.directInject(InjectScope.Scope, [NunjunksEngine]);
-    this.directInject(InjectScope.Scope, [Render]);
   }
 
   private initRouters() {
