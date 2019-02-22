@@ -41,6 +41,7 @@ import {
 } from "./plugins/simple-logger";
 import { Render } from "./services/Render";
 import { initRouters } from "./builders";
+import chalk from "chalk";
 
 type DIPair = [any, any];
 
@@ -60,6 +61,7 @@ export interface FactoryContext {
 export class Server {
   private di = GlobalDI;
   private configs = new RealConfigCollection();
+  private logger!: SimpleLogger;
 
   private preSingletons: DIPair[] = [];
   private preScopeds: DIPair[] = [];
@@ -512,11 +514,68 @@ export class Server {
     const { onStart = undefined, onError = undefined } = events || {};
     new (this.appBuilder || Astroboy)(this.appConfigs || {})
       .on("start", (app: Koa) => {
+        //#region logs
+        this.logger = new SimpleLogger(this.configs);
+        this.logger.debug(
+          chalk.greenBright("======== ASTROBOY.TS Bootstrap ========")
+        );
+        this.logger.debug(chalk.yellowBright("start reading configs ... "));
+        //#endregion
         this.readConfigs(app["config"]);
         this.readRuntimeEnv(app);
+        //#region logs
+        const configs = this.configs.toArray();
+        configs.map(i => {
+          this.logger.debug(
+            `--> [${chalk.blueBright(
+              i.token.key.toString()
+            )}] - [${chalk.cyanBright(
+              typeof i.value
+            )}] - [length(keys):${chalk.cyanBright(
+              Object.keys(i.value).length.toString()
+            )}]`
+          );
+        });
+        this.logger.debug("-----> DONE .");
+        this.logger.debug(
+          `Configs count: ${chalk.magentaBright(configs.length.toString())}`
+        );
+        //#endregion
         this.resetDIResolver();
+        //#region logs
+        this.logger.debug(chalk.yellowBright("start init DI tokens ... "));
+        //#endregion
         this.resolveBundles();
         this.resolveInjections();
+        //#region logs
+        const sorted = this.di["sorted"]
+          .map((i: any) => ({
+            token: i.token.name,
+            imp: i.imp,
+            depts: i.depts.length,
+            level: i.level
+          }))
+          .sort((a: any, b: any) => a.level - b.level);
+        sorted.map((i: any) =>
+          this.logger.debug(
+            `--> [level:${i.level}] - [${chalk.greenBright(i.token)}] - [${
+              DIContainer.isClass(i.imp)
+                ? `class ${chalk.redBright(i.imp.name)}`
+                : DIContainer.isFactory(i.imp)
+                ? chalk.yellowBright("factory")
+                : chalk.blueBright("object")
+            }] - [depts:${chalk.cyanBright(i.depts)}]`
+          )
+        );
+        this.logger.debug("-----> DONE .");
+        this.logger.debug(
+          `DI count: ${chalk.magentaBright(sorted.length.toString())}`
+        );
+        this.logger.debug(chalk.yellowBright("start app ..."));
+        this.logger.debug(
+          chalk.greenBright("======== ASTROBOY.TS Bootstrap END ========")
+        );
+        //#endregion
         onStart && onStart(app);
       })
       .on("error", (error, ctx) => {
