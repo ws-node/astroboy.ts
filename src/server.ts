@@ -340,68 +340,6 @@ export class Server {
     return this.preInject(InjectScope.New, <any>args);
   }
 
-  /** 预注册，会覆盖装饰器的定义注册 */
-  private preInject(type: InjectScope, service: Constructor<any>): this;
-  private preInject(
-    type: InjectScope,
-    token_implement: [Constructor<any>, any]
-  ): this;
-  private preInject(type: InjectScope, p: any | [any, any]) {
-    const args = p instanceof Array ? p : [p, p];
-    switch (type) {
-      case InjectScope.Scope:
-        this.preScopeds.push([args[0], args[1] || args[0]]);
-        break;
-      case InjectScope.Singleton:
-        this.preSingletons.push([args[0], args[1] || args[0]]);
-        break;
-      default:
-        this.preUniques.push([args[0], args[1] || args[0]]);
-        break;
-    }
-    return this;
-  }
-
-  /** 直接注册，允许`@Injectable()`装饰器之后进行定义复写 */
-  private directInject(type: InjectScope, service: [Constructor<any>]): this;
-  private directInject(
-    type: InjectScope,
-    token_implement: [Constructor<any>, any]
-  ): this;
-  private directInject(type: InjectScope, args: [any] | [any, any]) {
-    switch (type) {
-      case InjectScope.Scope:
-        this.sendInjection(args[0], args[1] || args[0], InjectScope.Scope);
-        break;
-      case InjectScope.Singleton:
-        this.sendInjection(args[0], args[1] || args[0], InjectScope.Singleton);
-        break;
-      default:
-        this.sendInjection(args[0], args[1] || args[0], InjectScope.New);
-        break;
-    }
-    return this;
-  }
-
-  private sendInjection(token: any, inject: any, scope: InjectScope) {
-    if (!DIContainer.isFactory(inject)) {
-      return this.di.register(token, inject, scope);
-    }
-    // 底层服务，直接使用底层工厂函数
-    if (token === InjectService || token === Configs || token === Context) {
-      return this.di.register(token, inject, scope);
-    }
-    return this.di.register(
-      token,
-      (scopeId, metadata) => {
-        const injector = this.di.get(InjectService, scopeId);
-        const configs = this.di.get(Configs, scopeId);
-        return inject({ injector, configs });
-      },
-      scope
-    );
-  }
-
   /**
    * ### 启动app
    * @description
@@ -422,6 +360,88 @@ export class Server {
     this.finalInjectionsInit();
     this.startApp(events);
   }
+
+  //#region 支持继承树覆写和扩展
+
+  /**
+   * ## 处理合并与接受configs配置
+   *
+   * @author Big Mogician
+   * @protected
+   * @param {any} [configs={}] app.configs
+   * @memberof Server
+   */
+  protected readConfigs(configs: any = {}) {
+    this.configs.toArray().forEach(({ token }) => {
+      const key = token.key.toString();
+      if (/Symbol\(config::(.+)\)$/.test(key)) {
+        this.option(token, configs[RegExp.$1] || {});
+      }
+    });
+  }
+
+  /**
+   * ## 处理运行时参数
+   *
+   * @author Big Mogician
+   * @protected
+   * @template A extends Koa
+   * @param {Koa} app
+   * @memberof Server
+   */
+  protected readRuntimeEnv<A extends Koa>(app: A) {
+    this.option(ENV, { env: app.env || "development" });
+  }
+
+  /**
+   * ## 按照配置设置DI的解析方式
+   * - `native` : 原生模式，最高的还原度，没有黑盒
+   * - `proxy` : Proxy代理模式，追求更高性能的惰性解析
+   * @description
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected resetDIResolver() {
+    const { diType } = this.configs.get(ENV);
+    this.di.resetConfigs({ type: diType });
+  }
+
+  /**
+   * ## 解析Bundles
+   *
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected resolveBundles() {
+    _innerBundle["@singletons"].forEach(args => this.singleton(...args));
+    _innerBundle["@scopeds"].forEach(args => this.scoped(...args));
+    _innerBundle["@uniques"].forEach(args => this.unique(...args));
+    _innerBundle["@options"].forEach(args => this.option(...args));
+  }
+
+  /**
+   * ## 完成DI容器初始化并锁定
+   * @description
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected resolveInjections() {
+    this.preSingletons.forEach(([token, srv]) =>
+      this.sendInjection(token, srv, InjectScope.Singleton)
+    );
+    this.preScopeds.forEach(([token, srv]) =>
+      this.sendInjection(token, srv, InjectScope.Scope)
+    );
+    this.preUniques.forEach(([token, srv]) =>
+      this.sendInjection(token, srv, InjectScope.New)
+    );
+    this.di.complete();
+  }
+
+  //#endregion
 
   private preInit() {
     this.initOptions();
@@ -465,15 +485,6 @@ export class Server {
     this.initContextProvider();
   }
 
-  private readConfigs(configs: any = {}) {
-    this.configs.toArray().forEach(({ token }) => {
-      const key = token.key.toString();
-      if (/Symbol\(config::(.+)\)$/.test(key)) {
-        this.option(token, configs[RegExp.$1] || {});
-      }
-    });
-  }
-
   private startApp(
     events?: Partial<{
       onStart: (app) => void;
@@ -495,56 +506,77 @@ export class Server {
       });
   }
 
-  private readRuntimeEnv(app: Koa) {
-    this.option(ENV, { env: app.env || "development" });
+  /** 预注册，会覆盖装饰器的定义注册 */
+  private preInject(type: InjectScope, service: Constructor<any>): this;
+  private preInject(
+    type: InjectScope,
+    token_implement: [Constructor<any>, any]
+  ): this;
+  private preInject(type: InjectScope, p: any | [any, any]) {
+    const args = p instanceof Array ? p : [p, p];
+    switch (type) {
+      case InjectScope.Scope:
+        this.preScopeds.push([args[0], args[1] || args[0]]);
+        break;
+      case InjectScope.Singleton:
+        this.preSingletons.push([args[0], args[1] || args[0]]);
+        break;
+      default:
+        this.preUniques.push([args[0], args[1] || args[0]]);
+        break;
+    }
+    return this;
+  }
+
+  /** 直接注册，允许`@Injectable()`装饰器之后进行定义复写 */
+  private directInject(type: InjectScope, service: [Constructor<any>]): this;
+  private directInject(
+    type: InjectScope,
+    token_implement: [Constructor<any>, any]
+  ): this;
+  private directInject(type: InjectScope, args: [any] | [any, any]) {
+    switch (type) {
+      case InjectScope.Scope:
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.Scope);
+        break;
+      case InjectScope.Singleton:
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.Singleton);
+        break;
+      default:
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.New);
+        break;
+    }
+    return this;
   }
 
   /**
-   * ## 按照配置设置DI的解析方式
-   * * `native` : 原生模式
-   * * `proxy` : Proxy代理模式
-   * @description
-   * @author Big Mogician
-   * @private
-   * @memberof Server
-   */
-  private resetDIResolver() {
-    const { diType } = this.configs.get(ENV);
-    this.di.resetConfigs({ type: diType });
-  }
-
-  /**
-   * ## 解析Bundles
+   * DI项最终注册登记
    *
    * @author Big Mogician
    * @private
+   * @param {any} token
+   * @param {any} inject
+   * @param {InjectScope} scope
+   * @returns
    * @memberof Server
    */
-  private resolveBundles() {
-    _innerBundle["@singletons"].forEach(args => this.singleton(...args));
-    _innerBundle["@scopeds"].forEach(args => this.scoped(...args));
-    _innerBundle["@uniques"].forEach(args => this.unique(...args));
-    _innerBundle["@options"].forEach(args => this.option(...args));
-  }
-
-  /**
-   * ## 完成DI容器初始化并锁定
-   * @description
-   * @author Big Mogician
-   * @private
-   * @memberof Server
-   */
-  private resolveInjections() {
-    this.preSingletons.forEach(([token, srv]) =>
-      this.sendInjection(token, srv, InjectScope.Singleton)
+  private sendInjection(token: any, inject: any, scope: InjectScope) {
+    if (!DIContainer.isFactory(inject)) {
+      return this.di.register(token, inject, scope);
+    }
+    // 底层服务，直接使用底层工厂函数
+    if (token === InjectService || token === Configs || token === Context) {
+      return this.di.register(token, inject, scope);
+    }
+    return this.di.register(
+      token,
+      (scopeId, metadata) => {
+        const injector = this.di.get(InjectService, scopeId);
+        const configs = this.di.get(Configs, scopeId);
+        return inject({ injector, configs });
+      },
+      scope
     );
-    this.preScopeds.forEach(([token, srv]) =>
-      this.sendInjection(token, srv, InjectScope.Scope)
-    );
-    this.preUniques.forEach(([token, srv]) =>
-      this.sendInjection(token, srv, InjectScope.New)
-    );
-    this.di.complete();
   }
 
   /**
