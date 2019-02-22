@@ -6,8 +6,11 @@ import { SimpleLogLevel } from "./base";
 
 function createStamp(date?: Date): string {
   const tData = date || new Date();
+  const mili = tData.getMilliseconds();
   return `[${chalk.cyan(
-    `${tData.toLocaleDateString()} ${tData.toLocaleTimeString()}:${tData.getMilliseconds()}`
+    `${tData.toLocaleDateString()} ${tData.toLocaleTimeString()}:${
+      mili < 100 ? `0${mili}` : mili
+    }`
   )}]-`;
 }
 
