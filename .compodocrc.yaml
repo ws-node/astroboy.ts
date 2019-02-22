@@ -1,0 +1,16 @@
+name: astroboy.ts
+theme: postmark
+tsconfig: ./tsconfig.json
+output: ./docs
+toggleMenuItems:
+  - modules
+  - components
+  - directives
+  - injectables
+navTabConfig:
+  - id: example
+    label: 使用概览
+  - id: info
+    label: API
+  - id: source
+    label: 源代码

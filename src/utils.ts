@@ -26,6 +26,16 @@ export const Colors = {
   white: "\x1b[37m"
 };
 
+export type PartReset<T, SKIP, ADD extends {} = {}> = {
+  [key in Exclude<keyof (T & ADD), keyof SKIP>]: (T & ADD)[key]
+};
+
+export type ChangeReturn<T, RETURN> = {
+  [key in keyof T]: T[key] extends (...args: infer P) => infer R
+    ? (...params: P) => RETURN
+    : T[key]
+};
+
 export function setColor(name: keyof typeof Colors, value: any): string {
   return `${Colors[name]}${value}${Colors.reset}`;
 }

@@ -1,0 +1,851 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>astroboy.ts</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">astroboy.ts</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="请输入查询关键字"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>接口</li>
+  <li>FactoryContext</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">API</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">源代码</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>文件</h3>
+        </p>
+        <p class="comment">
+            <code>src/server.ts</code>
+        </p>
+
+
+
+        <section>
+            <h3 id="index">索引</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>属性列表</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#configs">configs</a>
+                                </li>
+                                <li>
+                                        <a href="#injector">injector</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section>
+                <h3 id="inputs">属性列表</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="configs"></a>
+                                        <span class="name"><b>configs</b><a href="#configs"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>configs:     <code><a href="../interfaces/Config.html" target="_self" >Configs</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code><a href="../interfaces/Config.html" target="_self" >Configs</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="injector"></a>
+                                        <span class="name"><b>injector</b><a href="#injector"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>injector:     <code>InjectService</code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code>InjectService</code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import Koa from &quot;koa&quot;;
+import Astroboy from &quot;astroboy&quot;;
+import { Context } from &quot;./services/Context&quot;;
+import { InjectService } from &quot;./services/Injector&quot;;
+import { AstroboyContext } from &quot;./services/AstroboyContext&quot;;
+import { Scope } from &quot;./services/Scope&quot;;
+import { GlobalDI, optionAssign, PartReset, ChangeReturn } from &quot;./utils&quot;;
+import {
+  Constructor,
+  InjectScope,
+  ScopeID,
+  InjectToken,
+  AbstractType,
+  ImplementType,
+  DIContainer
+} from &quot;@bonbons/di&quot;;
+import { ENV, defaultEnv, CONFIG_VIEW, defaultView } from &quot;./configs&quot;;
+import {
+  defaultJsonResultOptions,
+  JSON_RESULT_OPTIONS,
+  InnerRouterOptions,
+  ROUTER_OPTIONS,
+  defaultRouterOptions,
+  RENDER_RESULT_OPTIONS,
+  defaultRenderResultOptions,
+  STATIC_RESOLVER,
+  defaultGlobalError,
+  GLOBAL_ERROR
+} from &quot;./options&quot;;
+import { RealConfigCollection, ConfigToken, Configs } from &quot;./services/Configs&quot;;
+import { TypedSerializer } from &quot;./plugins/typed-serializer&quot;;
+import {
+  NunjunksEngine,
+  NUNJUNKS_OPTIONS,
+  defaultNunjunksOptions
+} from &quot;./plugins/nunjunks&quot;;
+import {
+  SimpleLogger,
+  SIMPLE_LOGGER_OPTIONS,
+  defaultSimpleLoggerOptions
+} from &quot;./plugins/simple-logger&quot;;
+import { Render } from &quot;./services/Render&quot;;
+import { initRouters } from &quot;./builders&quot;;
+
+type DIPair &#x3D; [any, any];
+
+export interface FactoryContext {
+  injector: InjectService;
+  configs: Configs;
+}
+
+/**
+ * ## astroboy.ts服务
+ * @description
+ * @module Server
+ * @author Big Mogician
+ * @export
+ * @class Server
+ */
+export class Server {
+  private di &#x3D; GlobalDI;
+  private configs &#x3D; new RealConfigCollection();
+
+  private preSingletons: DIPair[] &#x3D; [];
+  private preScopeds: DIPair[] &#x3D; [];
+  private preUniques: DIPair[] &#x3D; [];
+
+  private appBuilder!: Constructor&lt;any&gt;;
+  private appConfigs!: any;
+
+  constructor();
+  constructor(appBuilder: Constructor&lt;any&gt;);
+  constructor(appConfigs: any);
+  constructor(appBuilder: Constructor&lt;any&gt;, appConfigs: any);
+  constructor(...args: any[]) {
+    const [ctor, configs] &#x3D; args;
+    if (!ctor) {
+      this.appBuilder &#x3D; Astroboy;
+    } else if (ctor.prototype &#x3D;&#x3D;&#x3D; undefined) {
+      this.appBuilder &#x3D; Astroboy;
+      this.appConfigs &#x3D; ctor;
+    } else {
+      this.appBuilder &#x3D; ctor;
+      this.appConfigs &#x3D; configs;
+    }
+    this.preInit();
+  }
+
+  /**
+   * ### 创建一个新的应用
+   * @description
+   * @author Big Mogician
+   * @static
+   * @param {Constructor&lt;any&gt;?} ctor astroboy或者其继承
+   * @param {*?} [configs] astroboy启动配置
+   * @returns
+   * @memberof Server
+   */
+  public static Create(): Server;
+  public static Create(ctor: Constructor&lt;any&gt;): Server;
+  public static Create(configs: any): Server;
+  public static Create(ctor: Constructor&lt;any&gt;, configs: any): Server;
+  public static Create(ctor?: Constructor&lt;any&gt;, configs?: any) {
+    return new Server(ctor, configs);
+  }
+
+  /**
+   * ### 声明一个配置项
+   * * 仅声明，不设置默认值
+   * @description
+   * @author Big Mogician
+   * @template T
+   * @param {token: ConfigToken&lt;T&gt;} token
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public option&lt;T&gt;(token: ConfigToken&lt;T&gt;): this;
+  /**
+   * ### 注入一个配置项
+   * * 需要设置默认值
+   * @description
+   * @author Big Mogician
+   * @template T
+   * @param {ConfigToken&lt;T&gt;} token
+   * @param {Partial&lt;T&gt;} value
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public option&lt;T&gt;(token: ConfigToken&lt;T&gt;, value: Partial&lt;T&gt;): this;
+  public option(...args: any[]): this {
+    const [e1, e2] &#x3D; args;
+    if (!e1) {
+      throw new Error(
+        &quot;DI token or entry is empty, you shouldn&#x27;t call BonbonsServer.use&lt;T&gt;(...) without any param.&quot;
+      );
+    }
+    this.configs.set(e1, optionAssign(this.configs, e1, e2 || {}));
+    return this;
+  }
+
+  /**
+   * Set a scoped service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a scoped service with constructor.
+   * All scoped services will be created new instance in different request pipe
+   *
+   * @description
+   * @author Big Mogician
+   * @template TInject
+   * @param {Constructor&lt;TInject&gt;} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public scoped&lt;TInject&gt;(srv: Constructor&lt;TInject&gt;): this;
+  /**
+   * Set a scoped service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a scoped service with injectable token (such abstract class,
+   * but not the typescript interface because there&#x27;s no interface in
+   * the javascript runtime) and implement service constructor. All
+   * scoped services will be created new instance in different request pipe.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken&lt;TToken&gt;} token
+   * @param {ImplementToken&lt;TImplement&gt;} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public scoped&lt;TToken, TImplement&gt;(
+    token: AbstractType&lt;TToken&gt;,
+    srv: ImplementType&lt;TImplement&gt;
+  ): this;
+  /**
+   * Set a scoped service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a scoped service with injectable token (such abstract class,
+   * but not the typescript interface because there&#x27;s no interface in
+   * the javascript runtime) and implement service instance factory
+   * ( pure function with no side effects).
+   * All scoped services will be created new instance in different request pipe.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken&lt;TToken&gt;} token
+   * @param {(context: FactoryContext) &#x3D;&gt; TImplement} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public scoped&lt;TToken, TImplement&gt;(
+    token: AbstractType&lt;TToken&gt;,
+    srv: (context: FactoryContext) &#x3D;&gt; TImplement
+  ): this;
+  /**
+   * Set a scoped service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a scoped service with injectable token (such abstract class,
+   * but not the typescript interface because there&#x27;s no interface in
+   * the javascript runtime) and a well-created implement service instance.
+   * All scoped services will be created new
+   * instance in different request pipe (but injecting by instance means
+   * the instance may be changed in runtime, so please be careful. If you
+   * want to prevent this situation, use a service factory here).
+   *
+   * @description
+   * @author Big Mogician
+   * @template TInject
+   * @template TImplement
+   * @param {InjectableToken&lt;TToken&gt;} token
+   * @param {TImplement} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public scoped&lt;TToken, TImplement&gt;(
+    token: AbstractType&lt;TToken&gt;,
+    srv: TImplement
+  ): this;
+  public scoped(...args: any[]): this {
+    return this.preInject(InjectScope.Scope, &lt;any&gt;args);
+  }
+
+  /**
+   * Set a singleton service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a singleton service with constructor.
+   * All singleton services will use unique instance throught different request pipes.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TInject
+   * @param {Constructor&lt;TInject&gt;} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public singleton&lt;TInject&gt;(srv: Constructor&lt;TInject&gt;): this;
+  /**
+   * Set a singleton service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a singleton service with injectable token (such abstract class,
+   * but not the typescript interface because there&#x27;s no interface in
+   * the javascript runtime) and implement service constructor.
+   * All singleton services will use unique
+   * instance throught different request pipes.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken&lt;TToken&gt;} token
+   * @param {ImplementToken&lt;TImplement&gt;} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public singleton&lt;TToken, TImplement&gt;(
+    token: AbstractType&lt;TToken&gt;,
+    srv: ImplementType&lt;TImplement&gt;
+  ): this;
+  /**
+   * Set a singleton service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a singleton service with injectable token (such abstract class,
+   * but not the typescript interface because there&#x27;s no interface in
+   * the javascript runtime) and implement service factory ( pure function with no side effects).
+   * All singleton services will use unique
+   * instance throught different request pipes.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken&lt;B&gt;} token
+   * @param {(context: FactoryContext) &#x3D;&gt; TImplement} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public singleton&lt;TToken, TImplement&gt;(
+    token: AbstractType&lt;TToken&gt;,
+    srv: (context: FactoryContext) &#x3D;&gt; TImplement
+  ): this;
+  /**
+   * Set a singleton service
+   * ---
+   * * service should be decorated by @Injectable(...)
+   *
+   * Set a singleton service with injectable token (such abstract class,
+   * but not the typescript interface because there&#x27;s no interface in
+   * the javascript runtime) and a well-created implement service instance.
+   * All singleton services will use unique
+   * instance throught different request pipes.
+   *
+   * @description
+   * @author Big Mogician
+   * @template TToken
+   * @template TImplement
+   * @param {InjectableToken&lt;TToken&gt;} token
+   * @param {TImplement} srv
+   * @returns {BonbonsServer}
+   * @memberof BonbonsServer
+   */
+  public singleton&lt;TToken, TImplement&gt;(
+    token: AbstractType&lt;TToken&gt;,
+    srv: TImplement
+  ): this;
+  public singleton(...args: any[]): this {
+    return this.preInject(InjectScope.Singleton, &lt;any&gt;args);
+  }
+
+  public unique&lt;TInject&gt;(srv: Constructor&lt;TInject&gt;): this;
+  public unique&lt;TToken, TImplement&gt;(
+    token: AbstractType&lt;TToken&gt;,
+    srv: ImplementType&lt;TImplement&gt;
+  ): this;
+  public unique&lt;TToken, TImplement&gt;(
+    token: AbstractType&lt;TToken&gt;,
+    srv: (context: FactoryContext) &#x3D;&gt; TImplement
+  ): this;
+  public unique&lt;TToken, TImplement&gt;(
+    token: AbstractType&lt;TToken&gt;,
+    srv: TImplement
+  ): this;
+  public unique(...args: any[]): this {
+    return this.preInject(InjectScope.New, &lt;any&gt;args);
+  }
+
+  /** 预注册，会覆盖装饰器的定义注册 */
+  private preInject(type: InjectScope, service: Constructor&lt;any&gt;): this;
+  private preInject(
+    type: InjectScope,
+    token_implement: [Constructor&lt;any&gt;, any]
+  ): this;
+  private preInject(type: InjectScope, p: any | [any, any]) {
+    const args &#x3D; p instanceof Array ? p : [p, p];
+    switch (type) {
+      case InjectScope.Scope:
+        this.preScopeds.push([args[0], args[1] || args[0]]);
+        break;
+      case InjectScope.Singleton:
+        this.preSingletons.push([args[0], args[1] || args[0]]);
+        break;
+      default:
+        this.preUniques.push([args[0], args[1] || args[0]]);
+        break;
+    }
+    return this;
+  }
+
+  /** 直接注册，允许&#x60;@Injectable()&#x60;装饰器之后进行定义复写 */
+  private directInject(type: InjectScope, service: [Constructor&lt;any&gt;]): this;
+  private directInject(
+    type: InjectScope,
+    token_implement: [Constructor&lt;any&gt;, any]
+  ): this;
+  private directInject(type: InjectScope, args: [any] | [any, any]) {
+    switch (type) {
+      case InjectScope.Scope:
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.Scope);
+        break;
+      case InjectScope.Singleton:
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.Singleton);
+        break;
+      default:
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.New);
+        break;
+    }
+    return this;
+  }
+
+  private sendInjection(token: any, inject: any, scope: InjectScope) {
+    if (!DIContainer.isFactory(inject)) {
+      return this.di.register(token, inject, scope);
+    }
+    // 底层服务，直接使用底层工厂函数
+    if (token &#x3D;&#x3D;&#x3D; InjectService || token &#x3D;&#x3D;&#x3D; Configs || token &#x3D;&#x3D;&#x3D; Context) {
+      return this.di.register(token, inject, scope);
+    }
+    return this.di.register(
+      token,
+      (scopeId, metadata) &#x3D;&gt; {
+        const injector &#x3D; this.di.get(InjectService, scopeId);
+        const configs &#x3D; this.di.get(Configs, scopeId);
+        return inject({ injector, configs });
+      },
+      scope
+    );
+  }
+
+  /**
+   * ### 启动app
+   * @description
+   * @author Big Mogician
+   * @param {Partial&lt;{
+   *     onStart: (app) &#x3D;&gt; void;
+   *     onError: (error, ctx) &#x3D;&gt; void;
+   *   }&gt;} [events]
+   * @memberof Server
+   */
+  public run(
+    events?: Partial&lt;{
+      onStart: (app) &#x3D;&gt; void;
+      onError: (error, ctx) &#x3D;&gt; void;
+    }&gt;
+  ) {
+    this.init();
+    this.finalInjectionsInit();
+    this.startApp(events);
+  }
+
+  private preInit() {
+    this.initOptions();
+    this.initInjections();
+  }
+
+  private init() {
+    this.initRouters();
+  }
+
+  private initOptions() {
+    this.option(ENV, defaultEnv);
+    this.option(CONFIG_VIEW, defaultView);
+    this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
+    this.option(RENDER_RESULT_OPTIONS, defaultRenderResultOptions);
+    this.option(STATIC_RESOLVER, TypedSerializer);
+    this.option(ROUTER_OPTIONS, defaultRouterOptions);
+    this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
+    this.option(SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions);
+    this.option(GLOBAL_ERROR, defaultGlobalError);
+  }
+
+  private initInjections() {
+    // 不允许装饰器复写
+    this.scoped(AstroboyContext);
+    this.scoped(Scope);
+    this.singleton(SimpleLogger);
+    // 允许被装饰器复写
+    this.directInject(InjectScope.Scope, [NunjunksEngine]);
+    this.directInject(InjectScope.Scope, [Render]);
+  }
+
+  private initRouters() {
+    initRouters(&lt;InnerRouterOptions&gt;this.configs.get(ROUTER_OPTIONS));
+    return this;
+  }
+
+  private finalInjectionsInit() {
+    this.initConfigCollection();
+    this.initInjectService();
+    this.initContextProvider();
+  }
+
+  private readConfigs(configs: any &#x3D; {}) {
+    this.configs.toArray().forEach(({ token }) &#x3D;&gt; {
+      const key &#x3D; token.key.toString();
+      if (/Symbol\(config::(.+)\)$/.test(key)) {
+        this.option(token, configs[RegExp.$1] || {});
+      }
+    });
+  }
+
+  private startApp(
+    events?: Partial&lt;{
+      onStart: (app) &#x3D;&gt; void;
+      onError: (error, ctx) &#x3D;&gt; void;
+    }&gt;
+  ) {
+    const { onStart &#x3D; undefined, onError &#x3D; undefined } &#x3D; events || {};
+    new (this.appBuilder || Astroboy)(this.appConfigs || {})
+      .on(&quot;start&quot;, (app: Koa) &#x3D;&gt; {
+        this.readConfigs(app[&quot;config&quot;]);
+        this.readRuntimeEnv(app);
+        this.resetDIResolver();
+        this.resolveBundles();
+        this.resolveInjections();
+        onStart &amp;&amp; onStart(app);
+      })
+      .on(&quot;error&quot;, (error, ctx) &#x3D;&gt; {
+        onError &amp;&amp; onError(error, ctx);
+      });
+  }
+
+  private readRuntimeEnv(app: Koa) {
+    this.option(ENV, { env: app.env || &quot;development&quot; });
+  }
+
+  /**
+   * ## 按照配置设置DI的解析方式
+   * * &#x60;native&#x60; : 原生模式
+   * * &#x60;proxy&#x60; : Proxy代理模式
+   * @description
+   * @author Big Mogician
+   * @private
+   * @memberof Server
+   */
+  private resetDIResolver() {
+    const { diType } &#x3D; this.configs.get(ENV);
+    this.di.resetConfigs({ type: diType });
+  }
+
+  /**
+   * ## 解析Bundles
+   *
+   * @author Big Mogician
+   * @private
+   * @memberof Server
+   */
+  private resolveBundles() {
+    _innerBundle[&quot;@singletons&quot;].forEach(args &#x3D;&gt; this.singleton(...args));
+    _innerBundle[&quot;@scopeds&quot;].forEach(args &#x3D;&gt; this.scoped(...args));
+    _innerBundle[&quot;@uniques&quot;].forEach(args &#x3D;&gt; this.unique(...args));
+    _innerBundle[&quot;@options&quot;].forEach(args &#x3D;&gt; this.option(...args));
+  }
+
+  /**
+   * ## 完成DI容器初始化并锁定
+   * @description
+   * @author Big Mogician
+   * @private
+   * @memberof Server
+   */
+  private resolveInjections() {
+    this.preSingletons.forEach(([token, srv]) &#x3D;&gt;
+      this.sendInjection(token, srv, InjectScope.Singleton)
+    );
+    this.preScopeds.forEach(([token, srv]) &#x3D;&gt;
+      this.sendInjection(token, srv, InjectScope.Scope)
+    );
+    this.preUniques.forEach(([token, srv]) &#x3D;&gt;
+      this.sendInjection(token, srv, InjectScope.New)
+    );
+    this.di.complete();
+  }
+
+  /**
+   * ## 初始化上下文服务
+   * @description
+   * @author Big Mogician
+   * @private
+   * @memberof Server
+   */
+  private initContextProvider() {
+    this.scoped(Context, (scopeId?: ScopeID, { ctx &#x3D; null } &#x3D; {}) &#x3D;&gt; {
+      if (ctx &#x3D;&#x3D;&#x3D; null) {
+        throw new Error(
+          &quot;invalid call, you can only call a context in request pipe scope.&quot;
+        );
+      }
+      return new Context(ctx);
+    });
+  }
+
+  /**
+   * ## 初始化手工注入服务
+   * * 可以自举
+   * @description
+   * @author Big Mogician
+   * @private
+   * @memberof Server
+   */
+  private initInjectService() {
+    this.scoped(InjectService, (scopeId?: ScopeID) &#x3D;&gt; ({
+      get: (token: InjectToken&lt;any&gt;) &#x3D;&gt; this.di.get(token, scopeId),
+      INTERNAL_dispose: () &#x3D;&gt; this.di.dispose(scopeId),
+      scopeId
+    }));
+  }
+
+  /**
+   * ## 注入全局配置容器服务
+   * @description
+   * @author Big Mogician
+   * @private
+   * @memberof Server
+   */
+  private initConfigCollection() {
+    this.singleton(Configs, () &#x3D;&gt; ({
+      get: this.configs.get.bind(this.configs)
+    }));
+  }
+}
+
+type ServerBundle &#x3D; PartReset&lt;Server, { run: any }&gt;;
+type InnerBundle &#x3D; ServerBundle &amp; {
+  &quot;@options&quot;: [any, any?][];
+  &quot;@singletons&quot;: [Constructor&lt;any&gt;, any?][];
+  &quot;@scopeds&quot;: [Constructor&lt;any&gt;, any?][];
+  &quot;@uniques&quot;: [Constructor&lt;any&gt;, any?][];
+};
+/**
+ * ## DI Bundles
+ * * 导入并移动使用DI容器的注册api
+ * * 和普通注入项解析方式相同
+ */
+export const Bundles: ChangeReturn&lt;ServerBundle, ServerBundle&gt; &#x3D; {
+  option(...args: any[]): ServerBundle {
+    Bundles[&quot;@options&quot;].push(args);
+    return Bundles as any;
+  },
+  scoped(...args: any[]): ServerBundle {
+    Bundles[&quot;@scopeds&quot;].push(args);
+    return Bundles as any;
+  },
+  singleton(...args: any[]): ServerBundle {
+    Bundles[&quot;@singletons&quot;].push(args);
+    return Bundles as any;
+  },
+  unique(...args: any[]): ServerBundle {
+    Bundles[&quot;@uniques&quot;].push(args);
+    return Bundles as any;
+  },
+  &quot;@options&quot;: [],
+  &quot;@singletons&quot;: [],
+  &quot;@scopeds&quot;: [],
+  &quot;@uniques&quot;: []
+} as any;
+const _innerBundle: InnerBundle &#x3D; Bundles as any;
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'FactoryContext.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
