@@ -62,7 +62,7 @@
             <h3>文件</h3>
         </p>
         <p class="comment">
-            <code>src/configs/env.config.ts</code>
+            <code>src/cmd/base.ts</code>
         </p>
 
 
@@ -80,10 +80,12 @@
                         <td class="col-md-4">
                             <ul class="index-list">
                                 <li>
-                                        <a href="#diType">diType</a>
+                                            <span class="modifier">可选的</span>
+                                        <a href="#NODE_ENV">NODE_ENV</a>
                                 </li>
                                 <li>
-                                        <a href="#env">env</a>
+                                            <span class="modifier">可选的</span>
+                                        <a href="#NODE_PORT">NODE_PORT</a>
                                 </li>
                             </ul>
                         </td>
@@ -93,6 +95,24 @@
         </section>
 
 
+            <section>
+    <h3 id="inputs">Indexable</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <code>[key: string]:    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">被定义在 <a href="" data-line="13" class="link-to-prism">src/cmd/base.ts:13</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
 
             <section>
                 <h3 id="inputs">属性列表</h3>
@@ -100,48 +120,13 @@
                         <tbody>
                                 <tr>
                                     <td class="col-md-4">
-                                        <a name="diType"></a>
-                                        <span class="name"><b>diType</b><a href="#diType"><span class="icon ion-ios-link"></span></a></span>
+                                        <a name="NODE_ENV"></a>
+                                        <span class="name"><b>NODE_ENV</b><a href="#NODE_ENV"><span class="icon ion-ios-link"></span></a></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">
-                                        <code>diType:     <code>&quot;native&quot; | &quot;proxy&quot;</code>
-</code>
-                                    </td>
-                                </tr>
-
-
-                                    <tr>
-                                        <td class="col-md-4">
-                                            <i>类型 : </i>    <code>&quot;native&quot; | &quot;proxy&quot;</code>
-
-                                        </td>
-                                    </tr>
-
-
-
-
-
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>设置DI解析的模式，默认：<code>&#39;native&#39;</code> </p>
-</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-sm table-bordered">
-                        <tbody>
-                                <tr>
-                                    <td class="col-md-4">
-                                        <a name="env"></a>
-                                        <span class="name"><b>env</b><a href="#env"><span class="icon ion-ios-link"></span></a></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-4">
-                                        <code>env:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                        <code>NODE_ENV:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
 </code>
                                     </td>
                                 </tr>
@@ -154,16 +139,49 @@
                                         </td>
                                     </tr>
 
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>可选的</i>
+                                        </td>
+                                    </tr>
 
 
 
 
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>运行环境，默认：<code>&#39;development&#39;</code> </p>
-</div>
-                                </td>
-                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="NODE_PORT"></a>
+                                        <span class="name"><b>NODE_PORT</b><a href="#NODE_PORT"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>NODE_PORT:     <code>number | string</code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code>number | string</code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>可选的</i>
+                                        </td>
+                                    </tr>
+
+
+
+
                         </tbody>
                     </table>
             </section>
@@ -171,22 +189,87 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { createConfig } from &quot;../services/Configs&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import get from &quot;lodash/get&quot;;
 
-interface IENV {
-  /** 设置DI解析的模式，默认：&#x60;&#x27;native&#x27;&#x60; */
-  diType: &quot;native&quot; | &quot;proxy&quot;;
-  /** 运行环境，默认：&#x60;&#x27;development&#x27;&#x60; */
-  env: string;
+export interface CommandPlugin {
+  name: string;
+  description: string;
+  options: Array&lt;[string, string]&gt;;
+  action: (...args: any[]) &#x3D;&gt; void;
+  help: (...args: any[]) &#x3D;&gt; void;
 }
 
-export const defaultEnv: IENV &#x3D; {
-  diType: &quot;native&quot;,
-  env: &quot;development&quot;
-};
+export interface IENV {
+  NODE_ENV?: string;
+  NODE_PORT?: number | string;
+  [key: string]: any;
+}
 
-/** astroboy.ts环境变量 */
-export const ENV &#x3D; createConfig&lt;IENV&gt;(&quot;@astroboy.ts&quot;);
+export interface RouterConfig {
+  enabled?: boolean;
+  always?: boolean;
+  approot?: string;
+  filetype?: &quot;js&quot; | &quot;ts&quot;;
+  details?: boolean;
+  tsconfig?: string;
+}
+
+export interface CmdConfig {
+  tsconfig?: string;
+  inspect?: boolean;
+  env?: IENV;
+  watch?: string[] | false;
+  ignore?: string[] | false;
+  verbose?: boolean;
+  debug?: boolean | string;
+  mock?: boolean | string;
+  typeCheck?: boolean;
+  transpile?: boolean;
+  routers?: RouterConfig;
+}
+
+export interface InnerCmdConfig extends CmdConfig {
+  env?: IENV &amp; { __TSCONFIG?: any; __TRANSPILE?: any };
+  exec?: string;
+}
+
+export function createCmdConfig(config: CmdConfig): CmdConfig {
+  return config;
+}
+
+export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
+  const watch &#x3D; get(merge, &quot;watch&quot;, undefined);
+  const ignore &#x3D; get(merge, &quot;ignore&quot;, undefined);
+  const oldEnvs &#x3D; get(merge, &quot;env&quot;, {});
+  const newEnvs &#x3D; get(config, &quot;env&quot;, {});
+  return {
+    tsconfig: get(merge, &quot;tsconfig&quot;, config.tsconfig),
+    inspect: get(merge, &quot;inspect&quot;, config.inspect),
+    env: {
+      ...oldEnvs,
+      ...newEnvs
+    },
+    watch: !watch
+      ? config.watch
+      : config.watch !&#x3D;&#x3D; false
+      ? [...watch, ...(config.watch || [])]
+      : [],
+    ignore: !ignore
+      ? config.ignore
+      : config.ignore !&#x3D;&#x3D; false
+      ? [...ignore, ...(config.ignore || [])]
+      : [],
+    verbose: get(merge, &quot;verbose&quot;, config.verbose),
+    debug: get(merge, &quot;debug&quot;, config.debug),
+    mock: get(merge, &quot;mock&quot;, config.mock),
+    typeCheck: get(merge, &quot;typeCheck&quot;, config.typeCheck),
+    transpile: get(merge, &quot;transpile&quot;, config.transpile),
+    routers: {
+      ...get(merge, &quot;routers&quot;, {}),
+      ...get(config, &quot;routers&quot;, {})
+    }
+  };
+}
 </code></pre>
     </div>
 </div>
