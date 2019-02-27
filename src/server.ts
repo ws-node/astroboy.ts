@@ -44,11 +44,7 @@ import { initRouters } from "./builders";
 import chalk from "chalk";
 
 type DIPair = [any, any];
-
-export interface FactoryContext {
-  injector: InjectService;
-  configs: Configs;
-}
+type DependencyFactory<DEPTS, T> = [DEPTS, (...args: any[]) => T] | (() => T);
 
 /**
  * ## astroboy.ts服务
@@ -194,14 +190,15 @@ export class Server {
    * @author Big Mogician
    * @template TToken
    * @template TImplement
+   * @template DEPTS
    * @param {InjectableToken<TToken>} token
-   * @param {(context: FactoryContext) => TImplement} srv
+   * @param {DependencyFactory<DEPTS, TImplement>} srv
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public scoped<TToken, TImplement>(
+  public scoped<TToken, TImplement, DEPTS extends Constructor<any>[] = []>(
     token: AbstractType<TToken>,
-    srv: (context: FactoryContext) => TImplement
+    srv: DependencyFactory<DEPTS, TImplement>
   ): this;
   /**
    * Set a scoped service
@@ -288,14 +285,15 @@ export class Server {
    * @author Big Mogician
    * @template TToken
    * @template TImplement
+   * @template DEPTS
    * @param {InjectableToken<B>} token
-   * @param {(context: FactoryContext) => TImplement} srv
+   * @param {DependencyFactory<DEPTS, TImplement>} srv
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public singleton<TToken, TImplement>(
+  public singleton<TToken, TImplement, DEPTS extends Constructor<any>[] = []>(
     token: AbstractType<TToken>,
-    srv: (context: FactoryContext) => TImplement
+    srv: DependencyFactory<DEPTS, TImplement>
   ): this;
   /**
    * Set a singleton service
@@ -330,9 +328,9 @@ export class Server {
     token: AbstractType<TToken>,
     srv: ImplementType<TImplement>
   ): this;
-  public unique<TToken, TImplement>(
+  public unique<TToken, TImplement, DEPTS extends Constructor<any>[] = []>(
     token: AbstractType<TToken>,
-    srv: (context: FactoryContext) => TImplement
+    srv: DependencyFactory<DEPTS, TImplement>
   ): this;
   public unique<TToken, TImplement>(
     token: AbstractType<TToken>,
@@ -638,22 +636,17 @@ export class Server {
    * @memberof Server
    */
   private sendInjection(token: any, inject: any, scope: InjectScope) {
-    if (!DIContainer.isFactory(inject)) {
-      return this.di.register(token, inject, scope);
+    let [depts, imp] = inject instanceof Array ? inject : [undefined, inject];
+    if (!imp && DIContainer.isFactory(depts)) {
+      imp = depts;
+      depts = undefined;
     }
-    // 底层服务，直接使用底层工厂函数
-    if (token === InjectService || token === Configs || token === Context) {
-      return this.di.register(token, inject, scope);
-    }
-    return this.di.register(
+    return this.di.register({
       token,
-      (scopeId, metadata) => {
-        const injector = this.di.get(InjectService, scopeId);
-        const configs = this.di.get(Configs, scopeId);
-        return inject({ injector, configs });
-      },
+      depts,
+      imp,
       scope
-    );
+    });
   }
 
   /**

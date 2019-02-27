@@ -95,10 +95,10 @@
   resolved "https://registry.yarnpkg.com/@bigmogician/publisher/-/publisher-1.0.4.tgz#1e908be940b70f56938c056e67c9c8b773c66456"
   integrity sha512-lQ7Ev/BNJ+jzIjzZwtC7mSwq9DmzVzr4v7qfrOW35si2e8aXIiSg6Glc2qJmiknuzsKWEtIsxuz+ptZl676Fgw==
 
-"@bonbons/di@^1.3.5":
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@bonbons/di/-/di-1.3.5.tgz#cbad1e00c3d9bd3be96e19fa9150780a6ec87dc1"
-  integrity sha512-YsJIGb+LPxIDbwhtgf9Y/qkQMHW/kThiybWpy+w/HfHRDVddEmyqj/4fs7WaDaZokhTN2ZIEzzyKtP6g8CbHkQ==
+"@bonbons/di@^1.3.5-rc.4":
+  version "1.3.5-rc.4"
+  resolved "https://registry.npmjs.org/@bonbons/di/-/di-1.3.5-rc.4.tgz#1adec920fb2e0509b731d498681276d82cbe2c89"
+  integrity sha512-SrMVoxF6g7PskwKNuaXPqn1KuxkjZXHvIeHKNhYk8dCSLUgT52Tn/EKwrJbWJab6hKd9npezSpmNk5OU/q7lxw==
   dependencies:
     reflect-metadata "0.1.12"
 
