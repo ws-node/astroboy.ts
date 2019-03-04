@@ -1,3 +1,5 @@
-const runner = require("./pkg.base");
+const config = require("./pkg.base");
 
-runner();
+module.exports = {
+  ...config
+};
