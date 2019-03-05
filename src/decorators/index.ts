@@ -9,3 +9,4 @@ export {
   FromParams,
   FromBody
 } from "./route";
+export { ReactiveSingleton, Watch } from "./singleton";

@@ -22,13 +22,13 @@ interface IInjectableConfigs<T = any> {
  * }>} [config]
  * @returns
  */
-export function Injectable(): <T>(target: Constructor<T>) => Constructor<T>;
+export function Injectable(): <T>(target: Constructor<T>) => any;
 export function Injectable(
   scope: InjectScope
-): <T>(target: Constructor<T>) => Constructor<T>;
+): <T>(target: Constructor<T>) => any;
 export function Injectable(
   config: Partial<IInjectableConfigs>
-): <T>(target: Constructor<T>) => Constructor<T>;
+): <T>(target: Constructor<T>) => any;
 export function Injectable(config?: InjectScope | Partial<IInjectableConfigs>) {
   return function<T>(target: Constructor<T>) {
     let token: InjectToken<any> = undefined;

@@ -95,10 +95,10 @@
   resolved "https://registry.npmjs.org/@bigmogician/publisher/-/publisher-1.0.7.tgz#2cff49a2833509a6258e68090775ac8d387ce7ba"
   integrity sha512-to/VoUmqyWN1yR1usKxS+B2O3vtqYtgDKjgkG55gPsk+IP1PDZZe78t4sOZ9bcjwfHpF7ajCvjGKGfXEnsS8HQ==
 
-"@bonbons/di@^1.3.5-rc.4":
-  version "1.3.5-rc.4"
-  resolved "https://registry.npmjs.org/@bonbons/di/-/di-1.3.5-rc.4.tgz#1adec920fb2e0509b731d498681276d82cbe2c89"
-  integrity sha512-SrMVoxF6g7PskwKNuaXPqn1KuxkjZXHvIeHKNhYk8dCSLUgT52Tn/EKwrJbWJab6hKd9npezSpmNk5OU/q7lxw==
+"@bonbons/di@^1.4.0-rc.12":
+  version "1.4.0-rc.12"
+  resolved "https://registry.npmjs.org/@bonbons/di/-/di-1.4.0-rc.12.tgz#544caa0f0135287f014252bcd278765fe8b6833a"
+  integrity sha512-VU0tjFJiwBkrGIWqSBBGN9rzscIh1mLCjqib22ptswnxrbdPtt2OHuCHAuWQOUEZ1j0tv46mZ435b+yqdHagaQ==
   dependencies:
     reflect-metadata "0.1.12"
 

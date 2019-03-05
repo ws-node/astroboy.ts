@@ -36,6 +36,14 @@ export type ChangeReturn<T, RETURN> = {
     : T[key]
 };
 
+export function fullText(v: any, n = 24) {
+  const len = String(v).length;
+  if (len > n - 1) {
+    return String(v).substr(0, n - 2) + "+";
+  }
+  return String(v) + Array(n - len).join(" ");
+}
+
 export function setColor(name: keyof typeof Colors, value: any): string {
   return `${Colors[name]}${value}${Colors.reset}`;
 }

@@ -4,7 +4,13 @@ import { Context } from "./services/Context";
 import { InjectService } from "./services/Injector";
 import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
-import { GlobalDI, optionAssign, PartReset, ChangeReturn } from "./utils";
+import {
+  GlobalDI,
+  optionAssign,
+  PartReset,
+  ChangeReturn,
+  fullText
+} from "./utils";
 import {
   Constructor,
   InjectScope,
@@ -523,17 +529,23 @@ export class Server {
         this.readRuntimeEnv(app);
         //#region logs
         const configs = this.configs.toArray();
-        configs.map(i => {
-          this.logger.debug(
-            `--> [${chalk.blueBright(
-              i.token.key.toString()
-            )}] - [${chalk.cyanBright(
-              typeof i.value
-            )}] - [length(keys):${chalk.cyanBright(
-              Object.keys(i.value).length.toString()
-            )}]`
-          );
-        });
+        configs
+          .map<[number, string]>(i => {
+            const key = String(i.token.key);
+            const token = key.substr(7, key.length - 8);
+            return [
+              token.startsWith("config::") ? 0 : 1,
+              `--> [${chalk.blueBright(
+                fullText(token, 26)
+              )}] - [${chalk.cyanBright(
+                fullText(typeof i.value, 7)
+              )}] - [length(keys):${chalk.cyanBright(
+                fullText(Object.keys(i.value).length, 3)
+              )}]`
+            ];
+          })
+          .sort((a, b) => a[0] - b[0])
+          .forEach(([, str]) => this.logger.debug(str));
         this.logger.debug("-----> DONE .");
         this.logger.debug(
           `Configs count: ${chalk.magentaBright(configs.length.toString())}`
@@ -551,18 +563,23 @@ export class Server {
             token: i.token.name,
             imp: i.imp,
             depts: i.depts.length,
+            watch: i.watch.length,
             level: i.level
           }))
           .sort((a: any, b: any) => a.level - b.level);
         sorted.map((i: any) =>
           this.logger.debug(
-            `--> [level:${i.level}] - [${chalk.greenBright(i.token)}] - [${
+            `--> [${fullText(`level:${i.level}`, 9)}] - [${chalk.greenBright(
+              fullText(i.token, 18)
+            )}] - [${
               DIContainer.isClass(i.imp)
-                ? `class ${chalk.redBright(i.imp.name)}`
+                ? `🌟class  ${chalk.redBright(fullText(i.imp.name, 18))}`
                 : DIContainer.isFactory(i.imp)
-                ? chalk.yellowBright("factory")
-                : chalk.blueBright("object")
-            }] - [depts:${chalk.cyanBright(i.depts)}]`
+                ? `➡️arrow  ${chalk.yellowBright(fullText("Factory", 18))}`
+                : `⚽️object ${chalk.blueBright(fullText("Object", 18))}`
+            }] - [depts:${chalk.cyanBright(
+              fullText(i.depts, 3)
+            )}] - [watch:${chalk.cyanBright(fullText(i.watch, 3))}]`
           )
         );
         this.logger.debug("-----> DONE .");
