@@ -50,13 +50,13 @@ export function setColor(name: keyof typeof Colors, value: any): string {
 }
 
 export const GlobalDI = new DIContainer<ScopeID, { ctx: any }>({
-  throws: false,
-  onEmit: ({ level, data }) =>
-    console.log(
-      chalk[level === "warn" ? "yellow" : level === "error" ? "red" : "white"](
-        `[${level.toUpperCase()}] - ${data.msg}`
-      )
-    )
+  // throws: false,
+  // onEmit: ({ level, data }) =>
+  //   console.log(
+  //     chalk[level === "warn" ? "yellow" : level === "error" ? "red" : "white"](
+  //       `[${level.toUpperCase()}] - ${data.msg}`
+  //     )
+  //   )
 });
 export const GlobalImplements = new Map<any, any>();
 
