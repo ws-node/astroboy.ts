@@ -18,7 +18,8 @@ import {
   InjectToken,
   AbstractType,
   ImplementType,
-  DIContainer
+  DIContainer,
+  Injector
 } from "@bonbons/di";
 import { ENV, defaultEnv, CONFIG_VIEW, defaultView } from "./configs";
 import {
@@ -511,87 +512,26 @@ export class Server {
 
   private startApp(
     events?: Partial<{
-      onStart: (app) => void;
-      onError: (error, ctx) => void;
+      onStart: (app: any) => void;
+      onError: (error: any, ctx: any) => void;
     }>
   ) {
     const { onStart = undefined, onError = undefined } = events || {};
     new (this.appBuilder || Astroboy)(this.appConfigs || {})
       .on("start", (app: Koa) => {
-        //#region logs
-        this.logger = new SimpleLogger(this.configs);
-        this.logger.debug(
-          chalk.greenBright("======== ASTROBOY.TS Bootstrap ========")
-        );
-        this.logger.debug(chalk.yellowBright("start reading configs ... "));
-        //#endregion
-        this.readConfigs(app["config"]);
-        this.readRuntimeEnv(app);
-        //#region logs
-        const configs = this.configs.toArray();
-        configs
-          .map<[number, string]>(i => {
-            const key = String(i.token.key);
-            const token = key.substr(7, key.length - 8);
-            return [
-              token.startsWith("config::") ? 0 : 1,
-              `--> [${chalk.blueBright(
-                fullText(token, 26)
-              )}] - [${chalk.cyanBright(
-                fullText(typeof i.value, 7)
-              )}] - [length(keys):${chalk.cyanBright(
-                fullText(Object.keys(i.value).length, 3)
-              )}]`
-            ];
-          })
-          .sort((a, b) => a[0] - b[0])
-          .forEach(([, str]) => this.logger.debug(str));
-        this.logger.debug("-----> DONE .");
-        this.logger.debug(
-          `Configs count: ${chalk.magentaBright(configs.length.toString())}`
-        );
-        //#endregion
-        this.resetDIResolver();
-        //#region logs
-        this.logger.debug(chalk.yellowBright("start init DI tokens ... "));
-        //#endregion
-        this.resolveBundles();
-        this.resolveInjections();
-        //#region logs
-        const sorted = this.di["sorted"]
-          .map((i: any) => ({
-            token: i.token.name,
-            imp: i.imp,
-            depts: i.depts.length,
-            watch: i.watch.length,
-            level: i.level
-          }))
-          .sort((a: any, b: any) => a.level - b.level);
-        sorted.map((i: any) =>
-          this.logger.debug(
-            `--> [${fullText(`level:${i.level}`, 9)}] - [${chalk.greenBright(
-              fullText(i.token, 18)
-            )}] - [${
-              DIContainer.isClass(i.imp)
-                ? `🌟class  ${chalk.redBright(fullText(i.imp.name, 18))}`
-                : DIContainer.isFactory(i.imp)
-                ? `➡️arrow  ${chalk.yellowBright(fullText("Factory", 18))}`
-                : `⚽️object ${chalk.blueBright(fullText("Object", 18))}`
-            }] - [depts:${chalk.cyanBright(
-              fullText(i.depts, 3)
-            )}] - [watch:${chalk.cyanBright(fullText(i.watch, 3))}]`
-          )
-        );
-        this.logger.debug("-----> DONE .");
-        this.logger.debug(
-          `DI count: ${chalk.magentaBright(sorted.length.toString())}`
-        );
-        this.logger.debug(chalk.yellowBright("start app ..."));
-        this.logger.debug(
-          chalk.greenBright("======== ASTROBOY.TS Bootstrap END ========")
-        );
-        //#endregion
-        onStart && onStart(app);
+        logActions(this, [
+          () => (this.logger = new SimpleLogger(this.configs)),
+          () => {
+            this.readConfigs(app["config"]);
+            this.readRuntimeEnv(app);
+          },
+          () => this.resetDIResolver(),
+          () => {
+            this.resolveBundles();
+            this.resolveInjections();
+          },
+          () => onStart && onStart(app)
+        ]);
       })
       .on("error", (error, ctx) => {
         onError && onError(error, ctx);
@@ -693,11 +633,13 @@ export class Server {
    * @memberof Server
    */
   private initInjectService() {
-    this.scoped(InjectService, (scopeId?: ScopeID) => ({
-      get: (token: InjectToken<any>) => this.di.get(token, scopeId),
-      INTERNAL_dispose: () => this.di.dispose(scopeId),
-      scopeId
-    }));
+    // this.scoped(InjectService, (scopeId?: ScopeID) => ({
+    //   get: (token: InjectToken<any>) => this.di.get(token, scopeId),
+    //   INTERNAL_dispose: () => this.di.dispose(scopeId),
+    //   scopeId
+    // }));
+    // 替换原来的InjectService，使用di提供的原生Injector
+    this.scoped(InjectService, [[Injector], (injector: Injector) => injector]);
   }
 
   /**
@@ -749,3 +691,73 @@ export const Bundles: ChangeReturn<ServerBundle, ServerBundle> = {
   "@uniques": []
 } as any;
 const _innerBundle: InnerBundle = Bundles as any;
+
+function logActions(context: Server, actions: (() => void)[]) {
+  const [
+    initLogger,
+    initConfigs,
+    resetDIResolver,
+    resolveInjections,
+    complete
+  ] = actions;
+
+  initLogger();
+  const logger = context["logger"];
+  logger.debug(chalk.greenBright("======== ASTROBOY.TS Bootstrap ========"));
+  logger.debug(chalk.yellowBright("start reading configs ... "));
+  initConfigs();
+  const configs = context["configs"].toArray();
+  configs
+    .map<[number, string]>(i => {
+      const key = String(i.token.key);
+      const token = key.substr(7, key.length - 8);
+      return [
+        token.startsWith("config::") ? 0 : 1,
+        `--> [${chalk.blueBright(fullText(token, 26))}] - [${chalk.cyanBright(
+          fullText(typeof i.value, 7)
+        )}] - [length(keys):${chalk.cyanBright(
+          fullText(Object.keys(i.value).length, 3)
+        )}]`
+      ];
+    })
+    .sort((a, b) => a[0] - b[0])
+    .forEach(([, str]) => logger.debug(str));
+  logger.debug("-----> DONE .");
+  logger.debug(
+    `Configs count: ${chalk.magentaBright(configs.length.toString())}`
+  );
+  resetDIResolver();
+  logger.debug(chalk.yellowBright("start init DI tokens ... "));
+  resolveInjections();
+  const sorted = (context["di"]["sorted"] as any[])
+    .map((i: any) => ({
+      token: i.token.name,
+      imp: i.imp,
+      depts: i.depts.length,
+      watch: i.watch.length,
+      level: i.level
+    }))
+    .sort((a: any, b: any) => a.level - b.level);
+  sorted.map((i: any) =>
+    logger.debug(
+      `--> [${fullText(`level:${i.level}`, 9)}] - [${chalk.greenBright(
+        fullText(i.token, 18)
+      )}] - [${
+        DIContainer.isClass(i.imp)
+          ? `🌟class  ${chalk.redBright(fullText(i.imp.name, 18))}`
+          : DIContainer.isFactory(i.imp)
+          ? `➡️arrow  ${chalk.yellowBright(fullText("Factory", 18))}`
+          : `⚽️object ${chalk.blueBright(fullText("Object", 18))}`
+      }] - [depts:${chalk.cyanBright(
+        fullText(i.depts, 3)
+      )}] - [watch:${chalk.cyanBright(fullText(i.watch, 3))}]`
+    )
+  );
+  logger.debug("-----> DONE .");
+  logger.debug(`DI count: ${chalk.magentaBright(sorted.length.toString())}`);
+  logger.debug(chalk.yellowBright("start app ..."));
+  logger.debug(
+    chalk.greenBright("======== ASTROBOY.TS Bootstrap END ========")
+  );
+  complete();
+}
