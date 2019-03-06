@@ -1,21 +1,15 @@
 import Koa from "koa";
+import chalk from "chalk";
 import Astroboy from "astroboy";
 import { Context } from "./services/Context";
 import { InjectService } from "./services/Injector";
 import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
-import {
-  GlobalDI,
-  optionAssign,
-  PartReset,
-  ChangeReturn,
-  fullText
-} from "./utils";
+import { GlobalDI, optionAssign, fullText } from "./utils";
 import {
   Constructor,
   InjectScope,
   ScopeID,
-  InjectToken,
   AbstractType,
   ImplementType,
   DIContainer,
@@ -48,7 +42,7 @@ import {
 } from "./plugins/simple-logger";
 import { Render } from "./services/Render";
 import { initRouters } from "./builders";
-import chalk from "chalk";
+import { InnerBundle } from "./bundle";
 
 type DIPair = [any, any];
 type DependencyFactory<DEPTS, T> = [DEPTS, (...args: any[]) => T] | (() => T);
@@ -462,10 +456,10 @@ export class Server {
    * @memberof Server
    */
   protected resolveBundles() {
-    _innerBundle["@singletons"].forEach(args => this.singleton(...args));
-    _innerBundle["@scopeds"].forEach(args => this.scoped(...args));
-    _innerBundle["@uniques"].forEach(args => this.unique(...args));
-    _innerBundle["@options"].forEach(args => this.option(...args));
+    InnerBundle["@singletons"].forEach(args => this.singleton(...args));
+    InnerBundle["@scopeds"].forEach(args => this.scoped(...args));
+    InnerBundle["@uniques"].forEach(args => this.unique(...args));
+    InnerBundle["@options"].forEach(args => this.option(...args));
   }
 
   /**
@@ -655,42 +649,6 @@ export class Server {
     }));
   }
 }
-
-type ServerBundle = PartReset<Server, { run: any }>;
-type InnerBundle = ServerBundle & {
-  "@options": [any, any?][];
-  "@singletons": [Constructor<any>, any?][];
-  "@scopeds": [Constructor<any>, any?][];
-  "@uniques": [Constructor<any>, any?][];
-};
-/**
- * ## DI Bundles
- * * 导入并移动使用DI容器的注册api
- * * 和普通注入项解析方式相同
- */
-export const Bundles: ChangeReturn<ServerBundle, ServerBundle> = {
-  option(...args: any[]): ServerBundle {
-    Bundles["@options"].push(args);
-    return Bundles as any;
-  },
-  scoped(...args: any[]): ServerBundle {
-    Bundles["@scopeds"].push(args);
-    return Bundles as any;
-  },
-  singleton(...args: any[]): ServerBundle {
-    Bundles["@singletons"].push(args);
-    return Bundles as any;
-  },
-  unique(...args: any[]): ServerBundle {
-    Bundles["@uniques"].push(args);
-    return Bundles as any;
-  },
-  "@options": [],
-  "@singletons": [],
-  "@scopeds": [],
-  "@uniques": []
-} as any;
-const _innerBundle: InnerBundle = Bundles as any;
 
 function logActions(context: Server, actions: (() => void)[]) {
   const [

@@ -74,6 +74,8 @@ export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
 export * from "./results/render";
 
+export { Bundles } from "./bundle";
+
 export {
   TypedSerializer,
   Serialize,
