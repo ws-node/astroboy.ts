@@ -27,6 +27,7 @@ export interface ConfigCompilerConfig {
   enabled?: boolean;
   force?: boolean;
   configroot?: string;
+  outputroot?: string;
   tsconfig?: string;
 }
 
