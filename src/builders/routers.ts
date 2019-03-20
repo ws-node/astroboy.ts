@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
-import { GlobalImplements } from "./utils";
-import { InnerRouterOptions, defaultRouterOptions as df } from "./options";
+import { GlobalImplements } from "../utils";
+import { InnerRouterOptions, defaultRouterOptions as df } from "../options";
 
 interface IRouter {
   [prop: string]: string | IRouter;
@@ -22,8 +22,8 @@ export function initRouters(
   if (open) {
     try {
       const routers: IRouter = {};
-      const ctorPath = path.resolve(base);
-      const routerPath = path.resolve(routerBase);
+      const ctorPath = path.resolve(process.cwd(), base);
+      const routerPath = path.resolve(process.cwd(), routerBase);
       if (always) {
         // 硬核开关，强撸routers文件夹
         rimraf.sync(routerPath);

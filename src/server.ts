@@ -17,16 +17,15 @@ import {
 } from "@bonbons/di";
 import { ENV, defaultEnv, CONFIG_VIEW, defaultView } from "./configs";
 import {
-  defaultJsonResultOptions,
   JSON_RESULT_OPTIONS,
-  InnerRouterOptions,
   ROUTER_OPTIONS,
-  defaultRouterOptions,
+  CONFIG_COMPILER_OPTIONS,
   RENDER_RESULT_OPTIONS,
-  defaultRenderResultOptions,
   STATIC_RESOLVER,
-  defaultGlobalError,
-  GLOBAL_ERROR
+  GLOBAL_ERROR,
+  defaultJsonResultOptions,
+  defaultRenderResultOptions,
+  defaultConfigCompilerOptions
 } from "./options";
 import { RealConfigCollection, ConfigToken, Configs } from "./services/Configs";
 import { TypedSerializer } from "./plugins/typed-serializer";
@@ -41,7 +40,13 @@ import {
   defaultSimpleLoggerOptions
 } from "./plugins/simple-logger";
 import { Render } from "./services/Render";
-import { initRouters } from "./builders";
+import { ConfigReader } from "./services/ConfigReader";
+import { initRouters } from "./builders/routers";
+import {
+  InnerRouterOptions,
+  defaultRouterOptions
+} from "./options/router.options";
+import { defaultGlobalError } from "./options/errors.options";
 import { InnerBundle } from "./bundle";
 
 type DIPair = [any, any];
@@ -380,6 +385,7 @@ export class Server {
     this.option(RENDER_RESULT_OPTIONS, defaultRenderResultOptions);
     this.option(STATIC_RESOLVER, TypedSerializer);
     this.option(ROUTER_OPTIONS, defaultRouterOptions);
+    this.option(CONFIG_COMPILER_OPTIONS, defaultConfigCompilerOptions);
     this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
     this.option(SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions);
     this.option(GLOBAL_ERROR, defaultGlobalError);
@@ -398,6 +404,7 @@ export class Server {
     // 不允许装饰器复写
     this.scoped(AstroboyContext);
     this.scoped(Scope);
+    this.scoped(ConfigReader);
     this.singleton(SimpleLogger);
     // 允许被装饰器复写
     this.directInject(InjectScope.Scope, [NunjunksEngine]);

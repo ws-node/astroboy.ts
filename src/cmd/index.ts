@@ -1,6 +1,7 @@
 import commander from "commander";
 import { CommandPlugin } from "./base";
 import { RouterPlugin } from "./router";
+import { ConfigPlugin } from "./config";
 import { DevPlugin } from "./dev";
 
 function initCommand(plugin: CommandPlugin) {
@@ -13,7 +14,7 @@ function initCommand(plugin: CommandPlugin) {
   program.action(plugin.action).on("--help", plugin.help);
 }
 
-[DevPlugin, RouterPlugin].forEach(i => initCommand(i));
+[DevPlugin, RouterPlugin, ConfigPlugin].forEach(i => initCommand(i));
 
 commander.version("1.0.0-rc.1").parse(process.argv);
 
