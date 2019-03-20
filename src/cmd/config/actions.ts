@@ -38,10 +38,10 @@ export = function(_, command: IConfigCmdOptions) {
 
   try {
     const tsnode = require.resolve("ts-node");
-    console.log(chalk.cyan("正在构建路由，请稍候...\n"));
+    console.log(chalk.cyan("正在编译configs，请稍候...\n"));
     const registerFile = path.resolve(__dirname, "../register");
     const initFile = path.resolve(__dirname, "../compile-configs");
-    console.log(chalk.yellow("开始执行路由初始化逻辑："));
+    console.log(chalk.yellow("开始执行configs编译逻辑："));
     console.log(`script ==> ${chalk.grey(initFile)}`);
     exec(
       `node -r ${registerFile} ${initFile}`,
