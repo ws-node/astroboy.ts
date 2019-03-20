@@ -49,12 +49,30 @@ export abstract class InjectService implements InjectService.Contract {
  * @param {T} target 当前对象
  * @param {string[]} depts 所有祖先实例在内部的字段名
  */
-export function createInjectMixin<T extends object>(target: T, depts: string[]): T;
-export function createInjectMixin<T extends object, P1>(target: T, ...depts: [P1]): T & P1;
-export function createInjectMixin<T extends object, P1, P2>(target: T, ...depts: [P1, P2]): T & P1 & P2;
-export function createInjectMixin<T extends object, P1, P2, P3>(target: T, ...depts: [P1, P2, P3]): T & P1 & P2 & P3;
-export function createInjectMixin<T extends object, P1, P2, P3, P4>(target: T, ...depts: [P1, P2, P3, P4]): T & P1 & P2 & P3 & P4;
-export function createInjectMixin<T extends object>(target: T, ...depts: any[]): T;
+export function createInjectMixin<T extends object>(
+  target: T,
+  depts: string[]
+): T;
+export function createInjectMixin<T extends object, P1>(
+  target: T,
+  ...depts: [P1]
+): T & P1;
+export function createInjectMixin<T extends object, P1, P2>(
+  target: T,
+  ...depts: [P1, P2]
+): T & P1 & P2;
+export function createInjectMixin<T extends object, P1, P2, P3>(
+  target: T,
+  ...depts: [P1, P2, P3]
+): T & P1 & P2 & P3;
+export function createInjectMixin<T extends object, P1, P2, P3, P4>(
+  target: T,
+  ...depts: [P1, P2, P3, P4]
+): T & P1 & P2 & P3 & P4;
+export function createInjectMixin<T extends object>(
+  target: T,
+  ...depts: any[]
+): T;
 export function createInjectMixin<T extends object>(...args: any[]) {
   const [target, ...others] = args;
   if (others[0] instanceof Array) {
@@ -75,10 +93,10 @@ function createProxyByDepts<T extends object>(target: T, depts: any[]) {
       return undefined;
     },
     set(target, key, value) {
-      if (target[key]) return target[key] = value;
+      if (target[key]) return (target[key] = value);
       for (let index = 0; index < depts.length; index++) {
         const current = depts[index];
-        if (current[key]) return current[key] = value;
+        if (current[key]) return (current[key] = value);
       }
     },
     deleteProperty(target, key) {
@@ -118,10 +136,10 @@ function createProxyByKeys<T extends object>(target: T, depts: string[]) {
       return undefined;
     },
     set(target, key, value) {
-      if (target[key]) return target[key] = value;
+      if (target[key]) return (target[key] = value);
       for (let index = 0; index < depts.length; index++) {
         const current = target[depts[index]];
-        if (current[key]) return current[key] = value;
+        if (current[key]) return (current[key] = value);
       }
     },
     deleteProperty(target, key) {

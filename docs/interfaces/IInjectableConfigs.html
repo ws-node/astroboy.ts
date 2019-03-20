@@ -1,0 +1,272 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>astroboy.ts</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">astroboy.ts</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="请输入查询关键字"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>接口</li>
+  <li>IInjectableConfigs</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">API</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">源代码</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>文件</h3>
+        </p>
+        <p class="comment">
+            <code>src/decorators/injectable.ts</code>
+        </p>
+
+
+
+        <section>
+            <h3 id="index">索引</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>属性列表</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#token">token</a>
+                                </li>
+                                <li>
+                                        <a href="#type">type</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section>
+                <h3 id="inputs">属性列表</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="token"></a>
+                                        <span class="name"><b>token</b><a href="#token"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>token:     <code>InjectToken&lt;T&gt;</code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code>InjectToken&lt;T&gt;</code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="type"></a>
+                                        <span class="name"><b>type</b><a href="#type"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>type:     <code><a href="../injectables/Scope.html" target="_self" >InjectScope</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code><a href="../injectables/Scope.html" target="_self" >InjectScope</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  Constructor,
+  IBaseInjectable,
+  InjectScope,
+  InjectToken
+} from &quot;@bonbons/di&quot;;
+import { GlobalDI } from &quot;../utils&quot;;
+
+interface IInjectableConfigs&lt;T &#x3D; any&gt; {
+  type: InjectScope;
+  token: InjectToken&lt;T&gt;;
+}
+
+/**
+ * ## 定义服务
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {Partial&lt;{
+ *   type: InjectScope,
+ *   token: InjectToken
+ * }&gt;} [config]
+ * @returns
+ */
+export function Injectable(): &lt;T&gt;(target: Constructor&lt;T&gt;) &#x3D;&gt; Constructor&lt;T&gt;;
+export function Injectable(
+  scope: InjectScope
+): &lt;T&gt;(target: Constructor&lt;T&gt;) &#x3D;&gt; Constructor&lt;T&gt;;
+export function Injectable(
+  config: Partial&lt;IInjectableConfigs&gt;
+): &lt;T&gt;(target: Constructor&lt;T&gt;) &#x3D;&gt; Constructor&lt;T&gt;;
+export function Injectable(config?: InjectScope | Partial&lt;IInjectableConfigs&gt;) {
+  return function&lt;T&gt;(target: Constructor&lt;T&gt;) {
+    let token: InjectToken&lt;any&gt; &#x3D; undefined;
+    let scope: InjectScope &#x3D; InjectScope.Scope;
+    switch (config) {
+      case InjectScope.Scope:
+      case InjectScope.Singleton:
+      case InjectScope.New:
+        scope &#x3D; &lt;InjectScope&gt;config;
+        break;
+      default:
+        const { token: tk &#x3D; undefined, type: tp &#x3D; InjectScope.Scope } &#x3D;
+          config || {};
+        scope &#x3D; tp || InjectScope.Scope;
+        token &#x3D; tk;
+    }
+    const prototype: IBaseInjectable &#x3D; target.prototype;
+    prototype.__valid &#x3D; true;
+    GlobalDI.register(token || target, target, scope);
+    return &lt;Constructor&lt;T&gt;&gt;target;
+  };
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'IInjectableConfigs.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

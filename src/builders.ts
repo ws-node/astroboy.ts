@@ -2,24 +2,22 @@ import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
 import { GlobalImplements } from "./utils";
-import {
-  InnerRouterOptions,
-  defaultRouterOptions as df
-} from "./options";
+import { InnerRouterOptions, defaultRouterOptions as df } from "./options";
 
 interface IRouter {
   [prop: string]: string | IRouter;
 }
 
-export function initRouters({
-  ctorFolder: base = df.ctorFolder,
-  routerFolder: routerBase = df.routerFolder,
-  enabled: open = df.enabled,
-  always = df.always,
-  appRoot: root = df.appRoot,
-  fileType = df.fileType
-}: Partial<InnerRouterOptions>,
-  onEnd?: (data: { routers?: IRouter, error?: Error }) => void
+export function initRouters(
+  {
+    ctorFolder: base = df.ctorFolder,
+    routerFolder: routerBase = df.routerFolder,
+    enabled: open = df.enabled,
+    always = df.always,
+    appRoot: root = df.appRoot,
+    fileType = df.fileType
+  }: Partial<InnerRouterOptions>,
+  onEnd?: (data: { routers?: IRouter; error?: Error }) => void
 ) {
   if (open) {
     try {
@@ -50,7 +48,16 @@ export function initRouters({
   }
 }
 
-function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, fileType, root, routers }: {
+function checkRouterFolders({
+  turn,
+  baseRouter,
+  folders,
+  ctorPath,
+  routerPath,
+  fileType,
+  root,
+  routers
+}: {
   turn: number;
   baseRouter: string;
   folders: string[];
@@ -65,7 +72,9 @@ function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, f
       routers[path] = {};
       const routerFolder = `${routerPath}/${path}`;
       const ctorFolder = `${ctorPath}/${path}`;
-      if (!fs.existsSync(routerFolder)) { fs.mkdirSync(routerFolder); }
+      if (!fs.existsSync(routerFolder)) {
+        fs.mkdirSync(routerFolder);
+      }
       checkRouterFolders({
         turn: turn + 1,
         baseRouter,
@@ -76,10 +85,18 @@ function checkRouterFolders({ turn, baseRouter, folders, ctorPath, routerPath, f
         routers: <IRouter>routers[path],
         root
       });
-    }
-    else {
+    } else {
       if (checkIfOnlyDeclares(path)) return;
-      createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot: root, routers });
+      createTsRouterFile({
+        turn,
+        baseRouter,
+        ctorPath,
+        routerPath,
+        path,
+        fileType,
+        urlRoot: root,
+        routers
+      });
     }
   });
 }
@@ -88,7 +105,16 @@ function checkIfOnlyDeclares(p: string): any {
   return p.endsWith(".d.ts");
 }
 
-function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, fileType, urlRoot, routers }: {
+function createTsRouterFile({
+  turn,
+  baseRouter,
+  ctorPath,
+  routerPath,
+  path,
+  fileType,
+  urlRoot,
+  routers
+}: {
   turn: number;
   baseRouter: string;
   ctorPath: string;
@@ -107,7 +133,14 @@ function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, file
     const sourceCtor = GlobalImplements.get(controller);
     // 无法解析控制器数据，则判断是老版本的Router
     if (!sourceCtor) return;
-    const file = createFile(routerPath, baseRouter, commonName, turn, fileType, urlRoot);
+    const file = createFile(
+      routerPath,
+      baseRouter,
+      commonName,
+      turn,
+      fileType,
+      urlRoot
+    );
     const _PATH = `${routerPath}/${commonName}.${fileType}`;
     if (fs.existsSync(_PATH)) {
       const oldFile = fs.readFileSync(_PATH, { flag: "r" });
@@ -123,24 +156,43 @@ function createTsRouterFile({ turn, baseRouter, ctorPath, routerPath, path, file
   }
 }
 
-function createFile(routerPath: string, baseRouter: string, commonName: string, turn: number, fileType: string, urlRoot: string) {
-  const controllerName = routerPath === baseRouter ?
-    commonName :
-    `${routerPath.replace(`${baseRouter}/`, "").replace(/\//g, ".")}.${commonName}`;
+function createFile(
+  routerPath: string,
+  baseRouter: string,
+  commonName: string,
+  turn: number,
+  fileType: string,
+  urlRoot: string
+) {
+  const controllerName =
+    routerPath === baseRouter
+      ? commonName
+      : `${routerPath
+          .replace(`${baseRouter}/`, "")
+          .replace(/\//g, ".")}.${commonName}`;
   const turnLod = [".."];
   for (let index = 0; index < turn; index++) {
     turnLod.push("..");
   }
-  const turnStr = routerPath === baseRouter ?
-    `${turnLod.join("/")}/controllers/${commonName}` :
-    `${turnLod.join("/")}/controllers/${routerPath.replace(`${baseRouter}/`, "")}/${commonName}`;
-  const file = fileType === "ts" ?
-    createTsFile(turnStr, controllerName, urlRoot) :
-    createJsFile(turnStr, controllerName, urlRoot);
+  const turnStr =
+    routerPath === baseRouter
+      ? `${turnLod.join("/")}/controllers/${commonName}`
+      : `${turnLod.join("/")}/controllers/${routerPath.replace(
+          `${baseRouter}/`,
+          ""
+        )}/${commonName}`;
+  const file =
+    fileType === "ts"
+      ? createTsFile(turnStr, controllerName, urlRoot)
+      : createJsFile(turnStr, controllerName, urlRoot);
   return file;
 }
 
-function createTsFile(turnStr: string, controllerName: string, urlRoot: string): string[] {
+function createTsFile(
+  turnStr: string,
+  controllerName: string,
+  urlRoot: string
+): string[] {
   return [
     "// [astroboy.ts] 自动生成的代码",
     `import CTOR from "${turnStr}";`,
@@ -149,7 +201,11 @@ function createTsFile(turnStr: string, controllerName: string, urlRoot: string):
   ];
 }
 
-function createJsFile(turnStr: string, controllerName: string, urlRoot: string): string[] {
+function createJsFile(
+  turnStr: string,
+  controllerName: string,
+  urlRoot: string
+): string[] {
   return [
     "// [astroboy.ts] 自动生成的代码",
     `const CTOR = require("${turnStr}");`,
@@ -157,4 +213,3 @@ function createJsFile(turnStr: string, controllerName: string, urlRoot: string):
     `module.exports = buildRouter(CTOR, "${controllerName}", "${urlRoot}");`
   ];
 }
-

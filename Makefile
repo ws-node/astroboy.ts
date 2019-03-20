@@ -1,16 +1,15 @@
 build:
 	yarn run test
 	rm -rf dist
-	tsc
+	npx tsc
 	mkdir dist/bin
 	cp bin/atc dist/bin
 
 document:
-	rm -rf doc
-	node_modules/.bin/typedoc --out ./doc/ ./src/
+	npx compodoc --language zh-CN -c .compodocrc.yaml
 
 rc: build
-	node ./pkg --rc 1
+	node ./pkg.rc.js
 
 publish: build
-	node ./pkg
+	node ./pkg.build.js

@@ -1,0 +1,350 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>astroboy.ts</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">astroboy.ts</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="请输入查询关键字"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>接口</li>
+  <li>Request</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">API</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">源代码</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>文件</h3>
+        </p>
+        <p class="comment">
+            <code>src/decorators/controller.ts</code>
+        </p>
+
+
+
+        <section>
+            <h3 id="index">索引</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>属性列表</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#body">body</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section>
+                <h3 id="inputs">属性列表</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="body"></a>
+                                        <span class="name"><b>body</b><a href="#body"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>body:     <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Constructor, IBaseInjectable } from &quot;@bonbons/di&quot;;
+import { Router } from &quot;astroboy-router&quot;;
+import { createInstance, GlobalImplements, getInjector } from &quot;../utils&quot;;
+import { InjectService } from &quot;../services/Injector&quot;;
+import { Context } from &quot;../services/Context&quot;;
+import { ICommonResultType, IResult } from &quot;../typings/IResult&quot;;
+import { IContext } from &quot;../typings/IContext&quot;;
+import { Configs } from &quot;../services/Configs&quot;;
+import { tryGetRouteMagic, RouteArgument } from &quot;./route&quot;;
+import { STATIC_RESOLVER } from &quot;../options/typed-serialize.options&quot;;
+import { IStaticTypedResolver } from &quot;../typings/IStaticTypeResolver&quot;;
+
+declare module &quot;koa&quot; {
+  interface Request {
+    body: any;
+  }
+}
+
+const INTERNAL_INJECTOR &#x3D; &quot;$INTERNAL_INJECTOR&quot;;
+const $$injector &#x3D; &quot;$$injector&quot;;
+
+/**
+ * ## 定义控制器
+ * * routes部分由astroboy-router实现
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {string} prefix
+ * @returns
+ */
+export function Controller(prefix: string) {
+  return function&lt;T&gt;(target: Constructor&lt;T&gt;) {
+    const prototype: IBaseInjectable &#x3D; target.prototype;
+    prototype.__valid &#x3D; true;
+    Router(prefix)(target);
+    const DI_CONTROLLER &#x3D; class {
+      constructor(ctx) {
+        const injector &#x3D; getInjector(ctx);
+        const controller &#x3D; createInstance(target, ctx);
+        controller[INTERNAL_INJECTOR] &#x3D; injector;
+        return controller;
+      }
+    };
+    Object.defineProperty(prototype, $$injector, {
+      get() {
+        return this[INTERNAL_INJECTOR];
+      },
+      configurable: false,
+      enumerable: false
+    });
+    const { routes &#x3D; {} } &#x3D; prototype[&quot;@router&quot;];
+    Object.getOwnPropertyNames(prototype).forEach(name &#x3D;&gt; {
+      if (name &#x3D;&#x3D;&#x3D; &quot;@router&quot;) return;
+      if (name &#x3D;&#x3D;&#x3D; &quot;constructor&quot;) return;
+      const descriptor &#x3D; Object.getOwnPropertyDescriptor(prototype, name);
+      const { value, get } &#x3D; descriptor;
+      if (get) return;
+      if (name in routes &amp;&amp; value &amp;&amp; typeof value &#x3D;&#x3D;&#x3D; &quot;function&quot;) {
+        const { params: routeParams } &#x3D; tryGetRouteMagic(prototype, name);
+        descriptor.value &#x3D; async function() {
+          const injector: InjectService &#x3D; this[$$injector];
+          const { ctx } &#x3D; injector.get&lt;Context&gt;(Context);
+          const staticResolver &#x3D; injector.get(Configs).get(STATIC_RESOLVER);
+          const params &#x3D; resolveRouteMethodParams(
+            routeParams,
+            ctx,
+            staticResolver
+          );
+          const result: ICommonResultType &#x3D; await value.bind(this)(...params);
+          if (result) resolveMethodResult(result, ctx, injector);
+        };
+        Object.defineProperty(prototype, name, descriptor);
+      }
+    });
+    copyPrototype&lt;T&gt;(DI_CONTROLLER, target);
+    GlobalImplements.set(DI_CONTROLLER, target);
+    return &lt;Constructor&lt;T&gt;&gt;DI_CONTROLLER;
+  };
+}
+
+export function copyPrototype&lt;T&gt;(
+  DI_CONTROLLER: Constructor&lt;any&gt;,
+  target: Constructor&lt;T&gt;
+) {
+  Object.getOwnPropertyNames(target.prototype).forEach(name &#x3D;&gt; {
+    Object.defineProperty(
+      DI_CONTROLLER.prototype,
+      name,
+      Object.getOwnPropertyDescriptor(target.prototype, name)
+    );
+  });
+  // @ts-ignore
+  DI_CONTROLLER.prototype.__proto__ &#x3D; target.prototype.__proto__;
+  // @ts-ignore
+  DI_CONTROLLER.__proto__ &#x3D; target.__proto__;
+}
+
+function resolveRouteMethodParams(
+  routeParams: RouteArgument[],
+  ctx: IContext,
+  staticResolver: IStaticTypedResolver
+) {
+  const params: any[] &#x3D; [];
+  routeParams.forEach(i &#x3D;&gt; {
+    const { index, type, resolver, ctor, static: stac } &#x3D; i;
+    let final: any;
+    if (type &#x3D;&#x3D;&#x3D; &quot;body&quot;) {
+      const v &#x3D; !resolver ? ctx.request.body : resolver(ctx.request.body || {});
+      final &#x3D; resolveStaticType(stac, ctor, v, staticResolver);
+    } else {
+      const v &#x3D; !resolver
+        ? { ...ctx.query, ...ctx.params }
+        : resolver({ ...ctx.query, ...ctx.params });
+      final &#x3D; resolveStaticType(stac, ctor, v, staticResolver);
+    }
+    params[index] &#x3D; final;
+  });
+  return params;
+}
+
+function resolveStaticType(
+  stac: boolean | undefined,
+  ctor: any,
+  value: any,
+  staticResolver: IStaticTypedResolver
+) {
+  return !ctor || stac &#x3D;&#x3D;&#x3D; false
+    ? value || {}
+    : typeTransform(staticResolver, value, ctor);
+}
+
+function typeTransform(
+  staticResolver: IStaticTypedResolver,
+  value: any,
+  ctor: any
+) {
+  switch (ctor) {
+    case Number:
+    case String:
+      return ctor(value);
+    case Boolean:
+      return String(value || &quot;&quot;) &#x3D;&#x3D;&#x3D; &quot;true&quot;;
+    case Object:
+      return value || {};
+    default:
+      return staticResolver.FromObject(value || {}, ctor);
+  }
+}
+
+async function resolveMethodResult(
+  result: string | IResult,
+  ctx: IContext,
+  injector: InjectService
+) {
+  if ((&lt;IResult&gt;result).toResult) {
+    ctx.body &#x3D; await (&lt;IResult&gt;result).toResult({
+      injector,
+      configs: injector.get(Configs)
+    });
+  } else {
+    ctx.body &#x3D; &lt;string&gt;result;
+  }
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'Request.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

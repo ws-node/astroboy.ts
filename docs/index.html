@@ -1,0 +1,416 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>astroboy.ts</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+	      <link rel="stylesheet" href="./styles/style.css">
+        <link rel="stylesheet" href="./styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="./" class="navbar-brand">astroboy.ts</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="请输入查询关键字"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content getting-started">
+                   <div class="content-data">
+
+<h1 id="-astroboy-ts">🌟astroboy.ts</h1>
+<blockquote>
+<p>基于<a href="https://github.com/astroboy-lab/astroboy">astroboy</a>的 DI 版本，TypeScript3.2 信仰加成</p>
+</blockquote>
+<p><a href="https://npmjs.org/package/astroboy.ts"><img src="https://nodei.co/npm/astroboy.ts.svg?downloads=true" alt="NPM" class="img-responsive"></a></p>
+<p><a href="https://travis-ci.org/ws-node/astroboy.ts"><img src="https://travis-ci.org/ws-node/astroboy.ts.svg?branch=master" alt="Build status" class="img-responsive"></a>
+<a href="https://coveralls.io/github/ws-node/astroboy.ts?branch=master"><img src="https://coveralls.io/repos/github/ws-node/astroboy.ts/badge.svg?branch=master" alt="Coverage Status" class="img-responsive"></a>
+<a href="https://badge.fury.io/js/astroboy.ts.svg?branch=master"><img src="https://badge.fury.io/js/astroboy.ts.svg?branch=master" alt="package version" class="img-responsive"></a></p>
+<h3 id="-">已经实现的功能</h3>
+<ul>
+<li>高性能依赖注入[ 实现：<a href="https://www.npmjs.com/package/@bonbons/di">@bonbons/di</a> ]</li>
+<li>控制器声明式路由[ 实现：<a href="https://www.npmjs.com/package/astroboy-router">astroboy-router</a> ]</li>
+<li>可扩展的注入式模版引擎</li>
+<li>可配置容器定义化</li>
+<li>DI 可注入依赖实现多重继承</li>
+<li>配置容器对接 astroboy 标准 configs 模式</li>
+<li>自动化生成 astroboy 的 routers 规范</li>
+<li>命令行工具支持</li>
+<li>完整兼容 astroboy 原始语义，支持任意扩展</li>
+<li>支持完整依赖注入能力的高级中间件</li>
+<li>路由方法返回配置接口化</li>
+</ul>
+<blockquote>
+<p>😨 更多功能正在开发中...</p>
+</blockquote>
+<h3 id="wiki-demo">Wiki + Demo</h3>
+<ul>
+<li><a href="https://github.com/ws-node/demo.astroboy.ts">Demo1:多版本并存</a> - 最大兼容预览(多重代码风格可以共存)</li>
+<li><a href="https://github.com/ws-node/demo2.astroboy.ts">Demo2:全量 astroboy.ts+构建 base 项目包</a> - base 仓库预览(构建继承 astroboy.ts 的 base 项目)</li>
+<li><a href="https://github.com/ws-node/demo3.astroboy.ts">Demo3:使用 base 仓库构建应用</a> - 最大预览(使用 base 项目构建应用)</li>
+<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Core">Core</a> - 核心组件</li>
+<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Services">Services</a> - 内置服务列表</li>
+<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Configs-Options">Configs/Options</a> - 配置列表</li>
+<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Decorators">Decorators</a> - 装饰器列表</li>
+<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Functions">Functions</a> - 功能函数</li>
+<li><a href="https://github.com/ws-node/astroboy.ts/wiki/Interfaces">Interfaces</a> - 公开接口列表</li>
+</ul>
+<h3 id="-">安装</h3>
+<div><pre class="line-numbers"><code class="language-none">npm install astroboy.ts</code></pre></div><div><pre class="line-numbers"><code class="language-none">yarn add astroboy.ts</code></pre></div><h3 id="-">接入说明</h3>
+<h4 id="1-astroboy-">1. 按照 astroboy 框架要求创建应用程序目录（略）</h4>
+<h4 id="2-app-ts">2. 调整 app.ts</h4>
+<div><pre class="line-numbers"><code class="language-typescript">import path from &quot;path&quot;;
+import { Server, Astroboy } from &quot;astroboy.ts&quot;;
+
+Server.Create(Astroboy, {
+  ROOT_PATH: path.resolve(__dirname, &quot;..&quot;)
+}).run({
+  onStart: () =&gt; console.log(&quot;hello world!&quot;),
+  onError: err =&gt; console.log(`oh shit : ${String(err)}`)
+});</code></pre></div><h4 id="3-">3. 配置初始化中间件</h4>
+<blockquote>
+<p>app/middleware/server-init.ts</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-typescript">import { serverInit } from &quot;astroboy.ts&quot;;
+
+export = () =&gt; serverInit;</code></pre></div><blockquote>
+<p>config/middleware.default.js</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-javascript">module.exports = {
+  &quot;server-init&quot;: {
+    priority: 0.1,
+    enable: true
+  }
+};</code></pre></div><blockquote>
+<p>config/config.default.js</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-javascript">/**
+ * 默认配置文件
+ */
+const path = require(&quot;path&quot;);
+
+module.exports = {
+  &quot;&#64;astroboy.ts&quot;: {
+    showTrace: false,
+    diType: &quot;proxy&quot;
+  }
+};</code></pre></div><h4 id="4-">4. 启动</h4>
+<div><pre class="line-numbers"><code class="language-none"># 本地安装astrpboy.ts
+./node_modules/.bin/atc dev --inspect --tsconfig app/tsconfig.json
+# 全局装过astrpboy.ts
+atc dev --inspect --tsconfig app/tsconfig.json</code></pre></div><h3 id="-">开发姿势</h3>
+<h4 id="0-cli-">0.cli 配置文件</h4>
+<p>astroboy.ts 开放了一个配置文件，用来简化 cli 参数的使用，类似 webpack，可以使用--config 参数修改配置文件的名字。</p>
+<blockquote>
+<p>atc.config.js - 一个简单的配置文件</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-javascript">const path = require(&quot;path&quot;);
+
+module.exports = {
+  tsconfig: &quot;tsconfig.json&quot;,
+  inspect: true,
+  typeCheck: true,
+  transpile: true,
+  debug: &quot;*&quot;,
+  mock: &quot;http://127.0.0.1:8001&quot;,
+  // atc router 的命令配置
+  routers: {
+    enabled: true,
+    always: false,
+    approot: &quot;/v1&quot;,
+    filetype: &quot;ts&quot;,
+    details: true
+  },
+  // atc-cli监控的文件修改列表，自动重启node服务
+  watch: [
+    path.join(__dirname, &quot;app/**/*.*&quot;),
+    path.join(__dirname, &quot;config/**/*.*&quot;),
+    path.join(__dirname, &quot;plugins/**/*.*&quot;)
+  ],
+  // 忽略的文件列表
+  ignore: []
+};</code></pre></div><h4 id="1-">1.编写路由控制器</h4>
+<p>控制器方面使用装饰器来定制 Router 的业务层级，确定 Route 的 url 和 method，提供 params 和 body 的注入获取能力，并抽象了响应中 body 的写入能力。</p>
+<blockquote>
+<p>app/controllers/test.ts</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-typescript">import {
+  Controller,
+  Configs,
+  AstroboyContext,
+  ENV,
+  JsonResult,
+  GET,
+  POST,
+  FromParams,
+  FromBody,
+  Deserialize,
+  IContext
+} from &quot;astroboy.ts&quot;;
+
+interface GetQuery {
+  id: string;
+  name: string;
+  type: string;
+}
+
+interface PostData {
+  id: number;
+  name: string;
+}
+
+&#64;Controller(&quot;test&quot;)
+class TestController {
+  // 构造函数注入能力
+  constructor(
+    private configs: Configs,
+    private base: AstroboyContext&lt;IContext&gt;
+  ) {}
+
+  // GET: {项目前缀}/api/test/testGet/:type?id=xxxx&amp;name=xxxx
+  &#64;GET(&quot;testGet/:type&quot;)
+  // 显式进行params参数前提，作为路由方法参数
+  // 使用接口为了更好的类型描述，不会进行任何运行时类型处理
+  public methodGet(&#64;FromParams() params: GetQuery) {
+    const { ctx } = this.base;
+    const { id, name, type } = params;
+    ctx.type = &quot;application/json&quot;;
+    // JsonResult实现了IResult接口，提供将json内容编程化写入body的能力，同时提供了Configs容器的配置化支持
+    // 你可以自己实现自定义逻辑，只要实现IResult接口即可
+    return new JsonResult({
+      id,
+      name,
+      type,
+      url: ctx.url
+    });
+  }
+
+  // POST: {项目前缀}/api/post/:type?id=xxxx&amp;name=xxxx
+  &#64;POST(&quot;post/:type&quot;)
+  // body也能进行相似的流程实现参数前提
+  // 你仍然可以进行直接解构
+  public async methodPost(
+    &#64;FromParams() params: GetQuery,
+    &#64;FromBody() { id, name }: PostData
+  ) {
+    const { name, id: id2, type } = params;
+    return new JsonResult({
+      id,
+      name,
+      type,
+      id2,
+      name
+    });
+  }
+}
+
+export = TestController;</code></pre></div><p>到此一个业务路由层级的构建并没有完成，和原生 astroboy 开发类似，相应的需要一个 router 文件来创建 astroboy 的 router 数组定义。</p>
+<blockquote>
+<p>app/routers/test.ts</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-typescript">import TEST from &quot;../controllers/test&quot;;
+import { buildRouter } from &quot;astroboy.ts&quot;;
+
+// “test”代表controllers内的文件级别
+// “/v1”代表应用的路由前缀，这里只作为示例
+export = buildRouter(TEST, &quot;test&quot;, &quot;/v1&quot;);</code></pre></div><blockquote>
+<p>注：1.0.1-rc.27 版本以后已经支持自动生成 router，不需再要上述步骤，有两种模式任选其一，操作如下：</p>
+</blockquote>
+<h5 id="1-routers-">1. routers 预处理模式</h5>
+<ul>
+<li>使用 <code>astroboy.ts</code> 提供的命令行工具</li>
+</ul>
+<div><pre class="line-numbers"><code class="language-bash"># 在开发启动或者生产打包前确保执行即可
+./node_modules/.bin/atc router --always --filetype ts</code></pre></div><h5 id="2-">2. 动态初始化(不推荐)</h5>
+<ul>
+<li>配置 <code>app/app.ts</code> 文件 (但是在删除控制器后，需要手动删除 routers 中多余的文件)</li>
+</ul>
+<div><pre class="line-numbers"><code class="language-typescript">Server.Create(..., {
+  ...
+})
+  .option(ROUTER_OPTIONS, { appRoot: &quot;/v1&quot;, enabled: true })
+  ...</code></pre></div><p>到此一个完整的业务级别的 router 构造完成了。</p>
+<h4 id="2-">2.编写可注入服务</h4>
+<p>astroboy.ts 按照 IoC 模式的指导思路进行设计，所有的服务都应该按照 DI 的方式（无论是手动还是自动）获取、组装和构造逻辑层级。</p>
+<blockquote>
+<p>app/services/test.ts</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-typescript">import { Injectable } from &quot;astroboy.ts&quot;;
+
+&#64;Injectable()
+class TestService {
+  private value = 98765;
+
+  public add(v: number) {
+    this.value += v;
+  }
+
+  public showValue() {
+    return this.value;
+  }
+}
+
+export = TestService;</code></pre></div><p>astroboy.ts 服务的默认行为是范围单例（scoped），简单的描述来说，一个服务在同一个请求流程中总是保持单例状态，并在请求结束后释放。scoped 服务可以在请求流程中的任意位置获取，并承担数据传输载体的职责。</p>
+<p>你当然可以手动改变这一默认行为：</p>
+<div><pre class="line-numbers"><code class="language-typescript">// 请确保你了解type的含义，以免服务出现不符合预期的行为
+&#64;Injectable({ type: InjectScope.Singleton })
+class Test02Service {
+  ...
+}</code></pre></div><p>其他行为：</p>
+<ul>
+<li>new（每次获取总是创建一个全新的对象）</li>
+<li>singleton（在整个应用中保持唯一并积累副作用）</li>
+</ul>
+<p>服务还具有其他高级功能（包括依赖注入分离和实现多重继承），这里不一一展开了。</p>
+<h4 id="3-astroboy-">3.对接 astroboy 的配置</h4>
+<p>创建接口来描述 astroboy 的配置中的各个业务部分：</p>
+<blockquote>
+<p>config/options/demo.ts</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-typescript">import { createConfig } from &quot;astroboy.ts&quot;;
+
+interface DemoOptions {
+  /** ccccc */
+  key01: number;
+  key02: string;
+}
+
+export const DEMO_OPTIONS = createConfig&lt;DemoOptions&gt;(&quot;demo&quot;);</code></pre></div><blockquote>
+<p>config/config.default.js</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-javascript">/**
+ * 默认配置文件
+ */
+const path = require(&quot;path&quot;);
+
+module.exports = {
+  &quot;&#64;astroboy.ts&quot;: {
+    showTrace: true,
+    diType: &quot;proxy&quot;
+  },
+
+  demo: {
+    key01: 12345,
+    key02: &quot;woshinidie&quot;
+  },
+
+  strOpt: &quot;test_string_config&quot;
+};</code></pre></div><p>这样既可以更好的描述原本混乱的 config 文件，同时可以在对 config 访问的时候提供定义支持。</p>
+<div><pre class="line-numbers"><code class="language-typescript">// 注入Configs服务，然后获取配置
+// opts变量将会被正确的绑定上类型信息
+const opts = this.configs.get(DEMO_OPTIONS);</code></pre></div><h4 id="4-">4.在中间件中使用依赖注入</h4>
+<p>过程比较轻量，废话不多，直接上 demo：</p>
+<blockquote>
+<p>app/middlewares/demo.ts</p>
+</blockquote>
+<div><pre class="line-numbers"><code class="language-typescript">import { injectScope, ENV, Context } from &quot;astroboy.ts&quot;;
+import DataService from &quot;../services/Data&quot;;
+
+export = () =&gt;
+  injectScope(async ({ injector, configs, ctx, next }) =&gt; {
+    // console.log(configs.get(ENV).showTrace);
+    const data = injector.get(DataService);
+    data.setStamp(new Date().getTime());
+    await next();
+    // console.log(&quot;fuck&quot;);
+  });</code></pre></div><blockquote>
+<p>文档完善中...</p>
+</blockquote>
+<hr>
+<h2 id="mit-license">MIT License</h2>
+<p>Copyright (c) 2018 NODE.Mogician &lt;<a href="bigmogician@outlook.com">bigmogician@outlook.com</a>&gt;</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 0;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'getting-started';
+            var COMPODOC_CURRENT_PAGE_URL = 'index.html';
+       </script>
+
+       <script src="./js/libs/custom-elements.min.js"></script>
+       <script src="./js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="./js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="./js/menu-wc.js" defer></script>
+
+       <script src="./js/libs/bootstrap-native.js"></script>
+
+       <script src="./js/libs/es6-shim.min.js"></script>
+       <script src="./js/libs/EventDispatcher.js"></script>
+       <script src="./js/libs/promise.min.js"></script>
+       <script src="./js/libs/zepto.min.js"></script>
+
+       <script src="./js/compodoc.js"></script>
+
+       <script src="./js/tabs.js"></script>
+       <script src="./js/menu.js"></script>
+       <script src="./js/libs/clipboard.min.js"></script>
+       <script src="./js/libs/prism.js"></script>
+       <script src="./js/sourceCode.js"></script>
+          <script src="./js/search/search.js"></script>
+          <script src="./js/search/lunr.min.js"></script>
+          <script src="./js/search/search-lunr.js"></script>
+          <script src="./js/search/search_index.js"></script>
+       <script src="./js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

@@ -16,7 +16,9 @@ export const defaultNunjunksOptions: INunjunksRenderOptions = {
   autoescape: true,
   throwOnUndefined: false,
   trimBlocks: false,
-  lstripBlocks: false,
+  lstripBlocks: false
 };
 
-export const NUNJUNKS_OPTIONS = createOptions<INunjunksRenderOptions>("NUNJUNKS_OPTIONS");
+export const NUNJUNKS_OPTIONS = createOptions<INunjunksRenderOptions>(
+  "NUNJUNKS_OPTIONS"
+);

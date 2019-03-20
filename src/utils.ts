@@ -3,7 +3,15 @@ import merge from "lodash/merge";
 import isPlainObject from "lodash/isPlainObject";
 import reduce from "lodash/reduce";
 import uuid from "uuid/v4";
-import { Constructor, getDependencies, DIContainer, ConfigsCollection, ScopeID, PARAMS_META_KEY, TYPE_META_KEY } from "@bonbons/di";
+import {
+  Constructor,
+  getDependencies,
+  DIContainer,
+  ConfigsCollection,
+  ScopeID,
+  PARAMS_META_KEY,
+  TYPE_META_KEY
+} from "@bonbons/di";
 import { InjectService } from "./services/Injector";
 import { IContext } from "./typings/IContext";
 
@@ -18,16 +26,26 @@ export const Colors = {
   white: "\x1b[37m"
 };
 
+export type PartReset<T, SKIP, ADD extends {} = {}> = {
+  [key in Exclude<keyof (T & ADD), keyof SKIP>]: (T & ADD)[key]
+};
+
+export type ChangeReturn<T, RETURN> = {
+  [key in keyof T]: T[key] extends (...args: infer P) => infer R
+    ? (...params: P) => RETURN
+    : T[key]
+};
+
 export function setColor(name: keyof typeof Colors, value: any): string {
   return `${Colors[name]}${value}${Colors.reset}`;
 }
 
-export const GlobalDI = new DIContainer();
+export const GlobalDI = new DIContainer<ScopeID, { ctx: any }>();
 export const GlobalImplements = new Map<any, any>();
 
 export function setScopeId(ctx: IContext) {
   const state = ctx.state || (ctx.state = {});
-  return state["$$scopeId"] = uuid();
+  return (state["$$scopeId"] = uuid());
 }
 
 export function getScopeId(ctx: IContext, short?: boolean): ScopeID {
@@ -44,23 +62,30 @@ export function getInjector(ctx: IContext) {
 }
 
 export function resolveDepts<T>(target: Constructor<T>, ctx: IContext) {
-  return GlobalDI.getDepedencies(getDependencies(target) || [], getScopeId(ctx));
+  return GlobalDI.getDepedencies(
+    getDependencies(target) || [],
+    getScopeId(ctx)
+  );
 }
 
 export function createInstance<T>(target: Constructor<T>, ctx: IContext) {
   return new target(...resolveDepts(target, ctx));
 }
 
-export function optionAssign(configs: ConfigsCollection, token: any, newValue: any) {
-  return isCustomClassInstance(newValue || {}) ?
-    newValue :
-    merge({}, configs.get(token) || {}, newValue);
+export function optionAssign(
+  configs: ConfigsCollection,
+  token: any,
+  newValue: any
+) {
+  return isCustomClassInstance(newValue || {})
+    ? newValue
+    : merge({}, configs.get(token) || {}, newValue);
 }
 
 export function isCustomClassInstance(obj: any, type?: any) {
-  return !type ?
-    (getPrototypeConstructor(obj) !== Object) :
-    (getPrototypeConstructor(obj) === type);
+  return !type
+    ? getPrototypeConstructor(obj) !== Object
+    : getPrototypeConstructor(obj) === type;
 }
 
 export function getPrototypeConstructor(obj) {
@@ -73,10 +98,16 @@ export function getMethodParamsType(prototype: any, propertyKey: string) {
 }
 
 export function getPropertyType(prototype: any, propertyKey: string) {
-  return Reflect.getMetadata(TYPE_META_KEY, prototype, propertyKey) || undefined;
+  return (
+    Reflect.getMetadata(TYPE_META_KEY, prototype, propertyKey) || undefined
+  );
 }
 
-export function resolveKeys(resolver: (k: string) => string, value: any, deep = true) {
+export function resolveKeys(
+  resolver: (k: string) => string,
+  value: any,
+  deep = true
+) {
   let res: any;
   if (Array.isArray(value) && value.length > 0) {
     res = [];
@@ -85,10 +116,16 @@ export function resolveKeys(resolver: (k: string) => string, value: any, deep = 
   } else {
     return value;
   }
-  return reduce(value, (result, val, key) => {
-    if (deep) { val = resolveKeys(resolver, val); }
-    const newKey = typeof key === "string" ? resolver(key) : key;
-    result[newKey] = val;
-    return result;
-  }, res);
+  return reduce(
+    value,
+    (result, val, key) => {
+      if (deep) {
+        val = resolveKeys(resolver, val);
+      }
+      const newKey = typeof key === "string" ? resolver(key) : key;
+      result[newKey] = val;
+      return result;
+    },
+    res
+  );
 }

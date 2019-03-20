@@ -4,23 +4,17 @@ import { Context } from "./services/Context";
 import { InjectService } from "./services/Injector";
 import { AstroboyContext } from "./services/AstroboyContext";
 import { Scope } from "./services/Scope";
-import {
-  GlobalDI,
-  optionAssign
-} from "./utils";
+import { GlobalDI, optionAssign, PartReset, ChangeReturn } from "./utils";
 import {
   Constructor,
-  InjectScope, ScopeID,
+  InjectScope,
+  ScopeID,
   InjectToken,
   AbstractType,
-  ImplementFactory,
-  ImplementType
+  ImplementType,
+  DIContainer
 } from "@bonbons/di";
-import {
-  ENV, defaultEnv,
-  CONFIG_VIEW,
-  defaultView
-} from "./configs";
+import { ENV, defaultEnv, CONFIG_VIEW, defaultView } from "./configs";
 import {
   defaultJsonResultOptions,
   JSON_RESULT_OPTIONS,
@@ -33,22 +27,27 @@ import {
   defaultGlobalError,
   GLOBAL_ERROR
 } from "./options";
-import {
-  RealConfigCollection,
-  ConfigToken,
-  Configs
-} from "./services/Configs";
+import { RealConfigCollection, ConfigToken, Configs } from "./services/Configs";
 import { TypedSerializer } from "./plugins/typed-serializer";
 import {
   NunjunksEngine,
   NUNJUNKS_OPTIONS,
   defaultNunjunksOptions
 } from "./plugins/nunjunks";
-import { SimpleLogger, SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions } from "./plugins/simple-logger";
+import {
+  SimpleLogger,
+  SIMPLE_LOGGER_OPTIONS,
+  defaultSimpleLoggerOptions
+} from "./plugins/simple-logger";
 import { Render } from "./services/Render";
 import { initRouters } from "./builders";
 
 type DIPair = [any, any];
+
+export interface FactoryContext {
+  injector: InjectService;
+  configs: Configs;
+}
 
 /**
  * ## astroboy.ts服务
@@ -59,12 +58,12 @@ type DIPair = [any, any];
  * @class Server
  */
 export class Server {
-
   private di = GlobalDI;
   private configs = new RealConfigCollection();
 
   private preSingletons: DIPair[] = [];
   private preScopeds: DIPair[] = [];
+  private preUniques: DIPair[] = [];
 
   private appBuilder!: Constructor<any>;
   private appConfigs!: any;
@@ -131,7 +130,9 @@ export class Server {
   public option(...args: any[]): this {
     const [e1, e2] = args;
     if (!e1) {
-      throw new Error("DI token or entry is empty, you shouldn't call BonbonsServer.use<T>(...) without any param.");
+      throw new Error(
+        "DI token or entry is empty, you shouldn't call BonbonsServer.use<T>(...) without any param."
+      );
     }
     this.configs.set(e1, optionAssign(this.configs, e1, e2 || {}));
     return this;
@@ -172,7 +173,10 @@ export class Server {
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementType<TImplement>): this;
+  public scoped<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: ImplementType<TImplement>
+  ): this;
   /**
    * Set a scoped service
    * ---
@@ -189,11 +193,14 @@ export class Server {
    * @template TToken
    * @template TImplement
    * @param {InjectableToken<TToken>} token
-   * @param {InjectFactory<TImplement>} srv
+   * @param {(context: FactoryContext) => TImplement} srv
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementFactory<TImplement>): this;
+  public scoped<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: (context: FactoryContext) => TImplement
+  ): this;
   /**
    * Set a scoped service
    * ---
@@ -216,7 +223,10 @@ export class Server {
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public scoped<TToken, TImplement>(token: AbstractType<TToken>, srv: TImplement): this;
+  public scoped<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: TImplement
+  ): this;
   public scoped(...args: any[]): this {
     return this.preInject(InjectScope.Scope, <any>args);
   }
@@ -257,7 +267,10 @@ export class Server {
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementType<TImplement>): this;
+  public singleton<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: ImplementType<TImplement>
+  ): this;
   /**
    * Set a singleton service
    * ---
@@ -274,11 +287,14 @@ export class Server {
    * @template TToken
    * @template TImplement
    * @param {InjectableToken<B>} token
-   * @param {InjectFactory<TImplement>} srv
+   * @param {(context: FactoryContext) => TImplement} srv
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: ImplementFactory<TImplement>): this;
+  public singleton<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: (context: FactoryContext) => TImplement
+  ): this;
   /**
    * Set a singleton service
    * ---
@@ -299,14 +315,37 @@ export class Server {
    * @returns {BonbonsServer}
    * @memberof BonbonsServer
    */
-  public singleton<TToken, TImplement>(token: AbstractType<TToken>, srv: TImplement): this;
+  public singleton<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: TImplement
+  ): this;
   public singleton(...args: any[]): this {
     return this.preInject(InjectScope.Singleton, <any>args);
   }
 
+  public unique<TInject>(srv: Constructor<TInject>): this;
+  public unique<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: ImplementType<TImplement>
+  ): this;
+  public unique<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: (context: FactoryContext) => TImplement
+  ): this;
+  public unique<TToken, TImplement>(
+    token: AbstractType<TToken>,
+    srv: TImplement
+  ): this;
+  public unique(...args: any[]): this {
+    return this.preInject(InjectScope.New, <any>args);
+  }
+
   /** 预注册，会覆盖装饰器的定义注册 */
   private preInject(type: InjectScope, service: Constructor<any>): this;
-  private preInject(type: InjectScope, token_implement: [Constructor<any>, any]): this;
+  private preInject(
+    type: InjectScope,
+    token_implement: [Constructor<any>, any]
+  ): this;
   private preInject(type: InjectScope, p: any | [any, any]) {
     const args = p instanceof Array ? p : [p, p];
     switch (type) {
@@ -316,25 +355,51 @@ export class Server {
       case InjectScope.Singleton:
         this.preSingletons.push([args[0], args[1] || args[0]]);
         break;
-      default: break;
+      default:
+        this.preUniques.push([args[0], args[1] || args[0]]);
+        break;
     }
     return this;
   }
 
   /** 直接注册，允许`@Injectable()`装饰器之后进行定义复写 */
   private directInject(type: InjectScope, service: [Constructor<any>]): this;
-  private directInject(type: InjectScope, token_implement: [Constructor<any>, any]): this;
+  private directInject(
+    type: InjectScope,
+    token_implement: [Constructor<any>, any]
+  ): this;
   private directInject(type: InjectScope, args: [any] | [any, any]) {
     switch (type) {
       case InjectScope.Scope:
-        this.di.register(args[0], args[1] || args[0], InjectScope.Scope);
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.Scope);
         break;
       case InjectScope.Singleton:
-        this.di.register(args[0], args[1] || args[0], InjectScope.Singleton);
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.Singleton);
         break;
-      default: break;
+      default:
+        this.sendInjection(args[0], args[1] || args[0], InjectScope.New);
+        break;
     }
     return this;
+  }
+
+  private sendInjection(token: any, inject: any, scope: InjectScope) {
+    if (!DIContainer.isFactory(inject)) {
+      return this.di.register(token, inject, scope);
+    }
+    // 底层服务，直接使用底层工厂函数
+    if (token === InjectService || token === Configs || token === Context) {
+      return this.di.register(token, inject, scope);
+    }
+    return this.di.register(
+      token,
+      (scopeId, metadata) => {
+        const injector = this.di.get(InjectService, scopeId);
+        const configs = this.di.get(Configs, scopeId);
+        return inject({ injector, configs });
+      },
+      scope
+    );
   }
 
   /**
@@ -347,10 +412,12 @@ export class Server {
    *   }>} [events]
    * @memberof Server
    */
-  public run(events?: Partial<{
-    onStart: (app) => void;
-    onError: (error, ctx) => void;
-  }>) {
+  public run(
+    events?: Partial<{
+      onStart: (app) => void;
+      onError: (error, ctx) => void;
+    }>
+  ) {
     this.init();
     this.finalInjectionsInit();
     this.startApp(events);
@@ -407,23 +474,25 @@ export class Server {
     });
   }
 
-  private startApp(events?: Partial<{
-    onStart: (app) => void;
-    onError: (error, ctx) => void;
-  }>) {
-    const {
-      onStart = undefined,
-      onError = undefined
-    } = events || {};
-    new (this.appBuilder || Astroboy)(this.appConfigs || {}).on("start", (app: Koa) => {
-      this.readConfigs(app["config"]);
-      this.readRuntimeEnv(app);
-      this.resetDIResolver();
-      this.resolveInjections();
-      onStart && onStart(app);
-    }).on("error", (error, ctx) => {
-      onError && onError(error, ctx);
-    });
+  private startApp(
+    events?: Partial<{
+      onStart: (app) => void;
+      onError: (error, ctx) => void;
+    }>
+  ) {
+    const { onStart = undefined, onError = undefined } = events || {};
+    new (this.appBuilder || Astroboy)(this.appConfigs || {})
+      .on("start", (app: Koa) => {
+        this.readConfigs(app["config"]);
+        this.readRuntimeEnv(app);
+        this.resetDIResolver();
+        this.resolveBundles();
+        this.resolveInjections();
+        onStart && onStart(app);
+      })
+      .on("error", (error, ctx) => {
+        onError && onError(error, ctx);
+      });
   }
 
   private readRuntimeEnv(app: Koa) {
@@ -445,6 +514,20 @@ export class Server {
   }
 
   /**
+   * ## 解析Bundles
+   *
+   * @author Big Mogician
+   * @private
+   * @memberof Server
+   */
+  private resolveBundles() {
+    _innerBundle["@singletons"].forEach(args => this.singleton(...args));
+    _innerBundle["@scopeds"].forEach(args => this.scoped(...args));
+    _innerBundle["@uniques"].forEach(args => this.unique(...args));
+    _innerBundle["@options"].forEach(args => this.option(...args));
+  }
+
+  /**
    * ## 完成DI容器初始化并锁定
    * @description
    * @author Big Mogician
@@ -452,8 +535,15 @@ export class Server {
    * @memberof Server
    */
   private resolveInjections() {
-    this.preSingletons.forEach(([token, srv]) => this.di.register(token, srv, InjectScope.Singleton));
-    this.preScopeds.forEach(([token, srv]) => this.di.register(token, srv, InjectScope.Scope));
+    this.preSingletons.forEach(([token, srv]) =>
+      this.sendInjection(token, srv, InjectScope.Singleton)
+    );
+    this.preScopeds.forEach(([token, srv]) =>
+      this.sendInjection(token, srv, InjectScope.Scope)
+    );
+    this.preUniques.forEach(([token, srv]) =>
+      this.sendInjection(token, srv, InjectScope.New)
+    );
     this.di.complete();
   }
 
@@ -465,13 +555,14 @@ export class Server {
    * @memberof Server
    */
   private initContextProvider() {
-    this.scoped(
-      Context,
-      (scopeId?: ScopeID, { ctx = null } = {}) => {
-        if (ctx === null) throw new Error("invalid call, you can only call a context in request pipe scope.");
-        return new Context(ctx);
+    this.scoped(Context, (scopeId?: ScopeID, { ctx = null } = {}) => {
+      if (ctx === null) {
+        throw new Error(
+          "invalid call, you can only call a context in request pipe scope."
+        );
       }
-    );
+      return new Context(ctx);
+    });
   }
 
   /**
@@ -483,14 +574,11 @@ export class Server {
    * @memberof Server
    */
   private initInjectService() {
-    this.scoped(
-      InjectService,
-      (scopeId?: ScopeID) => ({
-        get: (token: InjectToken) => this.di.get(token, scopeId),
-        INTERNAL_dispose: () => this.di.dispose(scopeId),
-        scopeId
-      })
-    );
+    this.scoped(InjectService, (scopeId?: ScopeID) => ({
+      get: (token: InjectToken<any>) => this.di.get(token, scopeId),
+      INTERNAL_dispose: () => this.di.dispose(scopeId),
+      scopeId
+    }));
   }
 
   /**
@@ -501,10 +589,44 @@ export class Server {
    * @memberof Server
    */
   private initConfigCollection() {
-    this.singleton(
-      Configs,
-      () => ({ get: this.configs.get.bind(this.configs) }),
-    );
+    this.singleton(Configs, () => ({
+      get: this.configs.get.bind(this.configs)
+    }));
   }
-
 }
+
+type ServerBundle = PartReset<Server, { run: any }>;
+type InnerBundle = ServerBundle & {
+  "@options": [any, any?][];
+  "@singletons": [Constructor<any>, any?][];
+  "@scopeds": [Constructor<any>, any?][];
+  "@uniques": [Constructor<any>, any?][];
+};
+/**
+ * ## DI Bundles
+ * * 导入并移动使用DI容器的注册api
+ * * 和普通注入项解析方式相同
+ */
+export const Bundles: ChangeReturn<ServerBundle, ServerBundle> = {
+  option(...args: any[]): ServerBundle {
+    Bundles["@options"].push(args);
+    return Bundles as any;
+  },
+  scoped(...args: any[]): ServerBundle {
+    Bundles["@scopeds"].push(args);
+    return Bundles as any;
+  },
+  singleton(...args: any[]): ServerBundle {
+    Bundles["@singletons"].push(args);
+    return Bundles as any;
+  },
+  unique(...args: any[]): ServerBundle {
+    Bundles["@uniques"].push(args);
+    return Bundles as any;
+  },
+  "@options": [],
+  "@singletons": [],
+  "@scopeds": [],
+  "@uniques": []
+} as any;
+const _innerBundle: InnerBundle = Bundles as any;

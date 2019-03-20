@@ -10,13 +10,14 @@ export namespace Scope {
 
 @Injectable()
 export class Scope implements Scope.Contract {
-
   private _init = false;
   private scopeId!: ScopeID;
   private start!: Date;
   private stop!: Date;
 
-  public get id() { return this.scopeId; }
+  public get id() {
+    return this.scopeId;
+  }
 
   protected init(id: ScopeID) {
     if (this._init) return this;
@@ -43,5 +44,4 @@ export class Scope implements Scope.Contract {
     }
     return 0;
   }
-
 }

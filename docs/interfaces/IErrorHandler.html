@@ -1,0 +1,386 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>astroboy.ts</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/postmark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">astroboy.ts</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="请输入查询关键字"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>接口</li>
+  <li>IErrorHandler</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">API</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">源代码</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>文件</h3>
+        </p>
+        <p class="comment">
+            <code>src/options/render.options.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>描述</h3>
+            </p>
+            <p class="comment">
+                <h2 id="-">模板渲染错误处理接口</h2>
+
+            </p>
+
+
+        <section>
+            <h3 id="index">索引</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>属性列表</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#content">content</a>
+                                </li>
+                                <li>
+                                        <a href="#path">path</a>
+                                </li>
+                                <li>
+                                        <a href="#tplStr">tplStr</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section>
+                <h3 id="inputs">属性列表</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="content"></a>
+                                        <span class="name"><b>content</b><a href="#content"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>content:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/function" target="_blank" >function</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/function" target="_blank" >function</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>错误页面渲染函数，作为兜底的渲染能力提供，</p>
+<ul>
+<li>默认(dev)：<code>() =&gt; &quot;${错误的堆栈信息}&quot;&quot;</code></li>
+<li>默认(prod)：<code>() =&gt; &quot;Internal Server Error&quot;</code></li>
+<li>通常不要复写此字段，除非<code>path</code>或<code>tplStr</code>能够提供可用的内容</li>
+</ul>
+</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="path"></a>
+                                        <span class="name"><b>path</b><a href="#path"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>path:     <code><a href="../miscellaneous/variables.html#undefined" target="_self" >string | &quot;undefined&quot;</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code><a href="../miscellaneous/variables.html#undefined" target="_self" >string | &quot;undefined&quot;</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>错误页面模板的path，默认：<code>undefined</code> </p>
+</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="tplStr"></a>
+                                        <span class="name"><b>tplStr</b><a href="#tplStr"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>tplStr:     <code><a href="../miscellaneous/variables.html#undefined" target="_self" >string | &quot;undefined&quot;</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code><a href="../miscellaneous/variables.html#undefined" target="_self" >string | &quot;undefined&quot;</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>错误页面字符串模板，默认：<code>undefined</code> </p>
+</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Constructor } from &quot;@bonbons/di&quot;;
+import { createOptions } from &quot;../services/Configs&quot;;
+import { NunjunksEngine } from &quot;../plugins/nunjunks&quot;;
+import { IViewEngine } from &quot;../typings/IViewEngine&quot;;
+
+/**
+ * ## 模板渲染错误处理接口
+ * @description
+ * @author Big Mogician
+ * @interface IErrorHandler
+ */
+interface IErrorHandler {
+  /** 错误页面模板的path，默认：&#x60;undefined&#x60; */
+  path: string | false;
+  /** 错误页面字符串模板，默认：&#x60;undefined&#x60; */
+  tplStr: string | false;
+  /**
+   * 错误页面渲染函数，作为兜底的渲染能力提供，
+   * * 默认(dev)：&#x60;() &#x3D;&gt; &quot;${错误的堆栈信息}&quot;&quot;&#x60;
+   * * 默认(prod)：&#x60;() &#x3D;&gt; &quot;Internal Server Error&quot;&#x60;
+   * * 通常不要复写此字段，除非&#x60;path&#x60;或&#x60;tplStr&#x60;能够提供可用的内容
+   */
+  content: (error: Error, title?: string) &#x3D;&gt; string;
+}
+
+/**
+ * ## 配置RenderResult的解析方式
+ * @description
+ * @author Big Mogician
+ * @export
+ * @interface RenderResultOptions
+ */
+export interface RenderResultOptions&lt;T extends string | Symbol &#x3D; any&gt; {
+  /** astroboy原生渲染的参数配置 */
+  astConf: {
+    /** 使用原生的渲染逻辑，默认：&#x60;false&#x60; */
+    use: boolean;
+    /** 原生astroboy渲染时的&#x60;config&#x60;字段，默认：&#x60;undefined&#x60; */
+    configs: any;
+    /** 原生astroboy渲染时的&#x60;state&#x60;字段，默认：&#x60;undefined&#x60; */
+    state: any;
+  };
+  /** 模板根路径，如果提供，path将会拼装成绝对路径下到对应的渲染引擎。默认：&#x60;undefined&#x60; */
+  root: string;
+  /** 模板文件相对路径，默认：&#x60;&quot;&quot;&#x60; */
+  path: string;
+  /** 模板字符串，如果提供将优先使用此渲染，默认：&#x60;undefined&#x60; */
+  tplStr: string;
+  /** 配置信息，将作为渲染引擎需要接受的configs字段下传，默认：&#x60;undefined&#x60; */
+  configs: any;
+  /** 默认的模板引擎，默认：&#x60;&quot;nunjunks&quot;&#x60; */
+  engine: T;
+  /** 模板引擎DI列表，可以动态merge合并配置，默认：&#x60;{ nunjunks: NunjunksEngine }&#x60; */
+  engines: {
+    [prop: string]: Constructor&lt;IViewEngine&gt;;
+  };
+  /** 当渲染错误(生产模式)需要走的执行逻辑 */
+  onError: Partial&lt;IErrorHandler&gt;;
+  /** 当渲染错误(开发模式)需要走的执行逻辑 */
+  onDevError: Partial&lt;IErrorHandler&gt;;
+}
+
+export const defaultRenderResultOptions: RenderResultOptions&lt;&quot;nunjunks&quot;&gt; &#x3D; {
+  astConf: {
+    use: false,
+    configs: undefined,
+    state: undefined
+  },
+  path: &quot;&quot;,
+  tplStr: undefined,
+  root: undefined,
+  configs: undefined,
+  engine: &quot;nunjunks&quot;,
+  engines: {
+    nunjunks: NunjunksEngine
+  },
+  onError: {
+    path: undefined,
+    tplStr: undefined,
+    content: _ &#x3D;&gt; &quot;Internal Server Error&quot;
+  },
+  onDevError: {
+    path: undefined,
+    tplStr: undefined,
+    content: (e, title) &#x3D;&gt; &#x60;
+      &lt;h3 style&#x3D;&quot;color: #ff3355;font-size: 32px;font-family: monospace;&quot;&gt;${(checkCustomError(
+        e
+      ) &amp;&amp;
+        &#x60;${title || &quot;Render Error&quot;} -- ${e.name}&#x60;) ||
+        (title || &quot;Render Error&quot;)}&lt;/h3&gt;
+      &lt;pre style&#x3D;&quot;font-size: 13px;color: #606060;background: #f6f6f6;padding: 12px;overflow-x: auto;&quot;&gt;${
+        e.stack
+      }&lt;/pre&gt;
+    &#x60;
+  }
+};
+
+function checkCustomError(error: Error) {
+  return error &amp;&amp; error.name &amp;&amp; error.name !&#x3D;&#x3D; &quot;Error&quot;;
+}
+
+/** RenderResult配置token */
+export const RENDER_RESULT_OPTIONS &#x3D; createOptions&lt;RenderResultOptions&gt;(
+  &quot;RENDER_RESULT_OPTIONS&quot;
+);
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'IErrorHandler.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
