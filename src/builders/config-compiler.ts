@@ -99,11 +99,11 @@ function readExcus(
       `const ${name} = ${
         typeof consts[name] === "function"
           ? consts[name].toString()
-          : JSON.stringify(consts[name])
+          : JSON.stringify(consts[name], null, "  ")
       };`
     )
   );
-  Object.keys(functions).forEach(func => sections.push(func.toString()));
+  (functions || []).forEach(func => sections.push(func.toString()));
   const exec: IConfigsCompiler<any> = new excuClass();
   finalExports = exec.configs(process);
   procedures = (exec.procedures && exec.procedures(process)) || [];
