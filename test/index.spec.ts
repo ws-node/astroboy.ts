@@ -4,7 +4,7 @@ import { defineUnit } from "./unit";
 
 defineUnit(["index", "Astroboy.ts index outputs"], () => {
   it("test astroboy.ts package exports", () => {
-    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(60);
+    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(58);
     expect(typeof Pkg.API, "[astroboy.ts].API").to.equal("function");
     expect(typeof Pkg.Astroboy, "[astroboy.ts].Astroboy").to.equal("function");
     expect(
@@ -75,9 +75,6 @@ defineUnit(["index", "Astroboy.ts index outputs"], () => {
       typeof Pkg.RENDER_RESULT_OPTIONS,
       "[astroboy.ts].RENDER_RESULT_OPTIONS"
     ).to.equal("object");
-    expect(typeof Pkg.ROUTER_OPTIONS, "[astroboy.ts].ROUTER_OPTIONS").to.equal(
-      "object"
-    );
     expect(typeof Pkg.Render, "[astroboy.ts].Render").to.equal("function");
     expect(typeof Pkg.RenderResult, "[astroboy.ts].RenderResult").to.equal(
       "function"
@@ -153,10 +150,6 @@ defineUnit(["index", "Astroboy.ts index outputs"], () => {
       typeof Pkg.preConfigCompiler,
       "[astroboy.ts].preConfigCompiler"
     ).to.equal("function");
-    expect(
-      typeof Pkg.CONFIG_COMPILER_OPTIONS,
-      "[astroboy.ts].CONFIG_COMPILER_OPTIONS"
-    ).to.equal("object");
     expect(typeof Pkg.ConfigReader, "[astroboy.ts].ConfigReader").to.equal(
       "function"
     );

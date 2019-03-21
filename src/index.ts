@@ -109,16 +109,12 @@ export {
 } from "./services/Configs";
 
 export {
-  CONFIG_COMPILER_OPTIONS,
   GLOBAL_ERROR,
   JSON_RESULT_OPTIONS,
   RENDER_RESULT_OPTIONS,
-  ROUTER_OPTIONS,
   STATIC_RESOLVER,
-  ConfigCompilerOptions,
   JsonResultOptions,
-  RenderResultOptions,
-  RouterOptions
+  RenderResultOptions
 } from "./options";
 
 export { Astroboy };
