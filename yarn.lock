@@ -90,10 +90,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@bigmogician/publisher@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.npmjs.org/@bigmogician/publisher/-/publisher-1.0.7.tgz#2cff49a2833509a6258e68090775ac8d387ce7ba"
-  integrity sha512-to/VoUmqyWN1yR1usKxS+B2O3vtqYtgDKjgkG55gPsk+IP1PDZZe78t4sOZ9bcjwfHpF7ajCvjGKGfXEnsS8HQ==
+"@bigmogician/publisher@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.npmjs.org/@bigmogician/publisher/-/publisher-1.0.8.tgz#48263df4c8717526aeaedc122544a47301f65c0d"
+  integrity sha512-TG2Is5corrcNLfziJ4ty/KIZawV2Psc+LtxqEvXoWPFF0k+jS9tS3jbvzZmxaTZgPbPBGCruIDsAcbiu2+2LcA==
 
 "@bonbons/di@^1.4.1-rc.2":
   version "1.4.1-rc.2"
