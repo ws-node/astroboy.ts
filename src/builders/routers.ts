@@ -24,7 +24,7 @@ export function initRouters(
       const routers: IRouter = {};
       const ctorPath = path.resolve(process.cwd(), base);
       const routerPath = path.resolve(process.cwd(), routerBase);
-      if (always) {
+      if (!!always) {
         // 硬核开关，强撸routers文件夹
         rimraf.sync(routerPath);
         fs.mkdirSync(routerPath);

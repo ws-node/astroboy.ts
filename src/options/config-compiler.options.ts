@@ -18,7 +18,7 @@ export interface ConfigCompilerOptions {
 export const defaultConfigCompilerOptions: ConfigCompilerOptions = {
   enabled: false,
   force: false,
-  configRoot: "config",
+  configRoot: "app/config",
   outRoot: "config"
 };
 
