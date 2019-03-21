@@ -35,11 +35,11 @@
 ### 安装
 
 ```
-npm install astroboy.ts
+npm install astroboy astroboy.ts
 ```
 
 ```
-yarn add astroboy.ts
+yarn add astroboy astroboy.ts
 ```
 
 ### 接入说明
@@ -52,6 +52,8 @@ yarn add astroboy.ts
 import path from "path";
 import { Server, Astroboy } from "astroboy.ts";
 
+// astroboy请手动安装，因为astroboy.ts只将其设置为开发依赖
+// 未安装astroboy，会引发npm解析错误
 Server.Create(Astroboy, {
   ROOT_PATH: path.resolve(__dirname, "..")
 }).run({
