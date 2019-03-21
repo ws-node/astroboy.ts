@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { ConfigCompilerOptions } from "../options";
+import { IConfigsCompiler } from "../services/ConfigReader";
 
 export function compileFn(options: Partial<ConfigCompilerOptions>) {
   const { enabled = false, force = false, configRoot, outRoot } = options;
@@ -25,27 +26,88 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
         const exports = require(sourcePath);
         if (!exports) return;
         let finalExports: any;
+        let imports: string[] = [];
+        let procedures: string[] = [];
         if (typeof exports === "function") {
-          finalExports = new exports().configs(process);
+          ({ finalExports, imports, procedures } = readExcus(
+            exports,
+            finalExports,
+            imports,
+            procedures
+          ));
         } else if (typeof exports === "object") {
           const { default: excuClass } = exports;
           if (typeof excuClass !== "function") {
             finalExports = exports;
           } else {
-            finalExports = new excuClass().configs(process);
+            ({ finalExports, imports, procedures } = readExcus(
+              excuClass,
+              finalExports,
+              imports,
+              procedures
+            ));
           }
         } else {
           finalExports = exports;
         }
-        const fileOutputStr = `module.exports = ${JSON.stringify(
-          finalExports,
-          null,
-          "  "
-        )}`;
-        // fileOutputStr.replace(/^('|"|`)/)
-        fs.appendFileSync(compiledPath, fileOutputStr, { flag: "w" });
+        const preRuns = [
+          "// [astroboy.ts] 自动生成的代码",
+          ...imports,
+          ...procedures
+        ].join("\n");
+        const fileOutputStr = connectExports(preRuns, finalExports);
+        fs.appendFileSync(
+          compiledPath,
+          // 解析表达式语法
+          resolveExpressions(fileOutputStr),
+          { flag: "w" }
+        );
       });
   } catch (e) {
     console.log(e);
   }
+}
+
+function readExcus(
+  excuClass: any,
+  finalExports: any,
+  imports: string[],
+  procedures: string[]
+) {
+  const exec: IConfigsCompiler<any> = new excuClass();
+  finalExports = exec.configs(process);
+  imports = (exec.imports && exec.imports(process)) || [];
+  procedures = (exec.imports && exec.procedures(process)) || [];
+  return { finalExports, imports, procedures };
+}
+
+function connectExports(preRuns: string, finalExports: any) {
+  return `${preRuns}\nmodule.exports = ${JSON.stringify(
+    readExpressions(finalExports),
+    null,
+    "  "
+  )}`;
+}
+
+function resolveExpressions(fileOutputStr: string): any {
+  return fileOutputStr.replace(
+    /['"`]{1}@expression::Symbol\((.+)\)['"`]{1}/g,
+    function($0, $1) {
+      // 恢复格式问题
+      return $1.replace(/\\/g, "");
+    }
+  );
+}
+
+function readExpressions(target: any) {
+  if (typeof target === "object") {
+    for (const k in target) {
+      if (typeof target[k] === "object") {
+        target[k] = readExpressions(target[k]);
+      } else if (typeof target[k] === "symbol") {
+        target[k] = `@expression::${target[k].toString()}`;
+      }
+    }
+  }
+  return target;
 }

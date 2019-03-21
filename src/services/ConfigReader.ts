@@ -1,16 +1,25 @@
 import { AstroboyContext } from "./AstroboyContext";
 import { Injectable } from "../decorators/injectable";
 
-export interface IStrictConfigsCompiler<T> {
+interface BaseCompiler<T> {
+  imports?(process: NodeJS.Process): string[];
+  procedures?(process: NodeJS.Process): string[];
+}
+
+export interface IStrictConfigsCompiler<T> extends BaseCompiler<T> {
   configs(process: NodeJS.Process): T;
 }
 
-export interface IConfigsCompiler<T> {
+export interface IConfigsCompiler<T> extends BaseCompiler<T> {
   configs(process: NodeJS.Process): Partial<T>;
 }
 
 @Injectable()
 export class ConfigReader<T extends { [prop: string]: any } = {}> {
+  static Expression<T = any>(expression: string) {
+    return Symbol(expression) as any;
+  }
+
   public get global(): T {
     return this.read();
   }
