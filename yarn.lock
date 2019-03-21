@@ -90,15 +90,15 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@bigmogician/publisher@^1.0.2":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@bigmogician/publisher/-/publisher-1.0.4.tgz#1e908be940b70f56938c056e67c9c8b773c66456"
-  integrity sha512-lQ7Ev/BNJ+jzIjzZwtC7mSwq9DmzVzr4v7qfrOW35si2e8aXIiSg6Glc2qJmiknuzsKWEtIsxuz+ptZl676Fgw==
+"@bigmogician/publisher@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.npmjs.org/@bigmogician/publisher/-/publisher-1.0.7.tgz#2cff49a2833509a6258e68090775ac8d387ce7ba"
+  integrity sha512-to/VoUmqyWN1yR1usKxS+B2O3vtqYtgDKjgkG55gPsk+IP1PDZZe78t4sOZ9bcjwfHpF7ajCvjGKGfXEnsS8HQ==
 
-"@bonbons/di@^1.3.5":
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@bonbons/di/-/di-1.3.5.tgz#cbad1e00c3d9bd3be96e19fa9150780a6ec87dc1"
-  integrity sha512-YsJIGb+LPxIDbwhtgf9Y/qkQMHW/kThiybWpy+w/HfHRDVddEmyqj/4fs7WaDaZokhTN2ZIEzzyKtP6g8CbHkQ==
+"@bonbons/di@^1.4.1-rc.2":
+  version "1.4.1-rc.2"
+  resolved "https://registry.npmjs.org/@bonbons/di/-/di-1.4.1-rc.2.tgz#aab96530db055abf6c7c6b0c4b198f29f86baa8e"
+  integrity sha512-jE+Ia451AvjgDh5VNElyvV51242D5VZSaIaNVA0W6DX/BaRAWzl8+3PDf4oznFC1ZuWxQ81vNuuweDBNANR/0w==
   dependencies:
     reflect-metadata "0.1.12"
 

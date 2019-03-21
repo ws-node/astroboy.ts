@@ -23,6 +23,14 @@ export interface RouterConfig {
   tsconfig?: string;
 }
 
+export interface ConfigCompilerConfig {
+  enabled?: boolean;
+  force?: boolean;
+  configroot?: string;
+  outputroot?: string;
+  tsconfig?: string;
+}
+
 export interface CmdConfig {
   tsconfig?: string;
   inspect?: boolean;
@@ -35,6 +43,7 @@ export interface CmdConfig {
   typeCheck?: boolean;
   transpile?: boolean;
   routers?: RouterConfig;
+  configCompiler?: ConfigCompilerConfig;
 }
 
 export interface InnerCmdConfig extends CmdConfig {
@@ -76,6 +85,10 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     routers: {
       ...get(merge, "routers", {}),
       ...get(config, "routers", {})
+    },
+    configCompiler: {
+      ...get(merge, "configCompiler", {}),
+      ...get(config, "configCompiler", {})
     }
   };
 }

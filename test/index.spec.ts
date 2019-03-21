@@ -4,7 +4,7 @@ import { defineUnit } from "./unit";
 
 defineUnit(["index", "Astroboy.ts index outputs"], () => {
   it("test astroboy.ts package exports", () => {
-    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(59);
+    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(60);
     expect(typeof Pkg.API, "[astroboy.ts].API").to.equal("function");
     expect(typeof Pkg.Astroboy, "[astroboy.ts].Astroboy").to.equal("function");
     expect(
@@ -119,18 +119,6 @@ defineUnit(["index", "Astroboy.ts index outputs"], () => {
     expect(typeof Pkg.defaultEnv, "[astroboy.ts].defaultEnv").to.equal(
       "object"
     );
-    expect(
-      typeof Pkg.defaultJsonResultOptions,
-      "[astroboy.ts].defaultJsonResultOptions"
-    ).to.equal("object");
-    expect(
-      typeof Pkg.defaultRenderResultOptions,
-      "[astroboy.ts].defaultRenderResultOptions"
-    ).to.equal("object");
-    expect(
-      typeof Pkg.defaultRouterOptions,
-      "[astroboy.ts].defaultRouterOptions"
-    ).to.equal("object");
     expect(typeof Pkg.defaultView, "[astroboy.ts].defaultView").to.equal(
       "object"
     );
@@ -152,11 +140,25 @@ defineUnit(["index", "Astroboy.ts index outputs"], () => {
     expect(typeof Pkg.GLOBAL_ERROR, "[astroboy.ts].GLOBAL_ERROR").to.equal(
       "object"
     );
-    expect(
-      typeof Pkg.defaultGlobalError,
-      "[astroboy.ts].defaultGlobalError"
-    ).to.equal("object");
     // 20190222
     expect(typeof Pkg.Bundles, "[astroboy.ts].Bundles").to.equal("object");
+    // 20190306
+    expect(
+      typeof Pkg.ReactiveSingleton,
+      "[astroboy.ts].ReactiveSingleton"
+    ).to.equal("function");
+    expect(typeof Pkg.Watch, "[astroboy.ts].Watch").to.equal("function");
+    // 20190320
+    expect(
+      typeof Pkg.preConfigCompiler,
+      "[astroboy.ts].preConfigCompiler"
+    ).to.equal("function");
+    expect(
+      typeof Pkg.CONFIG_COMPILER_OPTIONS,
+      "[astroboy.ts].CONFIG_COMPILER_OPTIONS"
+    ).to.equal("object");
+    expect(typeof Pkg.ConfigReader, "[astroboy.ts].ConfigReader").to.equal(
+      "function"
+    );
   });
 });

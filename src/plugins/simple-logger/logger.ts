@@ -6,8 +6,11 @@ import { SimpleLogLevel } from "./base";
 
 function createStamp(date?: Date): string {
   const tData = date || new Date();
+  const mili = tData.getMilliseconds();
   return `[${chalk.cyan(
-    `${tData.toLocaleDateString()} ${tData.toLocaleTimeString()}:${tData.getMilliseconds()}`
+    `${tData.toLocaleDateString()} ${tData.toLocaleTimeString()}:${
+      mili < 100 ? `0${mili}` : mili
+    }`
   )}]-`;
 }
 
@@ -61,5 +64,29 @@ export class SimpleLogger {
   public debug(title: string, details: any): void;
   public debug(...msg: any[]) {
     return this.log(SimpleLogLevel.DEBUG, ...msg);
+  }
+
+  public info(title: string): void;
+  public info(title: string, details: any): void;
+  public info(...msg: any[]) {
+    return this.log(SimpleLogLevel.INFO, ...msg);
+  }
+
+  public warn(title: string): void;
+  public warn(title: string, details: any): void;
+  public warn(...msg: any[]) {
+    return this.log(SimpleLogLevel.WARN, ...msg);
+  }
+
+  public error(title: string): void;
+  public error(title: string, details: any): void;
+  public error(...msg: any[]) {
+    return this.log(SimpleLogLevel.ERROR, ...msg);
+  }
+
+  public fatal(title: string): void;
+  public fatal(title: string, details: any): void;
+  public fatal(...msg: any[]) {
+    return this.log(SimpleLogLevel.FATAL, ...msg);
   }
 }
