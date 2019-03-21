@@ -1,3 +1,7 @@
-const runner = require("./pkg.base");
+const config = require("./pkg.base");
 
-runner({ rc: true, add: 1 });
+module.exports = {
+  ...config,
+  rc: true,
+  add: 1
+};

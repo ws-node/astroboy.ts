@@ -9,7 +9,7 @@ document:
 	npx compodoc --language zh-CN -c .compodocrc.yaml
 
 rc: build
-	node ./scripts/pkg.rc.js
+	npx bmpub publish -C ./pkg.rc.js
 
 publish: build
-	node ./scripts/pkg.build.js
+	npx bmpub publish -C ./pkg.build.js

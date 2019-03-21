@@ -1,6 +1,6 @@
 import isPlainObject from "lodash/isPlainObject";
 import set from "lodash/set";
-import { Injectable } from "../decorators";
+import { Injectable } from "../decorators/injectable";
 import { AstroboyContext } from "./AstroboyContext";
 import { resolveKeys } from "../utils";
 import { JsonResolvers } from "../results/json";

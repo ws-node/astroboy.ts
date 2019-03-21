@@ -1,11 +1,14 @@
 import merge from "lodash/merge";
 import { IResult, IResultScope } from "../typings/IResult";
-import { RenderResultOptions, RENDER_RESULT_OPTIONS } from "../options";
 import { Context } from "../services/Context";
 import { SimpleLogger } from "../plugins/simple-logger";
 import { ENV } from "../configs/env.config";
 import { IContext } from "../typings/IContext";
 import { Render } from "../services/Render";
+import {
+  RenderResultOptions,
+  RENDER_RESULT_OPTIONS
+} from "../options/render.options";
 
 /**
  * ## Body渲染约定的实现

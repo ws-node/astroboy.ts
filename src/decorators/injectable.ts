@@ -22,13 +22,13 @@ interface IInjectableConfigs<T = any> {
  * }>} [config]
  * @returns
  */
-export function Injectable(): <T>(target: Constructor<T>) => Constructor<T>;
+export function Injectable(): <T>(target: Constructor<T>) => any;
 export function Injectable(
   scope: InjectScope
-): <T>(target: Constructor<T>) => Constructor<T>;
+): <T>(target: Constructor<T>) => any;
 export function Injectable(
   config: Partial<IInjectableConfigs>
-): <T>(target: Constructor<T>) => Constructor<T>;
+): <T>(target: Constructor<T>) => any;
 export function Injectable(config?: InjectScope | Partial<IInjectableConfigs>) {
   return function<T>(target: Constructor<T>) {
     let token: InjectToken<any> = undefined;
@@ -47,7 +47,7 @@ export function Injectable(config?: InjectScope | Partial<IInjectableConfigs>) {
     }
     const prototype: IBaseInjectable = target.prototype;
     prototype.__valid = true;
-    GlobalDI.register(token || target, target, scope);
+    GlobalDI.register({ token: token || target, imp: target, scope });
     return <Constructor<T>>target;
   };
 }

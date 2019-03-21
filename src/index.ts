@@ -3,7 +3,9 @@ import { ControllerConstructor } from "astroboy-router/dist/metadata";
 import { createRouter } from "astroboy-router";
 import { GlobalImplements } from "./utils";
 import { copyPrototype } from "./decorators/controller";
-import { initRouters } from "./builders";
+import { initRouters } from "./builders/routers";
+import { compileFn } from "./builders/config-compiler";
+import { ConfigCompilerOptions } from "./options/config-compiler.options";
 
 /**
  * ## 构建路由
@@ -56,6 +58,17 @@ export function preInitFn(configs: Partial<IPreProcess>, inEnd?) {
   return initRouters(configs, inEnd);
 }
 
+/**
+ * ## astroboy.ts 配置文件预处理函数
+ * * 硬核初始化config
+ * @author Big Mogician
+ * @export
+ * @param {Partial<ConfigCompilerOptions>} configs
+ */
+export function preConfigCompiler(configs: Partial<ConfigCompilerOptions>) {
+  return compileFn(configs);
+}
+
 export * from "astroboy-router";
 export * from "./decorators";
 export * from "./middlewares";
@@ -64,15 +77,17 @@ export * from "./services/Context";
 export * from "./services/BaseClass";
 export * from "./services/AstroboyContext";
 export * from "./services/Render";
+export * from "./services/ConfigReader";
 export * from "./server";
 export * from "./configs";
-export * from "./options";
 export * from "./typings/IContext";
 export * from "./typings/IResult";
 export * from "./typings/IViewEngine";
 export * from "./typings/IStaticTypeResolver";
 export * from "./results/json";
 export * from "./results/render";
+
+export { Bundles } from "./bundle";
 
 export {
   TypedSerializer,
@@ -92,5 +107,18 @@ export {
   TokenGenerator,
   InjectScope
 } from "./services/Configs";
+
+export {
+  CONFIG_COMPILER_OPTIONS,
+  GLOBAL_ERROR,
+  JSON_RESULT_OPTIONS,
+  RENDER_RESULT_OPTIONS,
+  ROUTER_OPTIONS,
+  STATIC_RESOLVER,
+  ConfigCompilerOptions,
+  JsonResultOptions,
+  RenderResultOptions,
+  RouterOptions
+} from "./options";
 
 export { Astroboy };

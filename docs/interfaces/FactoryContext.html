@@ -501,6 +501,190 @@ export class Server {
     return this.preInject(InjectScope.New, &lt;any&gt;args);
   }
 
+  /**
+   * ### 启动app
+   * @description
+   * @author Big Mogician
+   * @param {Partial&lt;{
+   *     onStart: (app) &#x3D;&gt; void;
+   *     onError: (error, ctx) &#x3D;&gt; void;
+   *   }&gt;} [events]
+   * @memberof Server
+   */
+  public run(
+    events?: Partial&lt;{
+      onStart: (app) &#x3D;&gt; void;
+      onError: (error, ctx) &#x3D;&gt; void;
+    }&gt;
+  ) {
+    this.init();
+    this.finalInjectionsInit();
+    this.startApp(events);
+  }
+
+  //#region 支持继承树覆写和扩展
+
+  /**
+   * ## 初始化Configs配置
+   * * 🌟 在继承树中重载此方法以进行框架扩展
+   * * 在 &#x60;Server.prototype.initInjections&#x60; 函数之前执行
+   *
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected initOptions() {
+    this.option(ENV, defaultEnv);
+    this.option(CONFIG_VIEW, defaultView);
+    this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
+    this.option(RENDER_RESULT_OPTIONS, defaultRenderResultOptions);
+    this.option(STATIC_RESOLVER, TypedSerializer);
+    this.option(ROUTER_OPTIONS, defaultRouterOptions);
+    this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
+    this.option(SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions);
+    this.option(GLOBAL_ERROR, defaultGlobalError);
+  }
+
+  /**
+   * ## 初始化DI注入关系配置
+   * * 🌟 在继承树中重载此方法以进行框架扩展
+   * * 在 &#x60;Server.prototype.initOptions&#x60; 函数之后执行
+   *
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected initInjections() {
+    // 不允许装饰器复写
+    this.scoped(AstroboyContext);
+    this.scoped(Scope);
+    this.singleton(SimpleLogger);
+    // 允许被装饰器复写
+    this.directInject(InjectScope.Scope, [NunjunksEngine]);
+    this.directInject(InjectScope.Scope, [Render]);
+  }
+
+  /**
+   * ## 处理合并与接受configs配置
+   *
+   * @author Big Mogician
+   * @protected
+   * @param {any} [configs&#x3D;{}] app.configs
+   * @memberof Server
+   */
+  protected readConfigs(configs: any &#x3D; {}) {
+    this.configs.toArray().forEach(({ token }) &#x3D;&gt; {
+      const key &#x3D; token.key.toString();
+      if (/Symbol\(config::(.+)\)$/.test(key)) {
+        this.option(token, configs[RegExp.$1] || {});
+      }
+    });
+  }
+
+  /**
+   * ## 处理运行时参数
+   *
+   * @author Big Mogician
+   * @protected
+   * @template A extends Koa
+   * @param {Koa} app
+   * @memberof Server
+   */
+  protected readRuntimeEnv&lt;A extends Koa&gt;(app: A) {
+    this.option(ENV, { env: app.env || &quot;development&quot; });
+  }
+
+  /**
+   * ## 按照配置设置DI的解析方式
+   * - &#x60;native&#x60; : 原生模式，最高的还原度，没有黑盒
+   * - &#x60;proxy&#x60; : Proxy代理模式，追求更高性能的惰性解析
+   * @description
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected resetDIResolver() {
+    const { diType } &#x3D; this.configs.get(ENV);
+    this.di.resetConfigs({ type: diType });
+  }
+
+  /**
+   * ## 解析Bundles
+   *
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected resolveBundles() {
+    _innerBundle[&quot;@singletons&quot;].forEach(args &#x3D;&gt; this.singleton(...args));
+    _innerBundle[&quot;@scopeds&quot;].forEach(args &#x3D;&gt; this.scoped(...args));
+    _innerBundle[&quot;@uniques&quot;].forEach(args &#x3D;&gt; this.unique(...args));
+    _innerBundle[&quot;@options&quot;].forEach(args &#x3D;&gt; this.option(...args));
+  }
+
+  /**
+   * ## 完成DI容器初始化并锁定
+   * @description
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected resolveInjections() {
+    this.preSingletons.forEach(([token, srv]) &#x3D;&gt;
+      this.sendInjection(token, srv, InjectScope.Singleton)
+    );
+    this.preScopeds.forEach(([token, srv]) &#x3D;&gt;
+      this.sendInjection(token, srv, InjectScope.Scope)
+    );
+    this.preUniques.forEach(([token, srv]) &#x3D;&gt;
+      this.sendInjection(token, srv, InjectScope.New)
+    );
+    this.di.complete();
+  }
+
+  //#endregion
+
+  private preInit() {
+    this.initOptions();
+    this.initInjections();
+  }
+
+  private init() {
+    this.initRouters();
+  }
+
+  private initRouters() {
+    initRouters(&lt;InnerRouterOptions&gt;this.configs.get(ROUTER_OPTIONS));
+    return this;
+  }
+
+  private finalInjectionsInit() {
+    this.initConfigCollection();
+    this.initInjectService();
+    this.initContextProvider();
+  }
+
+  private startApp(
+    events?: Partial&lt;{
+      onStart: (app) &#x3D;&gt; void;
+      onError: (error, ctx) &#x3D;&gt; void;
+    }&gt;
+  ) {
+    const { onStart &#x3D; undefined, onError &#x3D; undefined } &#x3D; events || {};
+    new (this.appBuilder || Astroboy)(this.appConfigs || {})
+      .on(&quot;start&quot;, (app: Koa) &#x3D;&gt; {
+        this.readConfigs(app[&quot;config&quot;]);
+        this.readRuntimeEnv(app);
+        this.resetDIResolver();
+        this.resolveBundles();
+        this.resolveInjections();
+        onStart &amp;&amp; onStart(app);
+      })
+      .on(&quot;error&quot;, (error, ctx) &#x3D;&gt; {
+        onError &amp;&amp; onError(error, ctx);
+      });
+  }
+
   /** 预注册，会覆盖装饰器的定义注册 */
   private preInject(type: InjectScope, service: Constructor&lt;any&gt;): this;
   private preInject(
@@ -544,6 +728,17 @@ export class Server {
     return this;
   }
 
+  /**
+   * DI项最终注册登记
+   *
+   * @author Big Mogician
+   * @private
+   * @param {any} token
+   * @param {any} inject
+   * @param {InjectScope} scope
+   * @returns
+   * @memberof Server
+   */
   private sendInjection(token: any, inject: any, scope: InjectScope) {
     if (!DIContainer.isFactory(inject)) {
       return this.di.register(token, inject, scope);
@@ -561,151 +756,6 @@ export class Server {
       },
       scope
     );
-  }
-
-  /**
-   * ### 启动app
-   * @description
-   * @author Big Mogician
-   * @param {Partial&lt;{
-   *     onStart: (app) &#x3D;&gt; void;
-   *     onError: (error, ctx) &#x3D;&gt; void;
-   *   }&gt;} [events]
-   * @memberof Server
-   */
-  public run(
-    events?: Partial&lt;{
-      onStart: (app) &#x3D;&gt; void;
-      onError: (error, ctx) &#x3D;&gt; void;
-    }&gt;
-  ) {
-    this.init();
-    this.finalInjectionsInit();
-    this.startApp(events);
-  }
-
-  private preInit() {
-    this.initOptions();
-    this.initInjections();
-  }
-
-  private init() {
-    this.initRouters();
-  }
-
-  private initOptions() {
-    this.option(ENV, defaultEnv);
-    this.option(CONFIG_VIEW, defaultView);
-    this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
-    this.option(RENDER_RESULT_OPTIONS, defaultRenderResultOptions);
-    this.option(STATIC_RESOLVER, TypedSerializer);
-    this.option(ROUTER_OPTIONS, defaultRouterOptions);
-    this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
-    this.option(SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions);
-    this.option(GLOBAL_ERROR, defaultGlobalError);
-  }
-
-  private initInjections() {
-    // 不允许装饰器复写
-    this.scoped(AstroboyContext);
-    this.scoped(Scope);
-    this.singleton(SimpleLogger);
-    // 允许被装饰器复写
-    this.directInject(InjectScope.Scope, [NunjunksEngine]);
-    this.directInject(InjectScope.Scope, [Render]);
-  }
-
-  private initRouters() {
-    initRouters(&lt;InnerRouterOptions&gt;this.configs.get(ROUTER_OPTIONS));
-    return this;
-  }
-
-  private finalInjectionsInit() {
-    this.initConfigCollection();
-    this.initInjectService();
-    this.initContextProvider();
-  }
-
-  private readConfigs(configs: any &#x3D; {}) {
-    this.configs.toArray().forEach(({ token }) &#x3D;&gt; {
-      const key &#x3D; token.key.toString();
-      if (/Symbol\(config::(.+)\)$/.test(key)) {
-        this.option(token, configs[RegExp.$1] || {});
-      }
-    });
-  }
-
-  private startApp(
-    events?: Partial&lt;{
-      onStart: (app) &#x3D;&gt; void;
-      onError: (error, ctx) &#x3D;&gt; void;
-    }&gt;
-  ) {
-    const { onStart &#x3D; undefined, onError &#x3D; undefined } &#x3D; events || {};
-    new (this.appBuilder || Astroboy)(this.appConfigs || {})
-      .on(&quot;start&quot;, (app: Koa) &#x3D;&gt; {
-        this.readConfigs(app[&quot;config&quot;]);
-        this.readRuntimeEnv(app);
-        this.resetDIResolver();
-        this.resolveBundles();
-        this.resolveInjections();
-        onStart &amp;&amp; onStart(app);
-      })
-      .on(&quot;error&quot;, (error, ctx) &#x3D;&gt; {
-        onError &amp;&amp; onError(error, ctx);
-      });
-  }
-
-  private readRuntimeEnv(app: Koa) {
-    this.option(ENV, { env: app.env || &quot;development&quot; });
-  }
-
-  /**
-   * ## 按照配置设置DI的解析方式
-   * * &#x60;native&#x60; : 原生模式
-   * * &#x60;proxy&#x60; : Proxy代理模式
-   * @description
-   * @author Big Mogician
-   * @private
-   * @memberof Server
-   */
-  private resetDIResolver() {
-    const { diType } &#x3D; this.configs.get(ENV);
-    this.di.resetConfigs({ type: diType });
-  }
-
-  /**
-   * ## 解析Bundles
-   *
-   * @author Big Mogician
-   * @private
-   * @memberof Server
-   */
-  private resolveBundles() {
-    _innerBundle[&quot;@singletons&quot;].forEach(args &#x3D;&gt; this.singleton(...args));
-    _innerBundle[&quot;@scopeds&quot;].forEach(args &#x3D;&gt; this.scoped(...args));
-    _innerBundle[&quot;@uniques&quot;].forEach(args &#x3D;&gt; this.unique(...args));
-    _innerBundle[&quot;@options&quot;].forEach(args &#x3D;&gt; this.option(...args));
-  }
-
-  /**
-   * ## 完成DI容器初始化并锁定
-   * @description
-   * @author Big Mogician
-   * @private
-   * @memberof Server
-   */
-  private resolveInjections() {
-    this.preSingletons.forEach(([token, srv]) &#x3D;&gt;
-      this.sendInjection(token, srv, InjectScope.Singleton)
-    );
-    this.preScopeds.forEach(([token, srv]) &#x3D;&gt;
-      this.sendInjection(token, srv, InjectScope.Scope)
-    );
-    this.preUniques.forEach(([token, srv]) &#x3D;&gt;
-      this.sendInjection(token, srv, InjectScope.New)
-    );
-    this.di.complete();
   }
 
   /**

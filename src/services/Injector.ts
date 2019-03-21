@@ -1,9 +1,8 @@
-import { InjectDIToken, ScopeID } from "@bonbons/di";
+import { InjectDIToken, ScopeID, ReadonlyDIContainer } from "@bonbons/di";
 
 export namespace InjectService {
-  export interface Contract {
+  export interface Contract extends ReadonlyDIContainer {
     readonly scopeId: ScopeID;
-    get<T>(token: InjectDIToken<T>): T;
   }
 }
 
