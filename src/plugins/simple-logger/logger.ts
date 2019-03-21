@@ -9,7 +9,7 @@ function createStamp(date?: Date): string {
   const mili = tData.getMilliseconds();
   return `[${chalk.cyan(
     `${tData.toLocaleDateString()} ${tData.toLocaleTimeString()}:${
-      mili < 100 ? `0${mili}` : mili
+      mili < 10 ? `00${mili}` : mili < 100 ? `0${mili}` : mili
     }`
   )}]-`;
 }
