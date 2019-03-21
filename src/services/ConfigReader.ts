@@ -36,6 +36,23 @@ export interface IStrictConfigsCompiler<T> extends BaseCompiler<T> {
 }
 
 /**
+ * astroboy基础配置结构
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IAstroboyBaseConfigs
+ */
+export interface IAstroboyBaseConfigs {
+  view: {
+    root: string;
+    cache: false;
+    defaultExtension: string;
+    defaultViewEngine: string;
+    mapping: { [prop: string]: any };
+  };
+}
+
+/**
  * 松散configs预编译接口
  * * 需要实现部分的configs接口
  * * 适合非config.default.ts的文件使用
