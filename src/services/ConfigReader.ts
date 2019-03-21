@@ -1,6 +1,14 @@
 import { AstroboyContext } from "./AstroboyContext";
 import { Injectable } from "../decorators/injectable";
 
+export interface IStrictConfigsCompiler<T> {
+  configs(process: NodeJS.Process): T;
+}
+
+export interface IConfigsCompiler<T> {
+  configs(process: NodeJS.Process): Partial<T>;
+}
+
 @Injectable()
 export class ConfigReader<T extends { [prop: string]: any } = {}> {
   public get global(): T {

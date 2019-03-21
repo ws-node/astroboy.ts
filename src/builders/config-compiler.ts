@@ -20,9 +20,19 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
         )}`;
         if (fs.existsSync(compiledPath) && !force) return;
         const exports = require(sourcePath);
-        // const fileString = fs.readFileSync(sourcePath, { flag: "r" });
+        if (!exports) return;
+        let finalExports: any;
+        if (typeof exports === "function") {
+          finalExports = new exports().configs(process);
+        } else if (typeof exports === "object") {
+          const { default: excuClass } = exports;
+          if (typeof excuClass !== "function") return;
+          finalExports = new excuClass().configs(process);
+        } else {
+          finalExports = exports;
+        }
         const fileOutputStr = `module.exports = ${JSON.stringify(
-          exports,
+          finalExports,
           null,
           "  "
         )}`;
