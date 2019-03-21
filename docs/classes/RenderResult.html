@@ -144,7 +144,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">被定义在 <a href="" data-line="20" class="link-to-prism">src/results/render.ts:20</a></div>
+                                <div class="io-line">被定义在 <a href="" data-line="23" class="link-to-prism">src/results/render.ts:23</a></div>
                             </td>
                         </tr>
 
@@ -208,7 +208,7 @@
                     </tr>
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">被定义在 <a href="" data-line="20" class="link-to-prism">src/results/render.ts:20</a></div>
+                                    <div class="io-line">被定义在 <a href="" data-line="23" class="link-to-prism">src/results/render.ts:23</a></div>
                             </td>
                         </tr>
 
@@ -246,7 +246,7 @@
 
                         <tr>
                             <td class="col-md-4">
-                                    <div class="io-line">被定义在 <a href="" data-line="27" class="link-to-prism">src/results/render.ts:27</a></div>
+                                    <div class="io-line">被定义在 <a href="" data-line="30" class="link-to-prism">src/results/render.ts:30</a></div>
                             </td>
                         </tr>
 
@@ -307,12 +307,15 @@
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import merge from &quot;lodash/merge&quot;;
 import { IResult, IResultScope } from &quot;../typings/IResult&quot;;
-import { RenderResultOptions, RENDER_RESULT_OPTIONS } from &quot;../options&quot;;
 import { Context } from &quot;../services/Context&quot;;
 import { SimpleLogger } from &quot;../plugins/simple-logger&quot;;
 import { ENV } from &quot;../configs/env.config&quot;;
 import { IContext } from &quot;../typings/IContext&quot;;
 import { Render } from &quot;../services/Render&quot;;
+import {
+  RenderResultOptions,
+  RENDER_RESULT_OPTIONS
+} from &quot;../options/render.options&quot;;
 
 /**
  * ## Body渲染约定的实现

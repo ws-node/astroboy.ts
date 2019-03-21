@@ -97,6 +97,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                     <a href="injectables/AstroboyContext.html" data-type="entity-link">AstroboyContext</a>
                                 </li>
                                 <li class="link">
+                                    <a href="injectables/ConfigReader.html" data-type="entity-link">ConfigReader</a>
+                                </li>
+                                <li class="link">
                                     <a href="injectables/NunjunksEngine.html" data-type="entity-link">NunjunksEngine</a>
                                 </li>
                                 <li class="link">
@@ -119,6 +122,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                         </div>
                         <ul class="links collapse" ${ isNormalMode ? ' id="interfaces-links"' : 'id="xs-interfaces-links"' }>
                             <li class="link">
+                                <a href="interfaces/BaseCompiler.html" data-type="entity-link">BaseCompiler</a>
+                            </li>
+                            <li class="link">
                                 <a href="interfaces/CancellationTokenData.html" data-type="entity-link">CancellationTokenData</a>
                             </li>
                             <li class="link">
@@ -132,6 +138,12 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="interfaces/Config-1.html" data-type="entity-link">Config</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/ConfigCompilerConfig.html" data-type="entity-link">ConfigCompilerConfig</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/ConfigCompilerOptions.html" data-type="entity-link">ConfigCompilerOptions</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/ConfigEntry.html" data-type="entity-link">ConfigEntry</a>
@@ -167,7 +179,10 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="interfaces/Env-1.html" data-type="entity-link">Env</a>
                             </li>
                             <li class="link">
-                                <a href="interfaces/FactoryContext.html" data-type="entity-link">FactoryContext</a>
+                                <a href="interfaces/IConfigCmdOptions.html" data-type="entity-link">IConfigCmdOptions</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/IConfigsCompiler.html" data-type="entity-link">IConfigsCompiler</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/IContext.html" data-type="entity-link">IContext</a>
@@ -198,6 +213,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="interfaces/InnerCmdConfig.html" data-type="entity-link">InnerCmdConfig</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/InnerConfigCompilerOptions.html" data-type="entity-link">InnerConfigCompilerOptions</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/InnerRouterOptions.html" data-type="entity-link">InnerRouterOptions</a>
@@ -231,6 +249,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="interfaces/IStaticTypedResolver.html" data-type="entity-link">IStaticTypedResolver</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/IStrictConfigsCompiler.html" data-type="entity-link">IStrictConfigsCompiler</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/IView.html" data-type="entity-link">IView</a>

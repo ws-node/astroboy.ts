@@ -183,13 +183,13 @@ interface IInjectableConfigs&lt;T &#x3D; any&gt; {
  * }&gt;} [config]
  * @returns
  */
-export function Injectable(): &lt;T&gt;(target: Constructor&lt;T&gt;) &#x3D;&gt; Constructor&lt;T&gt;;
+export function Injectable(): &lt;T&gt;(target: Constructor&lt;T&gt;) &#x3D;&gt; any;
 export function Injectable(
   scope: InjectScope
-): &lt;T&gt;(target: Constructor&lt;T&gt;) &#x3D;&gt; Constructor&lt;T&gt;;
+): &lt;T&gt;(target: Constructor&lt;T&gt;) &#x3D;&gt; any;
 export function Injectable(
   config: Partial&lt;IInjectableConfigs&gt;
-): &lt;T&gt;(target: Constructor&lt;T&gt;) &#x3D;&gt; Constructor&lt;T&gt;;
+): &lt;T&gt;(target: Constructor&lt;T&gt;) &#x3D;&gt; any;
 export function Injectable(config?: InjectScope | Partial&lt;IInjectableConfigs&gt;) {
   return function&lt;T&gt;(target: Constructor&lt;T&gt;) {
     let token: InjectToken&lt;any&gt; &#x3D; undefined;
@@ -208,7 +208,7 @@ export function Injectable(config?: InjectScope | Partial&lt;IInjectableConfigs&
     }
     const prototype: IBaseInjectable &#x3D; target.prototype;
     prototype.__valid &#x3D; true;
-    GlobalDI.register(token || target, target, scope);
+    GlobalDI.register({ token: token || target, imp: target, scope });
     return &lt;Constructor&lt;T&gt;&gt;target;
   };
 }

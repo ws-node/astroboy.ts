@@ -58,19 +58,19 @@
                 <td class="col-md-4">
                     <ul class="index-list">
                         <li>
-                            <a href="#_innerBundle" title="src/server.ts"><b>_innerBundle</b>&nbsp;&nbsp;&nbsp;(src/.../server.ts)</a>
-                        </li>
-                        <li>
                             <a href="#$$injector" title="src/decorators/controller.ts"><b>$$injector</b>&nbsp;&nbsp;&nbsp;(src/.../controller.ts)</a>
                         </li>
                         <li>
                             <a href="#BC" title="src/services/BaseClass.ts"><b>BC</b>&nbsp;&nbsp;&nbsp;(src/.../BaseClass.ts)</a>
                         </li>
                         <li>
-                            <a href="#Bundles" title="src/server.ts"><b>Bundles</b>&nbsp;&nbsp;&nbsp;(src/.../server.ts)</a>
+                            <a href="#Bundles" title="src/bundle.ts"><b>Bundles</b>&nbsp;&nbsp;&nbsp;(src/.../bundle.ts)</a>
                         </li>
                         <li>
                             <a href="#Colors" title="src/utils.ts"><b>Colors</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#CONFIG_COMPILER_OPTIONS" title="src/options/config-compiler.options.ts"><b>CONFIG_COMPILER_OPTIONS</b>&nbsp;&nbsp;&nbsp;(src/.../config-compiler.options.ts)</a>
                         </li>
                         <li>
                             <a href="#CONFIG_VIEW" title="src/configs/view.config.ts"><b>CONFIG_VIEW</b>&nbsp;&nbsp;&nbsp;(src/.../view.config.ts)</a>
@@ -80,6 +80,9 @@
                         </li>
                         <li>
                             <a href="#createOptions" title="src/services/Configs.ts"><b>createOptions</b>&nbsp;&nbsp;&nbsp;(src/.../Configs.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#defaultConfigCompilerOptions" title="src/options/config-compiler.options.ts"><b>defaultConfigCompilerOptions</b>&nbsp;&nbsp;&nbsp;(src/.../config-compiler.options.ts)</a>
                         </li>
                         <li>
                             <a href="#defaultEnv" title="src/configs/env.config.ts"><b>defaultEnv</b>&nbsp;&nbsp;&nbsp;(src/.../env.config.ts)</a>
@@ -118,10 +121,16 @@
                             <a href="#GLOBAL_ERROR" title="src/options/errors.options.ts"><b>GLOBAL_ERROR</b>&nbsp;&nbsp;&nbsp;(src/.../errors.options.ts)</a>
                         </li>
                         <li>
+                            <a href="#" title="src/cmd/compile-configs.ts"><b></b>&nbsp;&nbsp;&nbsp;(src/.../compile-configs.ts)</a>
+                        </li>
+                        <li>
                             <a href="#GlobalDI" title="src/utils.ts"><b>GlobalDI</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
                         </li>
                         <li>
                             <a href="#GlobalImplements" title="src/utils.ts"><b>GlobalImplements</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#InnerBundle" title="src/bundle.ts"><b>InnerBundle</b>&nbsp;&nbsp;&nbsp;(src/.../bundle.ts)</a>
                         </li>
                         <li>
                             <a href="#INTERNAL_INJECTOR" title="src/decorators/controller.ts"><b>INTERNAL_INJECTOR</b>&nbsp;&nbsp;&nbsp;(src/.../controller.ts)</a>
@@ -139,10 +148,13 @@
                             <a href="#NUNJUNKS_OPTIONS" title="src/plugins/nunjunks/options.ts"><b>NUNJUNKS_OPTIONS</b>&nbsp;&nbsp;&nbsp;(src/.../options.ts)</a>
                         </li>
                         <li>
-                            <a href="#options" title="src/cmd/dev/options.ts"><b>options</b>&nbsp;&nbsp;&nbsp;(src/.../options.ts)</a>
+                            <a href="#options" title="src/cmd/router/options.ts"><b>options</b>&nbsp;&nbsp;&nbsp;(src/.../options.ts)</a>
                         </li>
                         <li>
-                            <a href="#options" title="src/cmd/router/options.ts"><b>options</b>&nbsp;&nbsp;&nbsp;(src/.../options.ts)</a>
+                            <a href="#options" title="src/cmd/config/options.ts"><b>options</b>&nbsp;&nbsp;&nbsp;(src/.../options.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#options" title="src/cmd/dev/options.ts"><b>options</b>&nbsp;&nbsp;&nbsp;(src/.../options.ts)</a>
                         </li>
                         <li>
                             <a href="#RENDER_RESULT_OPTIONS" title="src/options/render.options.ts"><b>RENDER_RESULT_OPTIONS</b>&nbsp;&nbsp;&nbsp;(src/.../render.options.ts)</a>
@@ -178,94 +190,6 @@
     </table>
 </section>
 
-    <h3>src/server.ts</h3>
-    <section>
-    <h3></h3>        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="_innerBundle"></a>
-                        <span class="name">
-                            <b>
-                            _innerBundle</b>
-                            <a href="#_innerBundle"><span class="icon ion-ios-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>类型 : </i>    <code><a href="../miscellaneous/typealiases.html#InnerBundle" target="_self" >InnerBundle</a></code>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>缺省值 : </i><code>Bundles as any</code>
-                        </td>
-                    </tr>
-
-
-            </tbody>
-        </table>
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="Bundles"></a>
-                        <span class="name">
-                            <b>
-                            Bundles</b>
-                            <a href="#Bundles"><span class="icon ion-ios-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>类型 : </i>    <code><a href="../classes/Server.html" target="_self" >ChangeReturn&lt;ServerBundle, ServerBundle&gt;</a></code>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>缺省值 : </i><code>{
-  option(...args: any[]): ServerBundle {
-    Bundles[&quot;@options&quot;].push(args);
-    return Bundles as any;
-  },
-  scoped(...args: any[]): ServerBundle {
-    Bundles[&quot;@scopeds&quot;].push(args);
-    return Bundles as any;
-  },
-  singleton(...args: any[]): ServerBundle {
-    Bundles[&quot;@singletons&quot;].push(args);
-    return Bundles as any;
-  },
-  unique(...args: any[]): ServerBundle {
-    Bundles[&quot;@uniques&quot;].push(args);
-    return Bundles as any;
-  },
-  &quot;@options&quot;: [],
-  &quot;@singletons&quot;: [],
-  &quot;@scopeds&quot;: [],
-  &quot;@uniques&quot;: []
-} as any</code>
-                        </td>
-                    </tr>
-
-                <tr>
-                    <td class="col-md-4">
-                        <div class="io-description"><h2 id="di-bundles">DI Bundles</h2>
-<ul>
-<li>导入并移动使用DI容器的注册api</li>
-<li>和普通注入项解析方式相同</li>
-</ul>
-</div>
-                    </td>
-                </tr>
-
-            </tbody>
-        </table>
-</section>
     <h3>src/decorators/controller.ts</h3>
     <section>
     <h3></h3>        <table class="table table-sm table-bordered">
@@ -347,6 +271,94 @@
             </tbody>
         </table>
 </section>
+    <h3>src/bundle.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="Bundles"></a>
+                        <span class="name">
+                            <b>
+                            Bundles</b>
+                            <a href="#Bundles"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>类型 : </i>    <code><a href="../classes/Server.html" target="_self" >ChangeReturn&lt;ServerBundle, ServerBundle&gt;</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>缺省值 : </i><code>{
+  option(...args: any[]): ServerBundle {
+    Bundles[&quot;@options&quot;].push(args);
+    return Bundles as any;
+  },
+  scoped(...args: any[]): ServerBundle {
+    Bundles[&quot;@scopeds&quot;].push(args);
+    return Bundles as any;
+  },
+  singleton(...args: any[]): ServerBundle {
+    Bundles[&quot;@singletons&quot;].push(args);
+    return Bundles as any;
+  },
+  unique(...args: any[]): ServerBundle {
+    Bundles[&quot;@uniques&quot;].push(args);
+    return Bundles as any;
+  },
+  &quot;@options&quot;: [],
+  &quot;@singletons&quot;: [],
+  &quot;@scopeds&quot;: [],
+  &quot;@uniques&quot;: []
+} as any</code>
+                        </td>
+                    </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><h2 id="di-bundles">DI Bundles</h2>
+<ul>
+<li>导入并移动使用DI容器的注册api</li>
+<li>和普通注入项解析方式相同</li>
+</ul>
+</div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="InnerBundle"></a>
+                        <span class="name">
+                            <b>
+                            InnerBundle</b>
+                            <a href="#InnerBundle"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>类型 : </i>    <code><a href="../miscellaneous/variables.html#InnerBundle" target="_self" >InnerBundle</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>缺省值 : </i><code>Bundles as any</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
     <h3>src/utils.ts</h3>
     <section>
     <h3></h3>        <table class="table table-sm table-bordered">
@@ -399,7 +411,15 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                            <i>缺省值 : </i><code>new DIContainer&lt;ScopeID, { ctx: any }&gt;()</code>
+                            <i>缺省值 : </i><code>new DIContainer&lt;ScopeID, { ctx: any }&gt;({
+  // throws: false,
+  // onEmit: ({ level, data }) &#x3D;&gt;
+  //   console.log(
+  //     chalk[level &#x3D;&#x3D;&#x3D; &quot;warn&quot; ? &quot;yellow&quot; : level &#x3D;&#x3D;&#x3D; &quot;error&quot; ? &quot;red&quot; : &quot;white&quot;](
+  //       &#x60;[${level.toUpperCase()}] - ${data.msg}&#x60;
+  //     )
+  //   )
+})</code>
                         </td>
                     </tr>
 
@@ -421,6 +441,64 @@
                     <tr>
                         <td class="col-md-4">
                             <i>缺省值 : </i><code>new Map&lt;any, any&gt;()</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
+    <h3>src/options/config-compiler.options.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="CONFIG_COMPILER_OPTIONS"></a>
+                        <span class="name">
+                            <b>
+                            CONFIG_COMPILER_OPTIONS</b>
+                            <a href="#CONFIG_COMPILER_OPTIONS"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>缺省值 : </i><code>createOptions&lt;ConfigCompilerOptions&gt;(
+  &quot;CONFIG_COMPILER_OPTIONS&quot;
+)</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="defaultConfigCompilerOptions"></a>
+                        <span class="name">
+                            <b>
+                            defaultConfigCompilerOptions</b>
+                            <a href="#defaultConfigCompilerOptions"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>类型 : </i>    <code><a href="../interfaces/ConfigCompilerOptions.html" target="_self" >ConfigCompilerOptions</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>缺省值 : </i><code>{
+  enabled: false,
+  force: false,
+  configRoot: &quot;config&quot;,
+  outRoot: &quot;config&quot;
+}</code>
                         </td>
                     </tr>
 
@@ -1052,6 +1130,30 @@
             </tbody>
         </table>
 </section>
+    <h3>src/cmd/compile-configs.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name=""></a>
+                        <span class="name">
+                            <b>
+                            </b>
+                            <a href="#"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>缺省值 : </i><code>process.env</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
     <h3>src/results/json.ts</h3>
     <section>
     <h3></h3>        <table class="table table-sm table-bordered">
@@ -1102,6 +1204,102 @@
                     <tr>
                         <td class="col-md-4">
                             <i>缺省值 : </i><code>new Map&lt;any, IRouterMagic&lt;any&gt;&gt;()</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
+    <h3>src/cmd/router/options.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="options"></a>
+                        <span class="name">
+                            <b>
+                            options</b>
+                            <a href="#options"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>类型 : </i>    <code><a href="../interfaces/CommandPlugin.html" target="_self" >CommandPlugin</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>缺省值 : </i><code>{
+  name: &quot;router&quot;,
+  description: &quot;astroboy.ts routers cmd&quot;,
+  options: [
+    [&quot;-C, --config [atcConfig]&quot;, &quot;use atc.config.js&quot;],
+    [&quot;-E, --enabled [isEnabled]&quot;, &quot;open routers-auto-build&quot;],
+    [&quot;-A, --always [isAlways]&quot;, &quot;set routers-always-rebuild&quot;],
+    [&quot;-F, --filetype [fileType]&quot;, &quot;set routers fileType&quot;],
+    [&quot;-R, --approot [appRoot]&quot;, &quot;set routers-root&quot;],
+    [&quot;-T, --tsconfig [tsconfig]&quot;, &quot;set tsconfig.json&quot;],
+    [&quot;-D, --details [showRouters]&quot;, &quot;show building results or not&quot;]
+  ],
+  action: fn,
+  help: () &#x3D;&gt; {
+    console.log(&quot;&quot;);
+    console.log(&quot;  Examples:&quot;);
+    console.log(&quot;&quot;);
+    console.log(&quot;    $ atc router&quot;);
+    console.log(&quot;    $ atc router --always&quot;);
+    console.log(&quot;    $ atc router --fileType ts&quot;);
+    console.log(&quot;    $ atc router --approot /v1/prj&quot;);
+    console.log();
+  }
+}</code>
+                        </td>
+                    </tr>
+
+
+            </tbody>
+        </table>
+</section>
+    <h3>src/cmd/config/options.ts</h3>
+    <section>
+    <h3></h3>        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="options"></a>
+                        <span class="name">
+                            <b>
+                            options</b>
+                            <a href="#options"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>类型 : </i>    <code><a href="../interfaces/CommandPlugin.html" target="_self" >CommandPlugin</a></code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>缺省值 : </i><code>{
+  name: &quot;config&quot;,
+  description: &quot;编译configs文件&quot;,
+  options: [[&quot;-F, --force&quot;, &quot;清除所有configs，并重新编译&quot;]],
+  action: fn,
+  help: () &#x3D;&gt; {
+    console.log(&quot;&quot;);
+    console.log(&quot;  Examples:&quot;);
+    console.log(&quot;&quot;);
+    console.log(&quot;    $ atc config&quot;);
+    console.log(&quot;    $ atc config --force&quot;);
+    console.log();
+  }
+}</code>
                         </td>
                     </tr>
 
@@ -1162,59 +1360,6 @@
     console.log(&quot;    $ atc dev --env development --port 8201&quot;);
     console.log(&quot;    $ atc dev --tsconfig app/tsconfig.json&quot;);
     console.log(&quot;    $ atc dev --inspect&quot;);
-    console.log();
-  }
-}</code>
-                        </td>
-                    </tr>
-
-
-            </tbody>
-        </table>
-</section>
-    <h3>src/cmd/router/options.ts</h3>
-    <section>
-    <h3></h3>        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="options"></a>
-                        <span class="name">
-                            <b>
-                            options</b>
-                            <a href="#options"><span class="icon ion-ios-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>类型 : </i>    <code><a href="../interfaces/CommandPlugin.html" target="_self" >CommandPlugin</a></code>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>缺省值 : </i><code>{
-  name: &quot;router&quot;,
-  description: &quot;astroboy.ts routers cmd&quot;,
-  options: [
-    [&quot;-C, --config [atcConfig]&quot;, &quot;use atc.config.js&quot;],
-    [&quot;-E, --enabled [isEnabled]&quot;, &quot;open routers-auto-build&quot;],
-    [&quot;-A, --always [isAlways]&quot;, &quot;set routers-always-rebuild&quot;],
-    [&quot;-F, --filetype [fileType]&quot;, &quot;set routers fileType&quot;],
-    [&quot;-R, --approot [appRoot]&quot;, &quot;set routers-root&quot;],
-    [&quot;-T, --tsconfig [tsconfig]&quot;, &quot;set tsconfig.json&quot;],
-    [&quot;-D, --details [showRouters]&quot;, &quot;show building results or not&quot;]
-  ],
-  action: fn,
-  help: () &#x3D;&gt; {
-    console.log(&quot;&quot;);
-    console.log(&quot;  Examples:&quot;);
-    console.log(&quot;&quot;);
-    console.log(&quot;    $ atc router&quot;);
-    console.log(&quot;    $ atc router --always&quot;);
-    console.log(&quot;    $ atc router --fileType ts&quot;);
-    console.log(&quot;    $ atc router --approot /v1/prj&quot;);
     console.log();
   }
 }</code>

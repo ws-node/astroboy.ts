@@ -44,7 +44,7 @@
 
 <ol class="breadcrumb">
   <li>接口</li>
-  <li>CommandPlugin</li>
+  <li>ConfigCompilerConfig</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -80,19 +80,24 @@
                         <td class="col-md-4">
                             <ul class="index-list">
                                 <li>
-                                        <a href="#action">action</a>
+                                            <span class="modifier">可选的</span>
+                                        <a href="#configroot">configroot</a>
                                 </li>
                                 <li>
-                                        <a href="#description">description</a>
+                                            <span class="modifier">可选的</span>
+                                        <a href="#enabled">enabled</a>
                                 </li>
                                 <li>
-                                        <a href="#help">help</a>
+                                            <span class="modifier">可选的</span>
+                                        <a href="#force">force</a>
                                 </li>
                                 <li>
-                                        <a href="#name">name</a>
+                                            <span class="modifier">可选的</span>
+                                        <a href="#outputroot">outputroot</a>
                                 </li>
                                 <li>
-                                        <a href="#options">options</a>
+                                            <span class="modifier">可选的</span>
+                                        <a href="#tsconfig">tsconfig</a>
                                 </li>
                             </ul>
                         </td>
@@ -109,42 +114,13 @@
                         <tbody>
                                 <tr>
                                     <td class="col-md-4">
-                                        <a name="action"></a>
-                                        <span class="name"><b>action</b><a href="#action"><span class="icon ion-ios-link"></span></a></span>
+                                        <a name="configroot"></a>
+                                        <span class="name"><b>configroot</b><a href="#configroot"><span class="icon ion-ios-link"></span></a></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">
-                                        <code>action:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/function" target="_blank" >function</a></code>
-</code>
-                                    </td>
-                                </tr>
-
-
-                                    <tr>
-                                        <td class="col-md-4">
-                                            <i>类型 : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/function" target="_blank" >function</a></code>
-
-                                        </td>
-                                    </tr>
-
-
-
-
-
-                        </tbody>
-                    </table>
-                    <table class="table table-sm table-bordered">
-                        <tbody>
-                                <tr>
-                                    <td class="col-md-4">
-                                        <a name="description"></a>
-                                        <span class="name"><b>description</b><a href="#description"><span class="icon ion-ios-link"></span></a></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-4">
-                                        <code>description:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                        <code>configroot:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
 </code>
                                     </td>
                                 </tr>
@@ -157,6 +133,11 @@
                                         </td>
                                     </tr>
 
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>可选的</i>
+                                        </td>
+                                    </tr>
 
 
 
@@ -167,13 +148,13 @@
                         <tbody>
                                 <tr>
                                     <td class="col-md-4">
-                                        <a name="help"></a>
-                                        <span class="name"><b>help</b><a href="#help"><span class="icon ion-ios-link"></span></a></span>
+                                        <a name="enabled"></a>
+                                        <span class="name"><b>enabled</b><a href="#enabled"><span class="icon ion-ios-link"></span></a></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">
-                                        <code>help:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/function" target="_blank" >function</a></code>
+                                        <code>enabled:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
 </code>
                                     </td>
                                 </tr>
@@ -181,11 +162,16 @@
 
                                     <tr>
                                         <td class="col-md-4">
-                                            <i>类型 : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/function" target="_blank" >function</a></code>
+                                            <i>类型 : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
 
                                         </td>
                                     </tr>
 
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>可选的</i>
+                                        </td>
+                                    </tr>
 
 
 
@@ -196,13 +182,47 @@
                         <tbody>
                                 <tr>
                                     <td class="col-md-4">
-                                        <a name="name"></a>
-                                        <span class="name"><b>name</b><a href="#name"><span class="icon ion-ios-link"></span></a></span>
+                                        <a name="force"></a>
+                                        <span class="name"><b>force</b><a href="#force"><span class="icon ion-ios-link"></span></a></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">
-                                        <code>name:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                        <code>force:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>可选的</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="outputroot"></a>
+                                        <span class="name"><b>outputroot</b><a href="#outputroot"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>outputroot:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
 </code>
                                     </td>
                                 </tr>
@@ -215,6 +235,11 @@
                                         </td>
                                     </tr>
 
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>可选的</i>
+                                        </td>
+                                    </tr>
 
 
 
@@ -225,13 +250,13 @@
                         <tbody>
                                 <tr>
                                     <td class="col-md-4">
-                                        <a name="options"></a>
-                                        <span class="name"><b>options</b><a href="#options"><span class="icon ion-ios-link"></span></a></span>
+                                        <a name="tsconfig"></a>
+                                        <span class="name"><b>tsconfig</b><a href="#tsconfig"><span class="icon ion-ios-link"></span></a></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">
-                                        <code>options:     <code>Array&lt;&gt;</code>
+                                        <code>tsconfig:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
 </code>
                                     </td>
                                 </tr>
@@ -239,11 +264,16 @@
 
                                     <tr>
                                         <td class="col-md-4">
-                                            <i>类型 : </i>    <code>Array&lt;&gt;</code>
+                                            <i>类型 : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
 
                                         </td>
                                     </tr>
 
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>可选的</i>
+                                        </td>
+                                    </tr>
 
 
 
@@ -375,7 +405,7 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
             var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
-            var COMPODOC_CURRENT_PAGE_URL = 'CommandPlugin.html';
+            var COMPODOC_CURRENT_PAGE_URL = 'ConfigCompilerConfig.html';
        </script>
 
        <script src="../js/libs/custom-elements.min.js"></script>

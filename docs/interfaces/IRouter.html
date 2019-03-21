@@ -62,7 +62,7 @@
             <h3>文件</h3>
         </p>
         <p class="comment">
-            <code>src/builders.ts</code>
+            <code>src/builders/routers.ts</code>
         </p>
 
 
@@ -81,7 +81,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">被定义在 <a href="" data-line="7" class="link-to-prism">src/builders.ts:7</a></div>
+                                <div class="io-line">被定义在 <a href="" data-line="7" class="link-to-prism">src/builders/routers.ts:7</a></div>
                             </td>
                         </tr>
             </tbody>
@@ -95,8 +95,8 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import fs from &quot;fs&quot;;
 import path from &quot;path&quot;;
 import rimraf from &quot;rimraf&quot;;
-import { GlobalImplements } from &quot;./utils&quot;;
-import { InnerRouterOptions, defaultRouterOptions as df } from &quot;./options&quot;;
+import { GlobalImplements } from &quot;../utils&quot;;
+import { InnerRouterOptions, defaultRouterOptions as df } from &quot;../options&quot;;
 
 interface IRouter {
   [prop: string]: string | IRouter;
@@ -116,8 +116,8 @@ export function initRouters(
   if (open) {
     try {
       const routers: IRouter &#x3D; {};
-      const ctorPath &#x3D; path.resolve(base);
-      const routerPath &#x3D; path.resolve(routerBase);
+      const ctorPath &#x3D; path.resolve(process.cwd(), base);
+      const routerPath &#x3D; path.resolve(process.cwd(), routerBase);
       if (always) {
         // 硬核开关，强撸routers文件夹
         rimraf.sync(routerPath);

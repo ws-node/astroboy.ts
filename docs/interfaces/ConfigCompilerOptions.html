@@ -44,7 +44,7 @@
 
 <ol class="breadcrumb">
   <li>接口</li>
-  <li>IPreProcess</li>
+  <li>ConfigCompilerOptions</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -62,7 +62,7 @@
             <h3>文件</h3>
         </p>
         <p class="comment">
-            <code>src/index.ts</code>
+            <code>src/options/config-compiler.options.ts</code>
         </p>
 
 
@@ -80,16 +80,18 @@
                         <td class="col-md-4">
                             <ul class="index-list">
                                 <li>
-                                        <a href="#always">always</a>
-                                </li>
-                                <li>
-                                        <a href="#appRoot">appRoot</a>
+                                            <span class="modifier">可选的</span>
+                                        <a href="#configRoot">configRoot</a>
                                 </li>
                                 <li>
                                         <a href="#enabled">enabled</a>
                                 </li>
                                 <li>
-                                        <a href="#fileType">fileType</a>
+                                        <a href="#force">force</a>
+                                </li>
+                                <li>
+                                            <span class="modifier">可选的</span>
+                                        <a href="#outRoot">outRoot</a>
                                 </li>
                             </ul>
                         </td>
@@ -106,48 +108,13 @@
                         <tbody>
                                 <tr>
                                     <td class="col-md-4">
-                                        <a name="always"></a>
-                                        <span class="name"><b>always</b><a href="#always"><span class="icon ion-ios-link"></span></a></span>
+                                        <a name="configRoot"></a>
+                                        <span class="name"><b>configRoot</b><a href="#configRoot"><span class="icon ion-ios-link"></span></a></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">
-                                        <code>always:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
-</code>
-                                    </td>
-                                </tr>
-
-
-                                    <tr>
-                                        <td class="col-md-4">
-                                            <i>类型 : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
-
-                                        </td>
-                                    </tr>
-
-
-
-
-
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>是否强制刷新2.0的routers，默认：<code>false</code> </p>
-</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-sm table-bordered">
-                        <tbody>
-                                <tr>
-                                    <td class="col-md-4">
-                                        <a name="appRoot"></a>
-                                        <span class="name"><b>appRoot</b><a href="#appRoot"><span class="icon ion-ios-link"></span></a></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-4">
-                                        <code>appRoot:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                        <code>configRoot:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
 </code>
                                     </td>
                                 </tr>
@@ -160,13 +127,18 @@
                                         </td>
                                     </tr>
 
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>可选的</i>
+                                        </td>
+                                    </tr>
 
 
 
 
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-description"><p>整个项目的url前缀，默认：<code>&#39;/&#39;</code> </p>
+                                    <div class="io-description"><p>整个configs文件夹的相对位置，默认：<code>&#39;config&#39;</code> </p>
 </div>
                                 </td>
                             </tr>
@@ -201,7 +173,7 @@
 
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-description"><p>是否自动生成2.0的routers，默认：<code>false</code> </p>
+                                    <div class="io-description"><p>是否自动编译configs文件夹，默认：<code>false</code> </p>
 </div>
                                 </td>
                             </tr>
@@ -211,13 +183,13 @@
                         <tbody>
                                 <tr>
                                     <td class="col-md-4">
-                                        <a name="fileType"></a>
-                                        <span class="name"><b>fileType</b><a href="#fileType"><span class="icon ion-ios-link"></span></a></span>
+                                        <a name="force"></a>
+                                        <span class="name"><b>force</b><a href="#force"><span class="icon ion-ios-link"></span></a></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">
-                                        <code>fileType:     <code>&quot;js&quot; | &quot;ts&quot;</code>
+                                        <code>force:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
 </code>
                                     </td>
                                 </tr>
@@ -225,7 +197,7 @@
 
                                     <tr>
                                         <td class="col-md-4">
-                                            <i>类型 : </i>    <code>&quot;js&quot; | &quot;ts&quot;</code>
+                                            <i>类型 : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
 
                                         </td>
                                     </tr>
@@ -236,7 +208,47 @@
 
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-description"><p>生成router文件的文件类型，默认：<code>&#39;js&#39;</code> </p>
+                                    <div class="io-description"><p>是否强制编译configs文件夹，默认：<code>false</code> </p>
+</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="outRoot"></a>
+                                        <span class="name"><b>outRoot</b><a href="#outRoot"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>outRoot:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>类型 : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>可选的</i>
+                                        </td>
+                                    </tr>
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>整个configs文件夹编译后的输出位置，默认：<code>&#39;config&#39;</code> </p>
 </div>
                                 </td>
                             </tr>
@@ -247,130 +259,33 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import Astroboy from &quot;astroboy&quot;;
-import { ControllerConstructor } from &quot;astroboy-router/dist/metadata&quot;;
-import { createRouter } from &quot;astroboy-router&quot;;
-import { GlobalImplements } from &quot;./utils&quot;;
-import { copyPrototype } from &quot;./decorators/controller&quot;;
-import { initRouters } from &quot;./builders/routers&quot;;
-import { compileFn } from &quot;./builders/config-compiler&quot;;
-import { ConfigCompilerOptions } from &quot;./options/config-compiler.options&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { createOptions } from &quot;../services/Configs&quot;;
 
-/**
- * ## 构建路由
- * * 等效astroboy-router的createRouter方法
- * @description
- * @author Big Mogician
- * @export
- * @template T
- * @param {ControllerConstructor&lt;T&gt;} ctor
- * @param {string} name
- * @param {string} root
- * @returns
- */
-export function buildRouter&lt;T&gt;(
-  ctor: ControllerConstructor&lt;T&gt;,
-  name: string,
-  root: string
-) {
-  const sourceCtor &#x3D; GlobalImplements.get(ctor);
-  const result &#x3D; createRouter(sourceCtor, name, root);
-  copyPrototype(&lt;any&gt;ctor, sourceCtor);
-  return result;
+export interface InnerConfigCompilerOptions extends ConfigCompilerOptions {
+  // TO DO
 }
 
-interface IPreProcess {
-  /** 是否自动生成2.0的routers，默认：&#x60;false&#x60; */
+export interface ConfigCompilerOptions {
+  /** 是否自动编译configs文件夹，默认：&#x60;false&#x60; */
   enabled: boolean;
-  /** 是否强制刷新2.0的routers，默认：&#x60;false&#x60; */
-  always: boolean;
-  /** 整个项目的url前缀，默认：&#x60;&#x27;/&#x27;&#x60; */
-  appRoot: string;
-  /** 生成router文件的文件类型，默认：&#x60;&#x27;js&#x27;&#x60; */
-  fileType: &quot;js&quot; | &quot;ts&quot;;
+  /** 是否强制编译configs文件夹，默认：&#x60;false&#x60; */
+  force: boolean;
+  /** 整个configs文件夹的相对位置，默认：&#x60;&#x27;config&#x27;&#x60; */
+  configRoot?: string;
+  /** 整个configs文件夹编译后的输出位置，默认：&#x60;&#x27;config&#x27;&#x60; */
+  outRoot?: string;
 }
 
-/**
- * ## astroboy.ts 预处理函数
- * * 硬核初始化routers
- * @description
- * @author Big Mogician
- * @export
- * @param {Partial&lt;IPreProcess&gt;} {
- *   routerAutoBuild: open &#x3D; defaultEnv.routerAutoBuild,
- *   routerAlwaysBuild: always &#x3D; defaultEnv.routerAlwaysBuild,
- *   routerRoot: root &#x3D; defaultEnv.routerRoot
- * }
- */
-export function preInitFn(configs: Partial&lt;IPreProcess&gt;): void;
-export function preInitFn(configs: Partial&lt;IPreProcess&gt;, inEnd?) {
-  return initRouters(configs, inEnd);
-}
+export const defaultConfigCompilerOptions: ConfigCompilerOptions &#x3D; {
+  enabled: false,
+  force: false,
+  configRoot: &quot;config&quot;,
+  outRoot: &quot;config&quot;
+};
 
-/**
- * ## astroboy.ts 配置文件预处理函数
- * * 硬核初始化config
- * @author Big Mogician
- * @export
- * @param {Partial&lt;ConfigCompilerOptions&gt;} configs
- */
-export function preConfigCompiler(configs: Partial&lt;ConfigCompilerOptions&gt;) {
-  return compileFn(configs);
-}
-
-export * from &quot;astroboy-router&quot;;
-export * from &quot;./decorators&quot;;
-export * from &quot;./middlewares&quot;;
-export * from &quot;./services/Injector&quot;;
-export * from &quot;./services/Context&quot;;
-export * from &quot;./services/BaseClass&quot;;
-export * from &quot;./services/AstroboyContext&quot;;
-export * from &quot;./services/Render&quot;;
-export * from &quot;./services/ConfigReader&quot;;
-export * from &quot;./server&quot;;
-export * from &quot;./configs&quot;;
-export * from &quot;./typings/IContext&quot;;
-export * from &quot;./typings/IResult&quot;;
-export * from &quot;./typings/IViewEngine&quot;;
-export * from &quot;./typings/IStaticTypeResolver&quot;;
-export * from &quot;./results/json&quot;;
-export * from &quot;./results/render&quot;;
-
-export { Bundles } from &quot;./bundle&quot;;
-
-export {
-  TypedSerializer,
-  Serialize,
-  Deserialize,
-  Extends
-} from &quot;./plugins/typed-serializer&quot;;
-export { NUNJUNKS_OPTIONS } from &quot;./plugins/nunjunks&quot;;
-export { SIMPLE_LOGGER_OPTIONS } from &quot;./plugins/simple-logger&quot;;
-
-export {
-  Configs,
-  ConfigToken,
-  ConfigEntry,
-  createOptions,
-  createConfig,
-  TokenGenerator,
-  InjectScope
-} from &quot;./services/Configs&quot;;
-
-export {
-  CONFIG_COMPILER_OPTIONS,
-  GLOBAL_ERROR,
-  JSON_RESULT_OPTIONS,
-  RENDER_RESULT_OPTIONS,
-  ROUTER_OPTIONS,
-  STATIC_RESOLVER,
-  ConfigCompilerOptions,
-  JsonResultOptions,
-  RenderResultOptions,
-  RouterOptions
-} from &quot;./options&quot;;
-
-export { Astroboy };
+export const CONFIG_COMPILER_OPTIONS &#x3D; createOptions&lt;ConfigCompilerOptions&gt;(
+  &quot;CONFIG_COMPILER_OPTIONS&quot;
+);
 </code></pre>
     </div>
 </div>
@@ -397,7 +312,7 @@ export { Astroboy };
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
             var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
-            var COMPODOC_CURRENT_PAGE_URL = 'IPreProcess.html';
+            var COMPODOC_CURRENT_PAGE_URL = 'ConfigCompilerOptions.html';
        </script>
 
        <script src="../js/libs/custom-elements.min.js"></script>
