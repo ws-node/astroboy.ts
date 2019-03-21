@@ -1,8 +1,9 @@
 import fs from "fs";
 import path from "path";
-import rimraf from "rimraf";
+import { Constructor } from "@bonbons/di";
 import { ConfigCompilerOptions } from "../options";
 import { IConfigsCompiler } from "../services/ConfigReader";
+import { InnerBaseCompiler } from "../typings/IConfigCompiler";
 
 export function compileFn(options: Partial<ConfigCompilerOptions>) {
   const { enabled = false, force = false, configRoot, outRoot } = options;
@@ -79,10 +80,30 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
   }
 }
 
-function readExcus(excuClass: any, finalExports: any, procedures: string[]) {
+function readExcus(
+  excuClass: Constructor<any>,
+  finalExports: any,
+  procedures: string[]
+) {
+  const {
+    modules = {},
+    functions = {},
+    consts = {}
+  } = excuClass.prototype as InnerBaseCompiler<any>;
+  const sections: string[] = [];
+  Object.keys(modules).forEach(name =>
+    sections.push(`const ${name} = require("${modules[name]}");`)
+  );
+  Object.keys(consts).forEach(name =>
+    sections.push(`const ${name} = ${consts[name]};`)
+  );
+  Object.keys(functions).forEach(name =>
+    sections.push(`const ${name} = ${functions[name]};`)
+  );
   const exec: IConfigsCompiler<any> = new excuClass();
   finalExports = exec.configs(process);
   procedures = (exec.procedures && exec.procedures(process)) || [];
+  procedures = [...sections, ...procedures];
   return { finalExports, procedures };
 }
 
