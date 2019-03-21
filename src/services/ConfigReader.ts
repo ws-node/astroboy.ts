@@ -2,7 +2,6 @@ import { AstroboyContext } from "./AstroboyContext";
 import { Injectable } from "../decorators/injectable";
 
 interface BaseCompiler<T> {
-  imports?(process: NodeJS.Process): string[];
   procedures?(process: NodeJS.Process): string[];
 }
 
@@ -14,9 +13,15 @@ export interface IConfigsCompiler<T> extends BaseCompiler<T> {
   configs(process: NodeJS.Process): Partial<T>;
 }
 
+/**
+ * ## Astroboy.ts Base ConfigReader
+ * * provide type intelliSence
+ * * a delegate for ctx.getConfig(...)
+ * * extends this class for DI
+ */
 @Injectable()
 export class ConfigReader<T extends { [prop: string]: any } = {}> {
-  static Expression<T = any>(expression: string) {
+  static Expression<T = any>(expression: string): T {
     return Symbol(expression) as any;
   }
 

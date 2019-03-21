@@ -26,13 +26,11 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
         const exports = require(sourcePath);
         if (!exports) return;
         let finalExports: any;
-        let imports: string[] = [];
         let procedures: string[] = [];
         if (typeof exports === "function") {
-          ({ finalExports, imports, procedures } = readExcus(
+          ({ finalExports, procedures } = readExcus(
             exports,
             finalExports,
-            imports,
             procedures
           ));
         } else if (typeof exports === "object") {
@@ -40,22 +38,17 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
           if (typeof excuClass !== "function") {
             finalExports = exports;
           } else {
-            ({ finalExports, imports, procedures } = readExcus(
+            ({ finalExports, procedures } = readExcus(
               excuClass,
               finalExports,
-              imports,
               procedures
             ));
           }
         } else {
           finalExports = exports;
         }
-        const preRuns = [
-          "// [astroboy.ts] 自动生成的代码",
-          ...imports,
-          ...procedures
-        ].join("\n");
-        const fileOutputStr = connectExports(preRuns, finalExports);
+        const preRuns = ["// [astroboy.ts] 自动生成的代码", ...procedures];
+        const fileOutputStr = connectExports(preRuns.join("\n"), finalExports);
         fs.appendFileSync(
           compiledPath,
           // 解析表达式语法
@@ -68,17 +61,11 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
   }
 }
 
-function readExcus(
-  excuClass: any,
-  finalExports: any,
-  imports: string[],
-  procedures: string[]
-) {
+function readExcus(excuClass: any, finalExports: any, procedures: string[]) {
   const exec: IConfigsCompiler<any> = new excuClass();
   finalExports = exec.configs(process);
-  imports = (exec.imports && exec.imports(process)) || [];
-  procedures = (exec.imports && exec.procedures(process)) || [];
-  return { finalExports, imports, procedures };
+  procedures = (exec.procedures && exec.procedures(process)) || [];
+  return { finalExports, procedures };
 }
 
 function connectExports(preRuns: string, finalExports: any) {
