@@ -52,6 +52,51 @@ export interface IAstroboyBaseConfigs {
   };
 }
 
+type MatchInvoke = string | RegExp | ((ctx: any) => boolean);
+
+/**
+ * astroboy中间件配置参数类型结构
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IAstMiddlewareConfig
+ * @template T
+ */
+export interface IAstMiddlewareConfig<T = any> {
+  priority?: number;
+  enable?: boolean;
+  options?: T;
+  ignore?: MatchInvoke | Array<MatchInvoke>;
+  match?: MatchInvoke | Array<MatchInvoke>;
+}
+
+/**
+ * astroboy基础中间件配置结构
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IAstroboyBaseMiddlewares
+ */
+export interface IAstroboyBaseMiddlewares {
+  "astroboy-static": IAstMiddlewareConfig<{ root?: string }>;
+  "astroboy-security-cto": IAstMiddlewareConfig<string>;
+  "astroboy-security-frameOptions": IAstMiddlewareConfig<string>;
+  "astroboy-security-hsts": IAstMiddlewareConfig<{ maxAge: number }>;
+  "astroboy-security-xssProtection": IAstMiddlewareConfig<string>;
+  "astroboy-security-xss": IAstMiddlewareConfig<any>;
+  "astroboy-router": IAstMiddlewareConfig<any>;
+  "astroboy-body": IAstMiddlewareConfig<{
+    formidable?: {
+      uploadDir: string;
+    };
+    multipart?: string;
+    jsonLimit?: string;
+    formLimit?: string;
+    textLimit?: string;
+    strict?: boolean;
+  }>;
+}
+
 /**
  * 松散configs预编译接口
  * * 需要实现部分的configs接口

@@ -662,10 +662,10 @@ astroboy-router@1.2.0-rc.1:
     lodash "^4.17.11"
     reflect-metadata "^0.1.12"
 
-astroboy@0.0.37:
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/astroboy/-/astroboy-0.0.37.tgz#76f253de6b44341e9308f7356812112c639a82a0"
-  integrity sha512-CXk1S+zIt2ixqrj5cVhFhaSDt0NMtgx3KKsV6T0cgrE5h6hR9FKcpmOiBlMwHKoxgoevgIByiR36f9hVnY/Dkg==
+astroboy@*:
+  version "0.0.38"
+  resolved "https://registry.npmjs.org/astroboy/-/astroboy-0.0.38.tgz#401e66e645f8710ad884c415ec0ca124ab877a85"
+  integrity sha512-9sf4oOQubF/tsqIaqxYz8pIqAPh1kQEI4krTb02DnhoXnn4IvugufWsOB+mQ/3iaYroZVDfKRi0ZUOICkOek1A==
   dependencies:
     chalk "2.4.0"
     complete-assign "0.0.2"
