@@ -9,6 +9,9 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
     const configFolder = path.resolve(process.cwd(), configRoot || "config");
     const outputFolder = path.resolve(process.cwd(), outRoot || "config");
     const files = fs.readdirSync(configFolder);
+    if (!fs.existsSync(outputFolder)) {
+      fs.mkdirSync(outputFolder);
+    }
     files
       .filter(p => p.endsWith(".ts"))
       .forEach(filePath => {
@@ -26,8 +29,11 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
           finalExports = new exports().configs(process);
         } else if (typeof exports === "object") {
           const { default: excuClass } = exports;
-          if (typeof excuClass !== "function") return;
-          finalExports = new excuClass().configs(process);
+          if (typeof excuClass !== "function") {
+            finalExports = exports;
+          } else {
+            finalExports = new excuClass().configs(process);
+          }
         } else {
           finalExports = exports;
         }
@@ -36,6 +42,7 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
           null,
           "  "
         )}`;
+        // fileOutputStr.replace(/^('|"|`)/)
         fs.appendFileSync(compiledPath, fileOutputStr, { flag: "w" });
       });
   } catch (e) {
