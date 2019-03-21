@@ -13,6 +13,7 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
     if (!fs.existsSync(outputFolder)) {
       fs.mkdirSync(outputFolder);
     }
+    const compileds: string[] = [];
     files
       .filter(p => p.endsWith(".ts"))
       .forEach(filePath => {
@@ -55,9 +56,11 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
           resolveExpressions(fileOutputStr),
           { flag: "w" }
         );
+        compileds.push(compiledPath);
       });
-  } catch (e) {
-    console.log(e);
+    return compileds;
+  } catch (error) {
+    throw error;
   }
 }
 

@@ -68,10 +68,10 @@ export = function(_, command: IConfigCmdOptions) {
           return;
         }
         try {
-          // const count = showRoutes(JSON.parse(stdout || "{}") || {});
-          // console.log(
-          //   chalk.green(`路由初始化完成${chalk.white(`[${count}]`)}`)
-          // );
+          const count = showCounts(JSON.parse(stdout || "[]") || []);
+          console.log(
+            chalk.green(`configs编译完成${chalk.white(`[${count}]`)}`)
+          );
           console.log(chalk.green(`编译configs完成`));
         } catch (_) {
           console.log(chalk.yellow("编译configs失败..."));
@@ -89,3 +89,10 @@ export = function(_, command: IConfigCmdOptions) {
     throw e;
   }
 };
+
+function showCounts(arr: any) {
+  (arr || []).forEach(name => {
+    console.log(chalk.blue(`---> ${name}`));
+  });
+  return (arr || []).length;
+}
