@@ -87,7 +87,7 @@ function readExcus(
 ) {
   const {
     modules = {},
-    functions = {},
+    functions = [],
     consts = {}
   } = excuClass.prototype as InnerBaseCompiler<any>;
   const sections: string[] = [];
@@ -95,11 +95,15 @@ function readExcus(
     sections.push(`const ${name} = require("${modules[name]}");`)
   );
   Object.keys(consts).forEach(name =>
-    sections.push(`const ${name} = ${consts[name]};`)
+    sections.push(
+      `const ${name} = ${
+        typeof consts[name] === "function"
+          ? consts[name].toString()
+          : JSON.stringify(consts[name])
+      };`
+    )
   );
-  Object.keys(functions).forEach(name =>
-    sections.push(`const ${name} = ${functions[name]};`)
-  );
+  Object.keys(functions).forEach(func => sections.push(func.toString()));
   const exec: IConfigsCompiler<any> = new excuClass();
   finalExports = exec.configs(process);
   procedures = (exec.procedures && exec.procedures(process)) || [];

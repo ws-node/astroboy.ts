@@ -21,12 +21,10 @@ export interface ConfigDefines {
   modules?: {
     [name: string]: string;
   };
-  functions?: {
-    [name: string]: string;
-  };
   consts?: {
-    [name: string]: string;
+    [name: string]: any;
   };
+  functions?: Array<(...args: any[]) => any>;
 }
 
 export interface InnerBaseCompiler<T> extends ConfigDefines {
