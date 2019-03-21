@@ -12,15 +12,19 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
     const configFolder = path.resolve(cwd, configRoot || "app/config");
     const outputFolder = path.resolve(cwd, outRoot || "config");
     const files = fs.readdirSync(configFolder);
-    if (!!force) {
+    if (!!force && fs.existsSync(outputFolder)) {
       if (configFolder === outputFolder) {
         throw new Error(
           "Config-Compiler Error: same config-root and output-root is invalid when [force] option is opened."
         );
       }
       // 硬核开关，强撸config文件夹
-      rimraf.sync(outputFolder);
-      fs.mkdirSync(outputFolder);
+      const exists = fs.readdirSync(outputFolder);
+      exists
+        .filter(p => p.endsWith(".js"))
+        .forEach(p => {
+          fs.unlinkSync(`${outputFolder}/${p}`);
+        });
     } else if (!fs.existsSync(outputFolder)) {
       fs.mkdirSync(outputFolder);
     }
