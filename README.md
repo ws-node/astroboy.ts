@@ -400,8 +400,12 @@ module.exports = {
 
 ```typescript
 import { AstroboyContext } from "astroboy.ts";
+import * as atc from "astroboy.ts";
 
-export default async function testMiddleware(context: AstroboyContext) {
+export default async function testMiddleware(
+  context: AstroboyContext,
+  injector: atc.InjectService
+) {
   console.log(new Date().getTime());
 }
 ```
@@ -415,14 +419,17 @@ export default async function testMiddleware(context: AstroboyContext) {
 ```javascript
 // [astroboy.ts] 自动生成的代码
 const { injectScope } = require("astroboy.ts");
-const { AstroboyContext } = require("astroboy.ts");
-async function testMiddleware(context) {
+const tslib_1 = require("tslib");
+const astroboy_ts_1 = require("astroboy.ts");
+const astroboy_ts_2 = tslib_1.__importStar(require("astroboy.ts"));
+async function testMiddleware(context, injector) {
   console.log(new Date().getTime());
 }
 module.exports = () =>
   injectScope(async ({ injector, next }) => {
-    const _p0 = injector.get(AstroboyContext);
-    await testMiddleware(_p0);
+    const _p0 = injector.get(astroboy_ts_1.AstroboyContext);
+    const _p1 = injector.get(astroboy_ts_2.InjectService);
+    await testMiddleware(_p0, _p1);
     await next();
   });
 ```
@@ -488,44 +495,39 @@ export interface IConfigs {
 // 创建应用级别的DI项，可以在controller、service等地方注入使用
 export class MyConfigsReader extends ConfigReader<IConfigs> {}
 
-// 默认导出实现接口约定的类
-export default class NameClass implements IStrictConfigsCompiler<IConfigs> {
-  // 表示一些过程，比如import，function等等
-  procedures() {
-    return [
-      "const path = require('path');",
-      `function woshinidie() { return 123456; }`,
-      `function sadvgasd() {
-                console.log("fuck");
-            }`,
-      "sadvgasd();"
-    ];
-  }
+// 只要加上export标识，就可以输出到编译后的文件中去
+export function woshinidie() {
+  xFunc();
+  return 123456;
+}
 
-  // 生成最终的module.exports
-  configs(process: NodeJS.Process) {
-    return {
-      "@astroboy.ts": {
-        showTrace: true,
-        diType: <DIType>"proxy"
-      },
-      demo: {
-        key01: 12345,
-        key02: "woshinidie"
-      },
-      strOpt: "test_string_config",
-      // 表达式模式，支持函数等复杂场景的编写
-      // 应该使用简单的表达式
-      // 复杂的逻辑应该在 `procedures` 中完成
-      a: ConfigReader.Expression<number>("woshinidie()"),
-      b: "default",
-      c: {
-        d: false,
-        e: "352424"
-      },
-      f: ConfigReader.Expression(`{ v: path.resolve(__dirname, "abcd") },`)
-    };
-  }
+export function xFunc() {
+  console.log({
+    a: 124,
+    b: "sdfad"
+  });
+}
+
+// 默认导出实现接口约定的类
+export default function DefaultCOnfigs(): IConfigs {
+  const path = require("path");
+  return {
+    "@astroboy.ts": {
+      showTrace: true,
+      diType: <DIType>"proxy"
+    },
+    demo: {
+      key01: 12345,
+      key02: "woshinidie"
+    },
+    strOpt: "test_string_config",
+    a: woshinidie(),
+    b: "default",
+    c: {
+      d: false,
+      e: "352424"
+    }
+  };
 }
 ```
 
@@ -534,17 +536,15 @@ export default class NameClass implements IStrictConfigsCompiler<IConfigs> {
 > app/config/config.dev.ts
 
 ```typescript
-import { IConfigsCompiler } from "astroboy.ts";
 import { IConfigs } from "./config.default";
 
 // 使用非严格接口，只提供一部分的参数，用于覆盖
-export = class NameClass2 implements IConfigsCompiler<IConfigs> {
-  configs(process: NodeJS.Process) {
-    return {
-      b: "dev"
-    };
-  }
-};
+export default function NameClass2(): Partial<IConfigs> {
+  const path = require("path");
+  return {
+    b: "dev"
+  };
+}
 ```
 
 完成以后，在应用启动时执行：`atc config --force` :
@@ -553,41 +553,53 @@ export = class NameClass2 implements IConfigsCompiler<IConfigs> {
 
 ```javascript
 // [astroboy.ts] 自动生成的代码
-const path = require("path");
+const tslib_1 = require("tslib");
+const astroboy_ts_1 = require("astroboy.ts");
+class MyConfigsReader extends astroboy_ts_1.ConfigReader {}
 function woshinidie() {
+  xFunc();
   return 123456;
 }
-function sadvgasd() {
-  console.log("fuck");
+function xFunc() {
+  console.log({
+    a: 124,
+    b: "sdfad"
+  });
 }
-sadvgasd();
-module.exports = {
-  "@astroboy.ts": {
-    showTrace: true,
-    diType: "proxy"
-  },
-  demo: {
-    key01: 12345,
-    key02: "woshinidie"
-  },
-  strOpt: "test_string_config",
-  a: woshinidie(),
-  b: "default",
-  c: {
-    d: false,
-    e: "352424"
-  },
-  f: { v: path.resolve(__dirname, "abcd") }
-};
+module.exports = (function DefaultCOnfigs() {
+  const path = require("path");
+  return {
+    "@astroboy.ts": {
+      showTrace: true,
+      diType: "proxy"
+    },
+    demo: {
+      key01: 12345,
+      key02: "woshinidie"
+    },
+    strOpt: "test_string_config",
+    a: woshinidie(),
+    b: "default",
+    c: {
+      d: false,
+      e: "352424"
+    }
+  };
+})();
 ```
 
 > config/config.dev.js
 
 ```javascript
 // [astroboy.ts] 自动生成的代码
-module.exports = {
-  b: "dev"
-};
+const tslib_1 = require("tslib");
+const config_default_1 = require("./config.default");
+module.exports = (function NameClass2() {
+  const path = require("path");
+  return {
+    b: "dev"
+  };
+})();
 ```
 
 > 文档完善中...

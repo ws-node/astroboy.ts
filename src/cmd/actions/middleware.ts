@@ -95,6 +95,7 @@ export const MiddlewarePlugin: CommandPlugin = {
             console.log(
               chalk.green(`middlewares编译完成${chalk.white(`[${count}]`)}`)
             );
+            // console.log(stdout);
             console.log(chalk.green(`编译middlewares完成`));
           } catch (_) {
             console.log(chalk.yellow("编译middlewares失败..."));

@@ -102,6 +102,8 @@ export function middlewareCompileFn(
         const exportList = Object.keys(context.exports);
         if (exportList.length <= 0) return;
         const middlewareName = exportList[0];
+        // console.log(context);
+        // console.log(exportList);
         const exports = require(sourcePath);
         if (!exports) return;
         let finalExports: (...args: any[]) => any;
@@ -129,17 +131,24 @@ export function middlewareCompileFn(
           finalExports = exports;
         }
         const imports = resolveImportsToListString(context);
-        const params = context.functions[middlewareName].params;
+        const targetFunc = context.functions[middlewareName];
+        const params = (targetFunc && targetFunc.params) || [];
         const procedures: string[] = [
           "// [astroboy.ts] 自动生成的代码",
           `const { injectScope } = require("astroboy.ts");`,
           ...imports,
-          ...otherFuncs.map(i => i.toString()),
-          finalExports.toString()
+          ...otherFuncs.map(i => i.toString())
         ];
+        // 具名函数
+        if (!!finalExports.name) procedures.push(finalExports.toString());
         const actions: string[] = [
-          createInjectActions(params),
-          createAwaitMiddlewareAction(middlewareName, params),
+          createInjectActions(params, context),
+          createAwaitMiddlewareAction(
+            // 当前函数不存在，默认使用导入的函数；如果导入函数为匿名，则走自包裹函数模式
+            !targetFunc ? finalExports.name : middlewareName,
+            params,
+            finalExports
+          ),
           "  await next();"
         ];
         const exportStr = `${procedures.join(
@@ -156,21 +165,49 @@ export function middlewareCompileFn(
   }
 }
 
-function createInjectActions(params: IFuncParam[]) {
+function createInjectActions(params: IFuncParam[], context: ICompileContext) {
   return params
-    .map(
-      p =>
-        `  const _p${p.paramIndex} = injector.get(${
-          p.type === "directType" ? p.typeName : `${p.namespace}.${p.typeName}`
-        })`
-    )
+    .map(p => {
+      const typeName = p.typeName;
+      let result: string;
+      if (p.type === "directType") {
+        result = resolveIdentity(typeName, context);
+      } else {
+        result = `${resolveIdentity(p.namespace, context, typeName)}`;
+      }
+      return `  const _p${p.paramIndex} = injector.get(${result});`;
+    })
     .join("\n");
 }
 
-function createAwaitMiddlewareAction(
-  middlewareName: string,
-  params: IFuncParam[]
+function resolveIdentity(
+  typeName: string,
+  context: ICompileContext,
+  replace?: string
 ) {
+  const target = Object.keys(context.imports)
+    .map(i => context.imports[i])
+    .find(i => i.name.includes(typeName));
+  if (target) {
+    return `${target.identity}${
+      target.type === "importNamespace" ? ".default." : "."
+    }${replace || typeName}`;
+  }
+  return "";
+  // throw new Error("Middleware-Compiler Error: resolve inject token failed.");
+}
+
+function createAwaitMiddlewareAction(
+  middlewareName: string | undefined,
+  params: IFuncParam[],
+  func?: any
+) {
+  // 无名函数（可能为箭头函数）特殊处理
+  if (!middlewareName) {
+    return `  await (${func.toString()})(${params
+      .map(p => `_p${p.paramIndex}`)
+      .join(", ")});`;
+  }
   return `  await ${middlewareName}(${params
     .map(p => `_p${p.paramIndex}`)
     .join(", ")});`;

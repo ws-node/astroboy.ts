@@ -1,6 +1,6 @@
 {
   "name": "astroboy.ts",
-  "version": "1.1.3-rc.23",
+  "version": "1.1.3-rc.27",
   "description": "基于[astroboy]的DI版本，TypeScript3.2信仰加成",
   "main": "./dist/index.js",
   "scripts": {

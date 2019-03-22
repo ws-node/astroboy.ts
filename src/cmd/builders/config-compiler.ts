@@ -129,12 +129,11 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
         const preRuns = [
           "// [astroboy.ts] 自动生成的代码",
           ...imports,
-          ...procedures,
-          finalExports.toString()
+          ...procedures
         ];
-        const fileOutputStr = `${preRuns.join("\n")}\nmodule.exports = ${
-          finalExports.name
-        }();`;
+        const fileOutputStr = `${preRuns.join(
+          "\n"
+        )}\nmodule.exports = (${finalExports.toString()})();`;
         fs.appendFileSync(compiledPath, fileOutputStr, { flag: "w" });
         compileds.push(compiledPath);
       });

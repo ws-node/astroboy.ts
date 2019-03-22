@@ -92,6 +92,7 @@ export const ConfigPlugin: CommandPlugin = {
             console.log(
               chalk.green(`configs编译完成${chalk.white(`[${count}]`)}`)
             );
+            // console.log(stdout);
             console.log(chalk.green(`编译configs完成`));
           } catch (_) {
             console.log(chalk.yellow("编译configs失败..."));
