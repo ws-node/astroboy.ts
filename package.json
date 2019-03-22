@@ -45,7 +45,7 @@
   },
   "homepage": "https://github.com/ws-node/astroboy.ts#readme",
   "dependencies": {
-    "@bonbons/di": "^1.4.1-rc.2",
+    "@bonbons/di": "1.4.1",
     "@types/koa": "^2.0.47",
     "@types/koa-router": "^7.0.35",
     "@types/node": "^10.12.10",
@@ -56,12 +56,12 @@
     "chalk": "2.4.1",
     "commander": "2.19.0",
     "decamelize": "1.2.0",
-    "lodash": "^4.17.11",
+    "lodash": "4.17.11",
     "nodemon": "1.18.8",
     "nunjucks": "3.1.6",
     "rimraf": "2.6.2",
     "tsconfig-paths": "3.7.0",
-    "tslib": "^1.9.3",
+    "tslib": "1.9.3",
     "uuid": "3.3.2"
   },
   "devDependencies": {
