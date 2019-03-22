@@ -1,9 +1,32 @@
 import fs from "fs";
 import path from "path";
 import { Constructor } from "@bonbons/di";
-import { ConfigCompilerOptions } from "../options";
-import { IConfigsCompiler } from "../services/ConfigReader";
-import { InnerBaseCompiler } from "../typings/IConfigCompiler";
+import {
+  InnerBaseCompiler,
+  IConfigsCompiler
+} from "../../typings/IConfigCompiler";
+
+export interface InnerConfigCompilerOptions extends ConfigCompilerOptions {
+  // TO DO
+}
+
+export interface ConfigCompilerOptions {
+  /** 是否自动编译configs文件夹，默认：`false` */
+  enabled: boolean;
+  /** 是否强制编译configs文件夹，默认：`false` */
+  force: boolean;
+  /** 整个configs文件夹的相对位置，默认：`'config'` */
+  configRoot?: string;
+  /** 整个configs文件夹编译后的输出位置，默认：`'config'` */
+  outRoot?: string;
+}
+
+export const defaultConfigCompilerOptions: ConfigCompilerOptions = {
+  enabled: false,
+  force: false,
+  configRoot: "app/config",
+  outRoot: "config"
+};
 
 export function compileFn(options: Partial<ConfigCompilerOptions>) {
   const { enabled = false, force = false, configRoot, outRoot } = options;

@@ -3,7 +3,6 @@ import merge from "lodash/merge";
 import isPlainObject from "lodash/isPlainObject";
 import reduce from "lodash/reduce";
 import uuid from "uuid/v4";
-import chalk from "chalk";
 import {
   Constructor,
   getDependencies,

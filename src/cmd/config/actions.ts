@@ -40,7 +40,7 @@ export = function(_, command: IConfigCmdOptions) {
     const tsnode = require.resolve("ts-node");
     console.log(chalk.cyan("正在编译configs，请稍候...\n"));
     const registerFile = path.resolve(__dirname, "../register");
-    const initFile = path.resolve(__dirname, "../compile-configs");
+    const initFile = path.resolve(__dirname, "../process/compile-configs");
     console.log(chalk.yellow("开始执行configs编译逻辑："));
     console.log(`script ==> ${chalk.grey(initFile)}`);
     exec(

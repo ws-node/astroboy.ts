@@ -22,9 +22,10 @@ import {
   STATIC_RESOLVER,
   GLOBAL_ERROR,
   defaultJsonResultOptions,
-  defaultRenderResultOptions
+  defaultRenderResultOptions,
+  defaultGlobalError
 } from "./options";
-import { RealConfigCollection, ConfigToken, Configs } from "./services/Configs";
+import { RealConfigCollection, Configs } from "./services/Configs";
 import { TypedSerializer } from "./plugins/typed-serializer";
 import {
   NunjunksEngine,
@@ -38,8 +39,8 @@ import {
 } from "./plugins/simple-logger";
 import { Render } from "./services/Render";
 import { ConfigReader } from "./services/ConfigReader";
-import { defaultGlobalError } from "./options/errors.options";
 import { InnerBundle } from "./bundle";
+import { ConfigToken } from "./typings/IConfigs";
 
 type DIPair = [any, any];
 type DependencyFactory<DEPTS, T> = [DEPTS, (...args: any[]) => T] | (() => T);

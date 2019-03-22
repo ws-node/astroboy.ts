@@ -40,7 +40,7 @@ export = function(_, command: IRouterCmdOptions) {
     const tsnode = require.resolve("ts-node");
     console.log(chalk.cyan("正在构建路由，请稍候...\n"));
     const registerFile = path.resolve(__dirname, "../register");
-    const initFile = path.resolve(__dirname, "../init");
+    const initFile = path.resolve(__dirname, "../process/init");
     console.log(chalk.yellow("开始执行路由初始化逻辑："));
     console.log(`script ==> ${chalk.grey(initFile)}`);
     exec(

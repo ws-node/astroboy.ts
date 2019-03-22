@@ -1,4 +1,4 @@
-import { createOptions } from "../services/Configs";
+import { createOptions } from "../typings/IConfigs";
 
 /**
  * ## 配置JsonResult的解析方式

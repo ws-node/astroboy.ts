@@ -4,7 +4,7 @@ import { defineUnit } from "./unit";
 
 defineUnit(["index", "Astroboy.ts index outputs"], () => {
   it("test astroboy.ts package exports", () => {
-    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(59);
+    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(57);
     expect(typeof Pkg.API, "[astroboy.ts].API").to.equal("function");
     expect(typeof Pkg.Astroboy, "[astroboy.ts].Astroboy").to.equal("function");
     expect(
@@ -122,38 +122,25 @@ defineUnit(["index", "Astroboy.ts index outputs"], () => {
     expect(typeof Pkg.injectScope, "[astroboy.ts].injectScope").to.equal(
       "function"
     );
-    expect(typeof Pkg.preInitFn, "[astroboy.ts].preInitFn").to.equal(
-      "function"
-    );
     expect(typeof Pkg.serverInit, "[astroboy.ts].serverInit").to.equal(
       "function"
     );
-    // 20181223
     expect(
       typeof Pkg.SIMPLE_LOGGER_OPTIONS,
       "[astroboy.ts].SIMPLE_LOGGER_OPTIONS"
     ).to.equal("object");
-    // 20181227
     expect(typeof Pkg.GLOBAL_ERROR, "[astroboy.ts].GLOBAL_ERROR").to.equal(
       "object"
     );
-    // 20190222
     expect(typeof Pkg.Bundles, "[astroboy.ts].Bundles").to.equal("object");
-    // 20190306
     expect(
       typeof Pkg.ReactiveSingleton,
       "[astroboy.ts].ReactiveSingleton"
     ).to.equal("function");
     expect(typeof Pkg.Watch, "[astroboy.ts].Watch").to.equal("function");
-    // 20190320
-    expect(
-      typeof Pkg.preConfigCompiler,
-      "[astroboy.ts].preConfigCompiler"
-    ).to.equal("function");
     expect(typeof Pkg.ConfigReader, "[astroboy.ts].ConfigReader").to.equal(
       "function"
     );
-    // 20190321
     expect(typeof Pkg.DefineConfig, "[astroboy.ts].DefineConfig").to.equal(
       "function"
     );

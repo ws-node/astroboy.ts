@@ -1,4 +1,4 @@
-import { preConfigCompiler } from "../index";
+import { preConfigCompiler } from "../cmd";
 
 const { CONFIG_ROOT, OUTPUT_ROOT, FORCE, ENABLED } = process.env;
 

@@ -2,7 +2,10 @@ import camel from "camelcase";
 import decamel from "decamelize";
 import set from "lodash/set";
 import { IResult, IResultScope } from "../typings/IResult";
-import { JsonResultOptions, JSON_RESULT_OPTIONS } from "../options";
+import {
+  JsonResultOptions,
+  JSON_RESULT_OPTIONS
+} from "../options/json.options";
 import { resolveKeys } from "../utils";
 
 /**

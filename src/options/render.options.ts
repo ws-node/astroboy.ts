@@ -1,7 +1,7 @@
 import { Constructor } from "@bonbons/di";
-import { createOptions } from "../services/Configs";
 import { NunjunksEngine } from "../plugins/nunjunks";
 import { IViewEngine } from "../typings/IViewEngine";
+import { createOptions } from "../typings/IConfigs";
 
 /**
  * ## 模板渲染错误处理接口

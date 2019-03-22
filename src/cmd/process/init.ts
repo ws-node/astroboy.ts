@@ -1,4 +1,4 @@
-import { preInitFn } from "../index";
+import { preInitFn } from "../cmd";
 
 const {
   CTOR_PATH,
