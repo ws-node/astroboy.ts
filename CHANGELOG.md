@@ -2,6 +2,10 @@
 
 ## 迭代记录
 
+### 1.1.3-rc.16
+
+- `atc` 新增 `middleware` 编译命令，支持对 ts 格式的 `middleware` 执行编译操作，简化 DI 能力支持
+
 ### 1.1.3-rc.4
 
 - 提供新的装饰器 `DefineConfig` 优化 config 的书写方式
@@ -24,7 +28,7 @@
 
 ### 1.0.11-rc.17
 
-- `atc` 新增 `config` 编译命令，支持对 ts 格式的 `config` 执行编译操作，支持未来的 config-DI 能力
+- `atc` 新增 `config` 编译命令，支持对 ts 格式的 `config` 执行编译操作，支持 config-DI 能力
 
 ### 1.0.11-rc.7
 
