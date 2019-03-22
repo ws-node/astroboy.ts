@@ -2,8 +2,8 @@ import ts from "typescript";
 
 export interface IFuncParam {
   name: string;
-  type: "directType" | "namespaceType";
-  namespace: string;
+  type: "directType" | "namespaceType" | "[unknown type]";
+  namespace?: string;
   typeName: string;
   paramIndex: number;
 }
@@ -81,15 +81,18 @@ function resolveFunctions(context: ICompileContext, node: ts.Node) {
     const exports = (context["exports"] = context["exports"] || {});
     exports[name] = { name };
   }
-  const thisFunc = (functions[name] = { name, params: [] });
+  const thisFunc: { name: string; params: IFuncParam[] } = (functions[name] = {
+    name,
+    params: []
+  });
   (thisFuncNode.parameters || []).forEach(
     (param: ts.ParameterDeclaration, index: number) => {
       if (!param.type || !param.type["typeName"]) {
         return thisFunc.params.push({
           name: (<ts.Identifier>param.name).text,
-          type: "unknown",
-          namespace: "unknown",
-          typeName: "unknown",
+          type: "[unknown type]",
+          namespace: "[unknown namespace]",
+          typeName: "[unknown typeName]",
           paramIndex: index
         });
       }
@@ -190,22 +193,48 @@ function normalize(value: string) {
   return value.replace(/\./g, "_").replace(/\-/g, "_");
 }
 
-export function resolveImportsToListString(context: ICompileContext) {
-  return Object.keys(context.imports).map(id => {
-    const current = context.imports[id];
-    switch (current.type) {
-      case "moduleReference":
-        return `const ${current.identity} = require("${current.reference}");`;
-      case "importNamedConst":
-        return `const ${current.identity} = require("${current.reference}");`;
-      case "importNamespace":
-        return `const ${current.identity} = tslib_1.__importDefault(require("${
-          current.reference
-        }"));`;
-      case "importStarBundle":
-        return `const ${current.identity} = tslib_1.__importStar(require("${
-          current.reference
-        }"));`;
-    }
-  });
-}
+export const ImportsHelper = {
+  toJsList(context: ICompileContext) {
+    return Object.keys(context.imports).map(id => {
+      const current = context.imports[id];
+      switch (current.type) {
+        case "moduleReference":
+          return `const ${current.identity} = require("${current.reference}");`;
+        case "importNamedConst":
+          return `const ${current.identity} = require("${current.reference}");`;
+        case "importNamespace":
+          return `const ${
+            current.identity
+          } = tslib_1.__importDefault(require("${current.reference}"));`;
+        case "importStarBundle":
+          return `const ${current.identity} = tslib_1.__importStar(require("${
+            current.reference
+          }"));`;
+      }
+    });
+  },
+
+  toTsList(context: ICompileContext) {
+    return Object.keys(context.imports)
+      .filter(n => n !== "tslib_1")
+      .map(id => {
+        const current = context.imports[id];
+        switch (current.type) {
+          case "moduleReference":
+            return `import ${current.identity} = require("${
+              current.reference
+            }");`;
+          case "importNamedConst":
+            return `import ${current.identity} = require("${
+              current.reference
+            }");`;
+          case "importNamespace":
+            return `import ${current.identity} from "${current.reference}";`;
+          case "importStarBundle":
+            return `import * as ${current.identity} from "${
+              current.reference
+            }";`;
+        }
+      });
+  }
+};

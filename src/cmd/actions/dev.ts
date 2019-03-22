@@ -208,7 +208,7 @@ function startTypeCheck(
 ) {
   console.log(chalk.blue("开始执行类型检查...\n"));
   const child = childProcess.fork(
-    path.resolve(__dirname, "../process/check.js"),
+    path.resolve(__dirname, "../process/check"),
     [],
     {
       env: {

@@ -6,7 +6,7 @@ import {
   ICompileContext,
   compileForEach,
   IFuncParam,
-  resolveImportsToListString
+  ImportsHelper
 } from "../utils/ast-compiler";
 
 export interface MiddlewareCompilerOptions {
@@ -51,6 +51,7 @@ export function middlewareCompileFn(
       cwd,
       outFolder || defaultConfigCompilerOptions.outFolder
     );
+    const EXTENSIONS = !!force ? ".ts" : "js";
     if (!fs.existsSync(middleRootFolder)) fs.mkdirSync(middleRootFolder);
     const files = fs.readdirSync(middleRootFolder);
     if (!!force && fs.existsSync(outputFolder)) {
@@ -62,7 +63,7 @@ export function middlewareCompileFn(
       // 硬核开关，强撸中间件文件夹
       const exists = fs.readdirSync(outputFolder);
       exists
-        .filter(p => p.endsWith(".js"))
+        .filter(p => p.endsWith(".js") || p.endsWith(EXTENSIONS))
         .forEach(p => {
           fs.unlinkSync(`${outputFolder}/${p}`);
         });
@@ -82,7 +83,7 @@ export function middlewareCompileFn(
         const sourcePath = `${middleRootFolder}/${filePath}`;
         const compiledPath = `${outputFolder}/${filePath.replace(
           ".ts",
-          ".js"
+          EXTENSIONS
         )}`;
         if (fs.existsSync(compiledPath)) return;
         program = createProgram(
@@ -101,9 +102,6 @@ export function middlewareCompileFn(
         compileForEach(file, context);
         const exportList = Object.keys(context.exports);
         if (exportList.length <= 0) return;
-        const middlewareName = exportList[0];
-        // console.log(context);
-        // console.log(exportList);
         const exports = require(sourcePath);
         if (!exports) return;
         let finalExports: (...args: any[]) => any;
@@ -130,32 +128,16 @@ export function middlewareCompileFn(
         } else {
           finalExports = exports;
         }
-        const imports = resolveImportsToListString(context);
-        const targetFunc = context.functions[middlewareName];
-        const params = (targetFunc && targetFunc.params) || [];
-        const procedures: string[] = [
-          "// [astroboy.ts] 自动生成的代码",
-          `const { injectScope } = require("astroboy.ts");`,
-          ...imports,
-          ...otherFuncs.map(i => i.toString())
-        ];
-        // 具名函数
-        if (!!finalExports.name) procedures.push(finalExports.toString());
-        const actions: string[] = [
-          createInjectActions(params, context),
-          createAwaitMiddlewareAction(
-            // 当前函数不存在，默认使用导入的函数；如果导入函数为匿名，则走自包裹函数模式
-            !targetFunc ? finalExports.name : middlewareName,
-            params,
-            finalExports
-          ),
-          "  await next();"
-        ];
-        const exportStr = `${procedures.join(
-          "\n"
-        )}\nmodule.exports = () => injectScope(async ({ injector, next }) => {\n${actions.join(
-          "\n"
-        )}\n});`;
+        if (!finalExports.name) {
+          throw new Error(
+            "Middleware-Compiler Error: exported function must have a name."
+          );
+        }
+        const exportStr = (!!force ? createTsFile : createJsFile)(
+          otherFuncs,
+          finalExports,
+          context
+        );
         fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
         compileds.push(compiledPath);
       });
@@ -163,6 +145,102 @@ export function middlewareCompileFn(
   } catch (error) {
     throw error;
   }
+}
+
+function createJsFile(
+  otherFuncs: ((...args: any[]) => any)[],
+  finalExports: (...args: any[]) => any,
+  context: ICompileContext
+) {
+  const imports = ImportsHelper.toJsList(context);
+  const targetFunc = context.functions[finalExports.name];
+  const params =
+    // index<0 没有类型
+    (targetFunc &&
+      targetFunc.params.filter(i => i.type !== "[unknown type]")) ||
+    [];
+  const procedures: string[] = [
+    "// [astroboy.ts] 自动生成的代码",
+    params.length > 0
+      ? `const { injectScope } = require("astroboy.ts");`
+      : undefined,
+    ...imports,
+    ...otherFuncs.map(i => i.toString()),
+    finalExports.toString()
+  ].filter(i => !!i);
+  const actions: string[] = [
+    createInjectActions(params, context),
+    createAwaitMiddlewareAction(finalExports.name, params),
+    "  await next();"
+  ];
+  const exportStr =
+    params.length > 0
+      ? createDIMiddleware(procedures, actions)
+      : createCommonMiddleware(procedures, finalExports.name);
+  return exportStr;
+}
+
+function createTsFile(
+  otherFuncs: ((...args: any[]) => any)[],
+  finalExports: (...args: any[]) => any,
+  context: ICompileContext
+) {
+  const imports = ImportsHelper.toTsList(context);
+  const targetFunc = context.functions[finalExports.name];
+  const params =
+    // index<0 没有类型
+    (targetFunc &&
+      targetFunc.params.filter(i => i.type !== "[unknown type]")) ||
+    [];
+  const procedures: string[] = [
+    "// [astroboy.ts] 自动生成的代码",
+    params.length > 0
+      ? `import { injectScope } from "astroboy.ts";`
+      : undefined,
+    ...imports,
+    ...otherFuncs.map(i => i.toString()),
+    finalExports.toString()
+  ].filter(i => !!i);
+  const actions: string[] = [
+    createInjectActions(params, context),
+    createAwaitMiddlewareAction(finalExports.name, params),
+    "  await next();"
+  ];
+  const exportStr =
+    params.length > 0
+      ? createDIMiddleware(procedures, actions, true)
+      : createCommonMiddleware(procedures, finalExports.name, true);
+  return exportStr;
+}
+
+function createCommonMiddleware(
+  procedures: string[],
+  funcName: string,
+  isTs = false
+) {
+  if (isTs) {
+    return `${procedures.join("\n")}\nexport = () => ${funcName};`;
+  }
+  return `${procedures.join("\n")}\nmodule.exports = () => ${funcName};`;
+}
+
+function createDIMiddleware(
+  procedures: string[],
+  actions: string[],
+  isTs = false
+) {
+  if (isTs) {
+    return `${procedures.join(
+      "\n"
+    )}\nexport = () => injectScope(async ({ injector, next }: any) => {\n${actions.join(
+      "\n"
+    )}\n});`;
+  }
+  return `${procedures.join(
+    "\n"
+  )}\nmodule.exports = () => injectScope(async ({ injector, next }) => {\n${actions.join(
+    "\n"
+  )}\n});`;
 }
 
 function createInjectActions(params: IFuncParam[], context: ICompileContext) {
@@ -198,16 +276,9 @@ function resolveIdentity(
 }
 
 function createAwaitMiddlewareAction(
-  middlewareName: string | undefined,
-  params: IFuncParam[],
-  func?: any
+  middlewareName: string,
+  params: IFuncParam[]
 ) {
-  // 无名函数（可能为箭头函数）特殊处理
-  if (!middlewareName) {
-    return `  await (${func.toString()})(${params
-      .map(p => `_p${p.paramIndex}`)
-      .join(", ")});`;
-  }
   return `  await ${middlewareName}(${params
     .map(p => `_p${p.paramIndex}`)
     .join(", ")});`;

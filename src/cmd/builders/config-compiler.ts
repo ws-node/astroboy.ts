@@ -5,7 +5,7 @@ import { loadProgramConfig, createProgram } from "../utils/type-check";
 import {
   ICompileContext,
   compileForEach,
-  resolveImportsToListString
+  ImportsHelper
 } from "../utils/ast-compiler";
 
 export interface InnerConfigCompilerOptions extends ConfigCompilerOptions {
@@ -125,7 +125,7 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
             "Config-Compiler Error: exports must be a function or object."
           );
         }
-        const imports = resolveImportsToListString(context);
+        const imports = ImportsHelper.toJsList(context);
         const preRuns = [
           "// [astroboy.ts] 自动生成的代码",
           ...imports,
