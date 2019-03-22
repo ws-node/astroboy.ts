@@ -51,7 +51,10 @@ export = function(_, command: IMiddlewareCmdOptions) {
           OUTPUT_ROOT: config.output || "-",
           FORCE: String(config.force === true),
           ENABLED: String(config.enabled === true),
-          __TSCONFIG: config.tsconfig || "_"
+          __TSCONFIG: path.resolve(
+            projectRoot,
+            config.tsconfig || "tsconfig.json"
+          )
         }
       },
       (error, stdout, stderr) => {
