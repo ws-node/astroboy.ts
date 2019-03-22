@@ -7,6 +7,10 @@ import {
 } from "./base";
 import { initRouters } from "./builders/routers";
 import { compileFn, ConfigCompilerOptions } from "./builders/config-compiler";
+import {
+  MiddlewareCompilerOptions,
+  middlewareCompileFn
+} from "./builders/middleware-cmp";
 
 interface IPreProcess {
   /** 是否自动生成2.0的routers，默认：`false` */
@@ -45,6 +49,19 @@ export function preInitFn(configs: Partial<IPreProcess>, inEnd?) {
  */
 export function preConfigCompiler(configs: Partial<ConfigCompilerOptions>) {
   return compileFn(configs);
+}
+
+/**
+ * ## astroboy.ts 中间件预处理函数
+ * * 硬核初始化middleware
+ * @author Big Mogician
+ * @export
+ * @param {Partial<MiddlewareCompilerOptions>} configs
+ */
+export function preMiddlewareCompiler(
+  configs: Partial<MiddlewareCompilerOptions>
+) {
+  return middlewareCompileFn(configs);
 }
 
 export interface Env extends E {}

@@ -1,9 +1,9 @@
 import commander from "commander";
 import { CommandPlugin } from "./base";
-import { RouterPlugin } from "./router";
-import { ConfigPlugin } from "./config";
-import { MiddlewarePlugin } from "./middleware";
-import { DevPlugin } from "./dev";
+import { DevPlugin } from "./actions/dev";
+import { RouterPlugin } from "./actions/routers";
+import { ConfigPlugin } from "./actions/config";
+import { MiddlewarePlugin } from "./actions/middleware";
 
 function initCommand(plugin: CommandPlugin) {
   const program = commander.name(plugin.name).description(plugin.description);

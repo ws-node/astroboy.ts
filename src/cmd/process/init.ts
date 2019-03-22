@@ -17,7 +17,6 @@ preInitFn(
     always: ASTT_ALWAYS === "true",
     fileType: <any>FILE_TYPE,
     appRoot: APP_ROOT,
-    // @ts-ignore
     ctorFolder: CTOR_PATH,
     routerFolder: ROUTER_PATH
   },
