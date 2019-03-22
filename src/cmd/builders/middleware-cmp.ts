@@ -203,8 +203,7 @@ function createTsFile(
   ].filter(i => !!i);
   const actions: string[] = [
     createInjectActions(params, context),
-    createAwaitMiddlewareAction(finalExports.name, params),
-    "  await next();"
+    createAwaitMiddlewareAction(finalExports.name, params)
   ];
   const exportStr =
     params.length > 0
@@ -279,7 +278,10 @@ function createAwaitMiddlewareAction(
   middlewareName: string,
   params: IFuncParam[]
 ) {
-  return `  await ${middlewareName}(${params
+  return `  await ${middlewareName}.call({ next }, ${params
     .map(p => `_p${p.paramIndex}`)
     .join(", ")});`;
+  // return `  await (${middlewareName}.bind({ next }))(${params
+  //   .map(p => `_p${p.paramIndex}`)
+  //   .join(", ")});`;
 }

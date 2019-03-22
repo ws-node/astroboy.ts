@@ -48,15 +48,7 @@ export function setColor(name: keyof typeof Colors, value: any): string {
   return `${Colors[name]}${value}${Colors.reset}`;
 }
 
-export const GlobalDI = new DIContainer<ScopeID, { ctx: any }>({
-  // throws: false,
-  // onEmit: ({ level, data }) =>
-  //   console.log(
-  //     chalk[level === "warn" ? "yellow" : level === "error" ? "red" : "white"](
-  //       `[${level.toUpperCase()}] - ${data.msg}`
-  //     )
-  //   )
-});
+export const GlobalDI = new DIContainer<ScopeID, { ctx: any }>();
 export const GlobalImplements = new Map<any, any>();
 
 export function setScopeId(ctx: IContext) {

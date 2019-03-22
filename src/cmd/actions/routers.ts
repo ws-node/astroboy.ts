@@ -44,6 +44,7 @@ export const RouterPlugin: CommandPlugin = {
     console.log(
       `${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`
     );
+    const projectRoot = process.cwd();
     let config: any;
     const defaultConfigs = {
       enabled: true,
@@ -54,7 +55,7 @@ export const RouterPlugin: CommandPlugin = {
       tsconfig: undefined
     };
     try {
-      const req = loadConfig(process.cwd(), fileName);
+      const req = loadConfig(projectRoot, fileName);
       config = {
         ...defaultConfigs,
         ...get(req, "routers", {}),
@@ -81,8 +82,8 @@ export const RouterPlugin: CommandPlugin = {
         `node -r ${registerFile} ${initFile}`,
         {
           env: {
-            CTOR_PATH: path.resolve(process.cwd(), "app/controllers"),
-            ROUTER_PATH: path.resolve(process.cwd(), "app/routers"),
+            CTOR_PATH: path.resolve(projectRoot, "app/controllers"),
+            ROUTER_PATH: path.resolve(projectRoot, "app/routers"),
             ASTT_ENABLED:
               config.enabled === undefined
                 ? "true"
@@ -112,6 +113,7 @@ export const RouterPlugin: CommandPlugin = {
             console.log(
               chalk.green(`路由初始化完成${chalk.white(`[${count}]`)}`)
             );
+            // console.log(stdout);
           } catch (_) {
             console.log(chalk.yellow("初始化routers失败..."));
             console.log(chalk.red(_));
