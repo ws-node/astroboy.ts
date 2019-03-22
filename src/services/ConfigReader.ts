@@ -74,23 +74,6 @@ export interface IAstroboyBaseMiddlewares {
 @Injectable()
 export class ConfigReader<T extends { [prop: string]: any } = {}> {
   /**
-   * ### 使用语法表达式来填充
-   * * 使用简单语句
-   * * 避免使用复杂字符串
-   * * 繁重的逻辑可以使用`procedures`
-   *
-   * @author Big Mogician
-   * @static
-   * @template T
-   * @param {string} expression
-   * @returns {T}
-   * @memberof ConfigReader
-   */
-  static Expression<T = any>(expression: string): T {
-    return Symbol(expression) as any;
-  }
-
-  /**
    * 整个config数据
    *
    * @readonly

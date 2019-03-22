@@ -1,6 +1,6 @@
-import { CancellationToken } from "../utils/CancellationToken";
-import { NormalizedMessage, Severity } from "../utils/NormalizedMessage";
-import { loadProgramConfig, createProgram } from "../utils/typeCheck";
+import { CancellationToken } from "../utils/cancellation-token";
+import { NormalizedMessage, Severity } from "../utils/normalized-msg";
+import { loadProgramConfig, createProgram } from "../utils/type-check";
 import * as typescript from "typescript";
 
 const { TSCONFIG } = process.env;

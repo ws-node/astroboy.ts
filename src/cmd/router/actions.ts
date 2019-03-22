@@ -2,7 +2,7 @@ import path from "path";
 import get from "lodash/get";
 import { IRouterCmdOptions } from "./options";
 import { exec } from "child_process";
-import { loadConfig } from "../utils/loadConfig";
+import { loadConfig } from "../utils/load-config";
 import chalk from "chalk";
 
 export = function(_, command: IRouterCmdOptions) {

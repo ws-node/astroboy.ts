@@ -10,4 +10,3 @@ export {
   FromBody
 } from "./route";
 export { ReactiveSingleton, Watch } from "./singleton";
-export { DefineConfig } from "./configs";

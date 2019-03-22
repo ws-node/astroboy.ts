@@ -1,16 +1,20 @@
 import fs from "fs";
 import path from "path";
-import { Constructor } from "@bonbons/di";
+import ts from "typescript";
+import { loadProgramConfig, createProgram } from "../utils/type-check";
 import {
-  InnerBaseCompiler,
-  IConfigsCompiler
-} from "../../typings/IConfigCompiler";
+  ICompileContext,
+  compileForEach,
+  resolveImportsToListString
+} from "../utils/ast-compiler";
 
 export interface InnerConfigCompilerOptions extends ConfigCompilerOptions {
   // TO DO
 }
 
 export interface ConfigCompilerOptions {
+  /** tsconfig, 默认：`undefined` */
+  tsconfig?: string;
   /** 是否自动编译configs文件夹，默认：`false` */
   enabled: boolean;
   /** 是否强制编译configs文件夹，默认：`false` */
@@ -22,6 +26,7 @@ export interface ConfigCompilerOptions {
 }
 
 export const defaultConfigCompilerOptions: ConfigCompilerOptions = {
+  tsconfig: undefined,
   enabled: false,
   force: false,
   configRoot: "app/config",
@@ -29,12 +34,24 @@ export const defaultConfigCompilerOptions: ConfigCompilerOptions = {
 };
 
 export function compileFn(options: Partial<ConfigCompilerOptions>) {
-  const { enabled = false, force = false, configRoot, outRoot } = options;
+  const {
+    enabled = false,
+    force = false,
+    configRoot,
+    outRoot,
+    tsconfig
+  } = options;
   if (!enabled) return;
   try {
     const cwd = process.cwd();
-    const configFolder = path.resolve(cwd, configRoot || "app/config");
-    const outputFolder = path.resolve(cwd, outRoot || "config");
+    const configFolder = path.resolve(
+      cwd,
+      configRoot || defaultConfigCompilerOptions.configRoot
+    );
+    const outputFolder = path.resolve(
+      cwd,
+      outRoot || defaultConfigCompilerOptions.outRoot
+    );
     if (!fs.existsSync(configFolder)) fs.mkdirSync(configFolder);
     const files = fs.readdirSync(configFolder);
     if (!!force && fs.existsSync(outputFolder)) {
@@ -54,6 +71,11 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
       fs.mkdirSync(outputFolder);
     }
     const compileds: string[] = [];
+    const options = loadProgramConfig(tsconfig, {
+      noEmit: true,
+      skipLibCheck: true
+    });
+    let program: ts.Program;
     files
       .filter(p => p.endsWith(".ts"))
       .forEach(filePath => {
@@ -64,104 +86,60 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
           ".js"
         )}`;
         if (fs.existsSync(compiledPath)) return;
+        program = createProgram(
+          {
+            ...options,
+            fileNames: [sourcePath]
+          },
+          program
+        );
+        const file = program.getSourceFile(sourcePath);
+        const context: ICompileContext = {
+          imports: {},
+          functions: {},
+          exports: {}
+        };
+        compileForEach(file, context);
         const exports = require(sourcePath);
         if (!exports) return;
         let finalExports: any;
-        let procedures: string[] = [];
+        const procedures: string[] = [];
         if (typeof exports === "function") {
-          ({ finalExports, procedures } = readExcus(
-            exports,
-            finalExports,
-            procedures
-          ));
+          finalExports = exports;
         } else if (typeof exports === "object") {
-          const { default: excuClass } = exports;
+          const { default: excuClass, ...others } = exports;
           if (typeof excuClass !== "function") {
-            finalExports = exports;
+            throw new Error(
+              "Config-Compiler Error: default exports must be a function."
+            );
           } else {
-            ({ finalExports, procedures } = readExcus(
-              excuClass,
-              finalExports,
-              procedures
-            ));
+            finalExports = excuClass;
+            Object.keys(others || {}).forEach(name => {
+              if (typeof others[name] === "function" && !!others[name].name) {
+                procedures.push(others[name].toString());
+              }
+            });
           }
         } else {
-          finalExports = exports;
+          throw new Error(
+            "Config-Compiler Error: exports must be a function or object."
+          );
         }
-        const preRuns = ["// [astroboy.ts] 自动生成的代码", ...procedures];
-        const fileOutputStr = connectExports(preRuns.join("\n"), finalExports);
-        fs.appendFileSync(
-          compiledPath,
-          // 解析表达式语法
-          resolveExpressions(fileOutputStr),
-          { flag: "w" }
-        );
+        const imports = resolveImportsToListString(context);
+        const preRuns = [
+          "// [astroboy.ts] 自动生成的代码",
+          ...imports,
+          ...procedures,
+          finalExports.toString()
+        ];
+        const fileOutputStr = `${preRuns.join("\n")}\nmodule.exports = ${
+          finalExports.name
+        }();`;
+        fs.appendFileSync(compiledPath, fileOutputStr, { flag: "w" });
         compileds.push(compiledPath);
       });
     return compileds;
   } catch (error) {
     throw error;
   }
-}
-
-function readExcus(
-  excuClass: Constructor<any>,
-  finalExports: any,
-  procedures: string[]
-) {
-  const {
-    modules = {},
-    functions = [],
-    consts = {}
-  } = excuClass.prototype as InnerBaseCompiler<any>;
-  const sections: string[] = [];
-  Object.keys(modules).forEach(name =>
-    sections.push(`const ${name} = require("${modules[name]}");`)
-  );
-  Object.keys(consts).forEach(name =>
-    sections.push(
-      `const ${name} = ${
-        typeof consts[name] === "function"
-          ? consts[name].toString()
-          : JSON.stringify(consts[name], null, "  ")
-      };`
-    )
-  );
-  (functions || []).forEach(func => sections.push(func.toString()));
-  const exec: IConfigsCompiler<any> = new excuClass();
-  finalExports = exec.configs(process);
-  procedures = (exec.procedures && exec.procedures(process)) || [];
-  procedures = [...sections, ...procedures];
-  return { finalExports, procedures };
-}
-
-function connectExports(preRuns: string, finalExports: any) {
-  return `${preRuns}\nmodule.exports = ${JSON.stringify(
-    readExpressions(finalExports),
-    null,
-    "  "
-  )}`;
-}
-
-function resolveExpressions(fileOutputStr: string): any {
-  return fileOutputStr.replace(
-    /['"`]{1}@expression::Symbol\((.+)\)['"`]{1}/g,
-    function($0, $1) {
-      // 恢复格式问题
-      return $1.replace(/\\/g, "");
-    }
-  );
-}
-
-function readExpressions(target: any) {
-  if (typeof target === "object") {
-    for (const k in target) {
-      if (typeof target[k] === "object") {
-        target[k] = readExpressions(target[k]);
-      } else if (typeof target[k] === "symbol") {
-        target[k] = `@expression::${target[k].toString()}`;
-      }
-    }
-  }
-  return target;
 }

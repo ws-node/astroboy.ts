@@ -2,6 +2,10 @@
 
 ## 迭代记录
 
+### 1.1.3-rc.17
+
+- [ BREAKING CHANGE ] 废除装饰器 `DefineConfig` 并删除，config 改为纯函数导出，并支持多函数
+
 ### 1.1.3-rc.16
 
 - `atc` 新增 `middleware` 编译命令，支持对 ts 格式的 `middleware` 执行编译操作，简化 DI 能力支持

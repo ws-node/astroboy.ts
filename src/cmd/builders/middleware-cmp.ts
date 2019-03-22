@@ -1,7 +1,13 @@
 import path from "path";
 import fs from "fs";
 import ts from "typescript";
-import { loadProgramConfig, createProgram } from "../utils/typeCheck";
+import { loadProgramConfig, createProgram } from "../utils/type-check";
+import {
+  ICompileContext,
+  compileForEach,
+  IFuncParam,
+  resolveImportsToListString
+} from "../utils/ast-compiler";
 
 export interface MiddlewareCompilerOptions {
   /** tsconfig, 默认：`undefined` */
@@ -92,48 +98,43 @@ export function middlewareCompileFn(
           functions: {},
           exports: {}
         };
-        forEach(file, context);
+        compileForEach(file, context);
         const exportList = Object.keys(context.exports);
         if (exportList.length <= 0) return;
         const middlewareName = exportList[0];
         const exports = require(sourcePath);
         if (!exports) return;
         let finalExports: (...args: any[]) => any;
+        const otherFuncs: Array<(...args: any[]) => any> = [];
         if (typeof exports !== "object" && typeof exports !== "function") {
           throw new Error(
             "Middleware-Compiler Error: a middleware function must be exported."
           );
         }
         if (typeof exports === "object") {
-          const { default: excuClass } = exports;
+          const { default: excuClass, ...others } = exports;
           if (typeof excuClass !== "function") {
             throw new Error(
               "Middleware-Compiler Error: a middleware function must be exported."
             );
           } else {
             finalExports = excuClass;
+            Object.keys(others || {}).forEach(name => {
+              if (typeof others[name] === "function" && !!others[name].name) {
+                otherFuncs.push(others[name].toString());
+              }
+            });
           }
         } else {
           finalExports = exports;
         }
-        const imports = Object.keys(context.imports).map(name => {
-          const current = context.imports[name];
-          if (
-            current.type === "moduleReference" ||
-            current.type === "importStarBundle"
-          ) {
-            return `const ${name} = require("${current.reference}");`;
-          } else if (current.type === "importNamespace") {
-            return `const ${name} = require("${current.reference}").default;`;
-          } else if (current.type === "importNamedConst") {
-            return `const { ${name} } = require("${current.reference}");`;
-          }
-        });
+        const imports = resolveImportsToListString(context);
         const params = context.functions[middlewareName].params;
         const procedures: string[] = [
           "// [astroboy.ts] 自动生成的代码",
           `const { injectScope } = require("astroboy.ts");`,
           ...imports,
+          ...otherFuncs.map(i => i.toString()),
           finalExports.toString()
         ];
         const actions: string[] = [
@@ -173,143 +174,4 @@ function createAwaitMiddlewareAction(
   return `  await ${middlewareName}(${params
     .map(p => `_p${p.paramIndex}`)
     .join(", ")});`;
-}
-
-function forEach(node: ts.Node, context: ICompileContext) {
-  switch (node.kind) {
-    case ts.SyntaxKind.ImportEqualsDeclaration:
-    case ts.SyntaxKind.ImportDeclaration:
-      const imports = (context["imports"] = context["imports"] || {});
-      if (node.kind === ts.SyntaxKind.ImportEqualsDeclaration) {
-        const thisNode = <ts.ImportEqualsDeclaration>node;
-        imports[thisNode.name.text] = {
-          type: "moduleReference",
-          name: thisNode.name.text,
-          reference:
-            (<ts.ExternalModuleReference>thisNode.moduleReference).expression[
-              "text"
-            ] || ""
-        };
-      } else {
-        const thisNode = <ts.ImportDeclaration>node;
-        const namedBindings = thisNode.importClause.namedBindings!;
-        if (namedBindings) {
-          if (!(<ts.NamedImports>namedBindings).elements) {
-            const current = <ts.NamespaceImport>namedBindings;
-            imports[current.name.text] = {
-              type: "importStarBundle",
-              name: current.name.text,
-              reference: thisNode.moduleSpecifier["text"]
-            };
-          } else {
-            (<ts.NamedImports>namedBindings).elements.forEach(each => {
-              imports[each.name.text] = {
-                type: "importNamedConst",
-                name: each.name.text,
-                reference: thisNode.moduleSpecifier["text"]
-              };
-            });
-          }
-        } else {
-          const current = thisNode.importClause;
-          imports[current.name.text] = {
-            type: "importNamespace",
-            name: current.name.text,
-            reference: thisNode.moduleSpecifier["text"]
-          };
-        }
-      }
-      break;
-    case ts.SyntaxKind.FunctionDeclaration:
-      const functions = (context["functions"] = context["functions"] || {});
-      const thisFuncNode = <ts.FunctionDeclaration>node;
-      const isExports = (<any[]>(thisFuncNode["modifiers"] || []))
-        .map((i: ts.Modifier) => i.kind)
-        .includes(ts.SyntaxKind.ExportKeyword);
-      if (isExports) {
-        const exports = (context["exports"] = context["exports"] || {});
-        exports[thisFuncNode.name.text] = {
-          name: thisFuncNode.name.text
-        };
-      }
-      const thisFunc = (functions[thisFuncNode.name.text] = {
-        name: thisFuncNode.name.text,
-        params: []
-      });
-      (thisFuncNode.parameters || []).forEach(
-        (param: ts.ParameterDeclaration, index: number) => {
-          if (!param.type) {
-            return thisFunc.params.push({
-              name: (<ts.Identifier>param.name).text,
-              type: "unknown",
-              namespace: "unknown",
-              typeName: "unknown",
-              paramIndex: -1
-            });
-          }
-          if (param.type["typeName"].kind === ts.SyntaxKind.QualifiedName) {
-            thisFunc.params.push({
-              name: (<ts.Identifier>param.name).text,
-              type: "namespaceType",
-              namespace: param.type["typeName"].left.text,
-              typeName: param.type["typeName"].right.text,
-              paramIndex: index
-            });
-          } else {
-            thisFunc.params.push({
-              name: (<ts.Identifier>param.name).text,
-              type: "directType",
-              typeName: param.type["typeName"].text,
-              paramIndex: index
-            });
-          }
-        }
-      );
-      break;
-    case ts.SyntaxKind.ExportAssignment:
-    case ts.SyntaxKind.ExportDeclaration:
-      const exports = (context["exports"] = context["exports"] || {});
-      const thisExportsNode = <ts.ExpressionWithTypeArguments>node;
-      exports[thisExportsNode.expression["text"]] = {
-        name: thisExportsNode.expression["text"]
-      };
-      break;
-    case ts.SyntaxKind.EndOfFileToken:
-    case ts.SyntaxKind.SourceFile:
-    default:
-      return ts.forEachChild(node, node => forEach(node, context));
-  }
-}
-
-interface IFuncParam {
-  name: string;
-  type: "directType" | "namespaceType";
-  namespace: string;
-  typeName: string;
-  paramIndex: number;
-}
-
-interface ICompileContext {
-  imports: {
-    [name: string]: {
-      type:
-        | "moduleReference"
-        | "importNamedConst"
-        | "importStarBundle"
-        | "importNamespace";
-      reference: string;
-      name: string;
-    };
-  };
-  functions: {
-    [name: string]: {
-      name: string;
-      params: Array<IFuncParam>;
-    };
-  };
-  exports: {
-    [name: string]: {
-      name: string;
-    };
-  };
 }

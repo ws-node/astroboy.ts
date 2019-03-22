@@ -3,7 +3,7 @@ import path from "path";
 import chalk from "chalk";
 import get from "lodash/get";
 import { IMiddlewareCmdOptions } from "./options";
-import { loadConfig } from "../utils/loadConfig";
+import { loadConfig } from "../utils/load-config";
 import { MiddlewareCompilerConfig } from "../base";
 import { exec } from "child_process";
 

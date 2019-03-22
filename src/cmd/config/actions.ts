@@ -3,7 +3,7 @@ import path from "path";
 import chalk from "chalk";
 import get from "lodash/get";
 import { IConfigCmdOptions } from "./options";
-import { loadConfig } from "../utils/loadConfig";
+import { loadConfig } from "../utils/load-config";
 import { ConfigCompilerConfig } from "../base";
 import { exec } from "child_process";
 
@@ -51,7 +51,10 @@ export = function(_, command: IConfigCmdOptions) {
           OUTPUT_ROOT: config.outputroot || "-",
           FORCE: String(config.force === true),
           ENABLED: String(config.enabled === true),
-          __TSCONFIG: config.tsconfig || "_"
+          __TSCONFIG: path.resolve(
+            projectRoot,
+            config.tsconfig || "tsconfig.json"
+          )
         }
       },
       (error, stdout, stderr) => {

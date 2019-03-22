@@ -1,10 +1,11 @@
 import { preConfigCompiler } from "../cmd";
 
-const { CONFIG_ROOT, OUTPUT_ROOT, FORCE, ENABLED } = process.env;
+const { CONFIG_ROOT, OUTPUT_ROOT, FORCE, ENABLED, __TSCONFIG } = process.env;
 
 // @ts-ignore
 try {
   const results = preConfigCompiler({
+    tsconfig: __TSCONFIG === "-" ? undefined : __TSCONFIG,
     configRoot: CONFIG_ROOT === "-" ? undefined : CONFIG_ROOT,
     outRoot: OUTPUT_ROOT === "-" ? undefined : OUTPUT_ROOT,
     enabled: String(ENABLED) === "true" ? true : false,

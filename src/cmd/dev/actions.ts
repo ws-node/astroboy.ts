@@ -5,9 +5,9 @@ import chalk from "chalk";
 import childProcess, { ChildProcess } from "child_process";
 import typescript = require("typescript");
 import { IDevCmdOptions } from "./options";
-import { CancellationToken } from "../utils/CancellationToken";
-import { NormalizedMessage } from "../utils/NormalizedMessage";
-import { loadConfig } from "../utils/loadConfig";
+import { CancellationToken } from "../utils/cancellation-token";
+import { NormalizedMessage } from "../utils/normalized-msg";
+import { loadConfig } from "../utils/load-config";
 
 export = function(_, command: IDevCmdOptions) {
   if (_ !== "dev") return;
