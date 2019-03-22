@@ -7,9 +7,6 @@ const { TSCONFIG } = process.env;
 
 async function run(cancellationToken: CancellationToken) {
   let diagnostics: any[] = [];
-  //   let lints: any[] = [];
-
-  //   checker.nextIteration();
   const options = loadProgramConfig(TSCONFIG, { noEmit: true });
   const program = createProgram(options);
 
@@ -29,7 +26,6 @@ async function run(cancellationToken: CancellationToken) {
         diagnostics
       });
     } catch (e) {
-      // channel closed...
       process.exit();
     }
   }

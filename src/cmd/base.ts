@@ -31,6 +31,14 @@ export interface ConfigCompilerConfig {
   tsconfig?: string;
 }
 
+export interface MiddlewareCompilerConfig {
+  enabled?: boolean;
+  force?: boolean;
+  root?: string;
+  output?: string;
+  tsconfig?: string;
+}
+
 export interface CmdConfig {
   tsconfig?: string;
   inspect?: boolean;
@@ -44,6 +52,7 @@ export interface CmdConfig {
   transpile?: boolean;
   routers?: RouterConfig;
   configCompiler?: ConfigCompilerConfig;
+  middlewareCompiler?: MiddlewareCompilerConfig;
 }
 
 export interface InnerCmdConfig extends CmdConfig {
@@ -89,6 +98,10 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     configCompiler: {
       ...get(merge, "configCompiler", {}),
       ...get(config, "configCompiler", {})
+    },
+    middlewareCompiler: {
+      ...get(merge, "middlewareCompiler", {}),
+      ...get(config, "middlewareCompiler", {})
     }
   };
 }

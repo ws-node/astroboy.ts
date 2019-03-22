@@ -1,15 +1,12 @@
-import * as typescript from "typescript";
-import { Configuration } from "tslint";
 import path from "path";
+import * as ts from "typescript";
+import { Configuration } from "tslint";
 
 export function loadProgramConfig(
   configFile: string,
-  compilerOptions: typescript.CompilerOptions
+  compilerOptions: ts.CompilerOptions
 ) {
-  const tsconfig = typescript.readConfigFile(
-    configFile,
-    typescript.sys.readFile
-  ).config;
+  const tsconfig = ts.readConfigFile(configFile, ts.sys.readFile).config;
 
   tsconfig.compilerOptions = tsconfig.compilerOptions || {};
   tsconfig.compilerOptions = {
@@ -17,9 +14,9 @@ export function loadProgramConfig(
     ...compilerOptions
   };
 
-  const parsed = typescript.parseJsonConfigFileContent(
+  const parsed = ts.parseJsonConfigFileContent(
     tsconfig,
-    typescript.sys,
+    ts.sys,
     path.dirname(configFile)
   );
 
@@ -43,38 +40,11 @@ export function loadLinterConfig(configFile: string): ConfigurationFile {
 }
 
 export function createProgram(
-  programConfig: typescript.ParsedCommandLine,
-  //   files: FilesRegister,
-  //   watcher: FilesWatcher,
-  oldProgram?: typescript.Program
+  programConfig: ts.ParsedCommandLine,
+  oldProgram?: ts.Program
 ) {
-  const host = typescript.createCompilerHost(programConfig.options);
-  //   const realGetSourceFile = host.getSourceFile;
-
-  //   host.getSourceFile = (filePath, languageVersion, onError) => {
-  // first check if watcher is watching file - if not - check it's mtime
-  // if (!watcher.isWatchingFile(filePath)) {
-  //   try {
-  //     const stats = fs.statSync(filePath);
-
-  //     files.setMtime(filePath, stats.mtime.valueOf());
-  //   } catch (e) {
-  //     // probably file does not exists
-  //     files.remove(filePath);
-  //   }
-  // }
-
-  // // get source file only if there is no source in files register
-  // if (!files.has(filePath) || !files.getData(filePath).source) {
-  //   files.mutateData(filePath, data => {
-  //     data.source = realGetSourceFile(filePath, languageVersion, onError);
-  //   });
-  // }
-
-  // return files.getData(filePath).source;
-  //   };
-
-  return typescript.createProgram(
+  const host = ts.createCompilerHost(programConfig.options);
+  return ts.createProgram(
     programConfig.fileNames,
     programConfig.options,
     host,

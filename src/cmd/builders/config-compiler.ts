@@ -35,6 +35,7 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
     const cwd = process.cwd();
     const configFolder = path.resolve(cwd, configRoot || "app/config");
     const outputFolder = path.resolve(cwd, outRoot || "config");
+    if (!fs.existsSync(configFolder)) fs.mkdirSync(configFolder);
     const files = fs.readdirSync(configFolder);
     if (!!force && fs.existsSync(outputFolder)) {
       if (configFolder === outputFolder) {
