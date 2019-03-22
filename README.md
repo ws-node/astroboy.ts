@@ -373,6 +373,60 @@ export = () =>
   });
 ```
 
+##### 编译模式支持 @1.1.3-rc.16
+
+在 `1.1.3-rc.16` 版本引入中间件编译能力，支持使用 DI 语法来直接书写中间件。
+
+配置文件：
+
+```javascript
+const path = require("path");
+
+// 不相关的配置信息已经隐藏
+module.exports = {
+  tsconfig: "tsconfig.json",
+  // atc middleware 的命令配置
+  // 编译ts配置文件，支持DI能力 @1.1.03-rc.16 引入
+  middlewareCompiler: {
+    enabled: true, // 默认：false
+    force: true, // 默认：false
+    root: "app/middlewares/pipes", // 默认位置：app/middlewares/pipes/*.ts
+    output: "app/middlewares" // 默认输出位置：app/middlewares/*.js
+  }
+};
+```
+
+> app/middlewares/pipes/test.ts
+
+```typescript
+import { AstroboyContext } from "astroboy.ts";
+
+export default async function testMiddleware(context: AstroboyContext) {
+  console.log(new Date().getTime());
+}
+```
+
+执行命令： `atc middleware --force`
+
+得到结果：
+
+> app/middlewares/test.js
+
+```javascript
+// [astroboy.ts] 自动生成的代码
+const { injectScope } = require("astroboy.ts");
+const { AstroboyContext } = require("astroboy.ts");
+async function testMiddleware(context) {
+  console.log(new Date().getTime());
+}
+module.exports = () =>
+  injectScope(async ({ injector, next }) => {
+    const _p0 = injector.get(AstroboyContext);
+    await testMiddleware(_p0);
+    await next();
+  });
+```
+
 #### 5.支持 DI 的 ts 配置文件
 
 在 `1.1.0` 版本引入配置文件编译能力，支持使用 ts 来书写 config，同时可以将类型友好的服务化配置引入 DI。
