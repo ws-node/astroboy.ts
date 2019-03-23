@@ -183,7 +183,7 @@ function createJsFile(
   procedures.push(...imports);
   procedures.push(...otherFuncs.map<ImportsIndex>(i => [8, i.toString()]));
   procedures.push([9, finalExports.toString()]);
-  const finalSorted = procedures.map(i => i[1]);
+  const finalSorted = procedures.sort((a, b) => a[0] - b[0]).map(i => i[1]);
   const actions: string[] = [
     createInjectActions(params, context),
     createAwaitMiddlewareAction(finalExports.name, params)
@@ -219,7 +219,7 @@ function createTsFile(
   procedures.push(...imports);
   procedures.push(...otherFuncs.map<ImportsIndex>(i => [8, i.toString()]));
   procedures.push([9, finalExports.toString()]);
-  const finalSorted = procedures.map(i => i[1]);
+  const finalSorted = procedures.sort((a, b) => a[0] - b[0]).map(i => i[1]);
   const actions: string[] = [
     createInjectActions(params, context),
     createAwaitMiddlewareAction(finalExports.name, params)
