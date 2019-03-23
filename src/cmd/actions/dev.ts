@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 import chalk from "chalk";
 import ts from "typescript";
-import childProcess, { ChildProcess, exec, fork } from "child_process";
+import childProcess, { ChildProcess, exec, fork, spawn } from "child_process";
 import * as chokidar from "chokidar";
 import { CommandPlugin, InnerCmdConfig } from "../base";
 import { CancellationToken } from "../utils/cancellation-token";
@@ -232,9 +232,18 @@ export const DevPlugin: CommandPlugin = {
 
     let changes: string[] = [];
 
+    const tsnode_host = ts_node.split(" ")[1];
+    const tspath_host = tsc_path_map.split(" ")[1];
+
     const forkConfig: ForkCmdOptions = {
       command: path.join(projectRoot, "app/app.ts"),
-      args: [...(!!config.inspect ? ["--inspect"] : []), ts_node, tsc_path_map],
+      args: [
+        ...(!!config.inspect ? ["--inspect"] : []),
+        "-r",
+        tsnode_host,
+        "-r",
+        tspath_host
+      ],
       env: config.env,
       check: config.transpile && config.typeCheck,
       cwd: projectRoot,
@@ -340,12 +349,12 @@ function startMainProcess(config: ForkCmdOptions) {
   }
   console.log(chalk.green(BOOTSTRAP));
   console.log("");
-  config.mainProcess = fork(config.command, config.args, {
-    silent: false,
+  config.mainProcess = spawn("node", [...config.args, config.command], {
     env: {
       ...process.env,
       ...config.env
-    }
+    },
+    stdio: ["pipe", process.stdout, process.stderr]
   });
   return config.mainProcess;
 }

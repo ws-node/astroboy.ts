@@ -401,12 +401,16 @@ module.exports = {
 ```typescript
 import { AstroboyContext } from "astroboy.ts";
 import * as atc from "astroboy.ts";
+import { testA } from "../../utils/testA";
 
 export default async function testMiddleware(
   context: AstroboyContext,
   injector: atc.InjectService
 ) {
   console.log(new Date().getTime());
+  console.log(context.ctx.url);
+  await testA();
+  await this.next();
 }
 ```
 
@@ -418,20 +422,21 @@ export default async function testMiddleware(
 
 ```javascript
 // [astroboy.ts] 自动生成的代码
-const { injectScope } = require("astroboy.ts");
-const tslib_1 = require("tslib");
-const astroboy_ts_1 = require("astroboy.ts");
-const astroboy_ts_2 = tslib_1.__importStar(require("astroboy.ts"));
+import { injectScope, IMiddlewaresScope } from "astroboy.ts";
+import astroboy_ts_1 = require("astroboy.ts");
+import * as astroboy_ts_2 from "astroboy.ts";
+import testA_1 = require("../utils/testA");
 async function testMiddleware(context, injector) {
-  console.log(new Date().getTime());
+    console.log(new Date().getTime());
+    console.log(context.ctx.url);
+    await testA_1.testA();
+    await this.next();
 }
-module.exports = () =>
-  injectScope(async ({ injector, next }) => {
-    const _p0 = injector.get(astroboy_ts_1.AstroboyContext);
-    const _p1 = injector.get(astroboy_ts_2.InjectService);
-    await testMiddleware(_p0, _p1);
-    await next();
-  });
+export = () => injectScope(async ({ injector, next }: IMiddlewaresScope) => {
+  const _p0 = injector.get(astroboy_ts_1.AstroboyContext);
+  const _p1 = injector.get(astroboy_ts_2.InjectService);
+  await testMiddleware.call({ next }, _p0, _p1);
+});
 ```
 
 #### 5.支持 DI 的 ts 配置文件
@@ -539,12 +544,9 @@ export default function DefaultCOnfigs(): IConfigs {
 import { IConfigs } from "./config.default";
 
 // 使用非严格接口，只提供一部分的参数，用于覆盖
-export default function NameClass2(): Partial<IConfigs> {
-  const path = require("path");
-  return {
-    b: "dev"
-  };
-}
+export default () => (<Partial<IConfigs>{
+  b: "dev"
+});
 ```
 
 完成以后，在应用启动时执行：`atc config --force` :
@@ -594,12 +596,9 @@ module.exports = (function DefaultCOnfigs() {
 // [astroboy.ts] 自动生成的代码
 const tslib_1 = require("tslib");
 const config_default_1 = require("./config.default");
-module.exports = (function NameClass2() {
-  const path = require("path");
-  return {
-    b: "dev"
-  };
-})();
+module.exports = (() => ({
+  b: "dev"
+}))();
 ```
 
 > 文档完善中...
