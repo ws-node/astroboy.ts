@@ -166,11 +166,12 @@ function createJsFile(
 ) {
   const imports = ImportsHelper.toJsList(context);
   const targetFunc = context.functions[finalExports.name];
-  const params =
-    // index<0 没有类型
-    (targetFunc &&
-      targetFunc.params.filter(i => i.type !== "[unknown type]")) ||
-    [];
+  const { params, valid } = resolveParamsData(targetFunc);
+  if (!valid) {
+    throw new Error(
+      "Middleware-Compiler Error: invalid middleware function params type."
+    );
+  }
   const procedures: ImportsIndex[] = [];
   procedures.push([0, "// [astroboy.ts] 自动生成的代码"]);
   if (params.length > 0) {
@@ -201,11 +202,12 @@ function createTsFile(
 ) {
   const imports = ImportsHelper.toTsList(context);
   const targetFunc = context.functions[finalExports.name];
-  const params =
-    // index<0 没有类型
-    (targetFunc &&
-      targetFunc.params.filter(i => i.type !== "[unknown type]")) ||
-    [];
+  const { params, valid } = resolveParamsData(targetFunc);
+  if (!valid) {
+    throw new Error(
+      "Middleware-Compiler Error: invalid middleware function params type."
+    );
+  }
   const procedures: ImportsIndex[] = [];
   procedures.push([0, "// [astroboy.ts] 自动生成的代码"]);
   if (params.length > 0) {
@@ -229,15 +231,43 @@ function createTsFile(
   return exportStr;
 }
 
+function resolveParamsData(targetFunc: { name: string; params: IFuncParam[] }) {
+  const sourceParams = (targetFunc && targetFunc.params) || [];
+  /** 类型参数，DI类型 */
+  const params = sourceParams.filter(i => i.type !== "[unknown type]") || [];
+  return {
+    params,
+    sourceParams,
+    /**
+     * 中间件函数是否合法
+     * * valid：存在DI参数，且所有参数都可以被DI
+     * * valid：不存在DI参数
+     */
+    valid:
+      (params.length > 0 && params.length === sourceParams.length) ||
+      params.length === 0
+  };
+}
+
 function createCommonMiddleware(
   procedures: string[],
   funcName: string,
   isTs = false
 ) {
   if (isTs) {
-    return `${procedures.join("\n")}\nexport = () => ${funcName};`;
+    return (
+      `${procedures.join(
+        "\n"
+      )}\nexport = (options: any = {}, app: any) => async (ctx: any, next: any) => {\n    ` +
+      `return await ${funcName}(<any>{ ctx, options, app, next });\n};`
+    );
   }
-  return `${procedures.join("\n")}\nmodule.exports = () => ${funcName};`;
+  return (
+    `${procedures.join(
+      "\n"
+    )}\nmodule.exports = (options = {}, app) => async (ctx, next) => {\n    ` +
+    `return await ${funcName}({ ctx, options, app, next });\n};`
+  );
 }
 
 function createDIMiddleware(
@@ -246,17 +276,17 @@ function createDIMiddleware(
   isTs = false
 ) {
   if (isTs) {
-    return `${procedures.join(
-      "\n"
-    )}\nexport = () => injectScope(async ({ injector, next }: IMiddlewaresScope) => {\n${actions.join(
-      "\n"
-    )}\n});`;
+    return (
+      `${procedures.join("\n")}\nexport = (options: any = {}, app: any) => ` +
+      `injectScope(async ({ injector, next }: IMiddlewaresScope) => {\n${actions.join(
+        "\n"
+      )}\n});`
+    );
   }
-  return `${procedures.join(
-    "\n"
-  )}\nmodule.exports = () => injectScope(async ({ injector, next }) => {\n${actions.join(
-    "\n"
-  )}\n});`;
+  return (
+    `${procedures.join("\n")}\nmodule.exports = (options = {}, app) => ` +
+    `injectScope(async ({ injector, next }) => {\n${actions.join("\n")}\n});`
+  );
 }
 
 function createInjectActions(params: IFuncParam[], context: ICompileContext) {
@@ -295,7 +325,7 @@ function createAwaitMiddlewareAction(
   middlewareName: string,
   params: IFuncParam[]
 ) {
-  return `  await ${middlewareName}.call({ next }, ${params
+  return `  await ${middlewareName}.call({ next, options, app }, ${params
     .map(p => `_p${p.paramIndex}`)
     .join(", ")});`;
   // return `  await (${middlewareName}.bind({ next }))(${params
