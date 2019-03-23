@@ -1,4 +1,12 @@
 import ts from "typescript";
+import path from "path";
+
+export enum ImportStyle {
+  Namespace = 1,
+  Named = 2,
+  Star = 3,
+  Module = 4
+}
 
 export interface IFuncParam {
   name: string;
@@ -9,13 +17,13 @@ export interface IFuncParam {
 }
 
 export interface ICompileContext {
+  main: {
+    root: string;
+    out: string;
+  };
   imports: {
     [name: string]: {
-      type:
-        | "moduleReference"
-        | "importNamedConst"
-        | "importStarBundle"
-        | "importNamespace";
+      type: ImportStyle;
       reference: string;
       name: string[];
       identity: string;
@@ -120,7 +128,7 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
   const imports = (context["imports"] = context["imports"] || {});
   if (Object.keys(imports).length === 0) {
     imports["tslib_1"] = {
-      type: "moduleReference",
+      type: ImportStyle.Module,
       name: ["tslib"],
       identity: "tslib_1",
       reference: "tslib"
@@ -134,7 +142,7 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
       ] || "";
     const identity = getIdentity(reference, context);
     imports[identity] = {
-      type: "moduleReference",
+      type: ImportStyle.Module,
       name: [thisNode.name.text],
       identity,
       reference
@@ -148,7 +156,7 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
         const reference = thisNode.moduleSpecifier["text"] || "";
         const identity = getIdentity(reference, context);
         imports[identity] = {
-          type: "importStarBundle",
+          type: ImportStyle.Star,
           name: [current.name.text],
           identity,
           reference
@@ -157,7 +165,7 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
         const reference = thisNode.moduleSpecifier["text"] || "";
         const identity = getIdentity(reference, context);
         imports[identity] = {
-          type: "importNamedConst",
+          type: ImportStyle.Named,
           name: [],
           identity,
           reference
@@ -171,7 +179,7 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
       const reference = thisNode.moduleSpecifier["text"] || "";
       const identity = getIdentity(reference, context);
       imports[identity] = {
-        type: "importNamespace",
+        type: ImportStyle.Namespace,
         name: [current.name.text],
         identity,
         reference
@@ -193,48 +201,71 @@ function normalize(value: string) {
   return value.replace(/\./g, "_").replace(/\-/g, "_");
 }
 
+function resolveRelativePath(reference: string, context: ICompileContext) {
+  if (!reference || !reference.startsWith(".")) return reference;
+  const { root: sourceRoot, out: output } = context.main;
+  const abosolute = path.resolve(sourceRoot, reference);
+  return path.relative(output, abosolute);
+}
+
 export const ImportsHelper = {
   toJsList(context: ICompileContext) {
-    return Object.keys(context.imports).map(id => {
+    return Object.keys(context.imports).map<[ImportStyle, string]>(id => {
       const current = context.imports[id];
+      const relativePath = resolveRelativePath(current.reference, context);
+      let result: string;
       switch (current.type) {
-        case "moduleReference":
-          return `const ${current.identity} = require("${current.reference}");`;
-        case "importNamedConst":
-          return `const ${current.identity} = require("${current.reference}");`;
-        case "importNamespace":
-          return `const ${
+        case ImportStyle.Module:
+          result = `const ${current.identity} = require("${relativePath}");`;
+          break;
+        case ImportStyle.Named:
+          result = `const ${current.identity} = require("${relativePath}");`;
+          break;
+        case ImportStyle.Namespace:
+          result = `const ${
             current.identity
-          } = tslib_1.__importDefault(require("${current.reference}"));`;
-        case "importStarBundle":
-          return `const ${current.identity} = tslib_1.__importStar(require("${
-            current.reference
-          }"));`;
+          } = tslib_1.__importDefault(require("${relativePath}"));`;
+          break;
+        case ImportStyle.Star:
+          result = `const ${
+            current.identity
+          } = tslib_1.__importStar(require("${relativePath}"));`;
+          break;
       }
+      return [current.type, result];
     });
   },
 
   toTsList(context: ICompileContext) {
     return Object.keys(context.imports)
       .filter(n => n !== "tslib_1")
-      .map(id => {
+      .map<[ImportStyle, string]>(id => {
         const current = context.imports[id];
+        const relativePath = resolveRelativePath(current.reference, context);
+        let result: string;
         switch (current.type) {
-          case "moduleReference":
-            return `import ${current.identity} = require("${
-              current.reference
-            }");`;
-          case "importNamedConst":
-            return `import ${current.identity} = require("${
-              current.reference
-            }");`;
-          case "importNamespace":
-            return `import ${current.identity} from "${current.reference}";`;
-          case "importStarBundle":
-            return `import * as ${current.identity} from "${
-              current.reference
-            }";`;
+          case ImportStyle.Module:
+            result = `import ${current.identity} = require("${relativePath}");`;
+            break;
+
+          case ImportStyle.Named:
+            result = `import ${current.identity} = require("${relativePath}");`;
+            break;
+          case ImportStyle.Namespace:
+            result = `import ${current.identity} from "${relativePath}";`;
+            break;
+          case ImportStyle.Star:
+            result = `import * as ${current.identity} from "${relativePath}";`;
+            break;
         }
+        return [current.type, result];
       });
+  },
+
+  toList(context: ICompileContext, type: "ts" | "js") {
+    if (type === "ts") {
+      return ImportsHelper.toTsList(context).map(([, result]) => result);
+    }
+    return ImportsHelper.toJsList(context).map(([, result]) => result);
   }
 };

@@ -95,6 +95,7 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
         );
         const file = program.getSourceFile(sourcePath);
         const context: ICompileContext = {
+          main: { root: configFolder, out: outputFolder },
           imports: {},
           functions: {},
           exports: {}
@@ -125,7 +126,7 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
             "Config-Compiler Error: exports must be a function or object."
           );
         }
-        const imports = ImportsHelper.toJsList(context);
+        const imports = ImportsHelper.toList(context, "js");
         const preRuns = [
           "// [astroboy.ts] 自动生成的代码",
           ...imports,

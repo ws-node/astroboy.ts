@@ -6,7 +6,8 @@ import {
   ICompileContext,
   compileForEach,
   IFuncParam,
-  ImportsHelper
+  ImportsHelper,
+  ImportStyle
 } from "../utils/ast-compiler";
 
 export interface MiddlewareCompilerOptions {
@@ -29,6 +30,8 @@ export const defaultConfigCompilerOptions: MiddlewareCompilerOptions = {
   rootFolder: "app/middlewares/pipes",
   outFolder: "app/middlewares"
 };
+
+type ImportsIndex = [number, string];
 
 export function middlewareCompileFn(
   options: Partial<MiddlewareCompilerOptions>
@@ -95,6 +98,7 @@ export function middlewareCompileFn(
         );
         const file = program.getSourceFile(sourcePath);
         const context: ICompileContext = {
+          main: { root: middleRootFolder, out: outputFolder },
           imports: {},
           functions: {},
           exports: {}
@@ -159,15 +163,18 @@ function createJsFile(
     (targetFunc &&
       targetFunc.params.filter(i => i.type !== "[unknown type]")) ||
     [];
-  const procedures: string[] = [
-    "// [astroboy.ts] 自动生成的代码",
-    params.length > 0
-      ? `const { injectScope } = require("astroboy.ts");`
-      : undefined,
-    ...imports,
-    ...otherFuncs.map(i => i.toString()),
-    finalExports.toString()
-  ].filter(i => !!i);
+  const procedures: ImportsIndex[] = [];
+  procedures.push([0, "// [astroboy.ts] 自动生成的代码"]);
+  if (params.length > 0) {
+    procedures.push([
+      ImportStyle.Named,
+      `const { injectScope } = require("astroboy.ts");`
+    ]);
+  }
+  procedures.push(...imports);
+  procedures.push(...otherFuncs.map<ImportsIndex>(i => [8, i.toString()]));
+  procedures.push([9, finalExports.toString()]);
+  const finalSorted = procedures.sort((a, b) => a[0] - b[0]).map(i => i[1]);
   const actions: string[] = [
     createInjectActions(params, context),
     createAwaitMiddlewareAction(finalExports.name, params),
@@ -175,8 +182,8 @@ function createJsFile(
   ];
   const exportStr =
     params.length > 0
-      ? createDIMiddleware(procedures, actions)
-      : createCommonMiddleware(procedures, finalExports.name);
+      ? createDIMiddleware(finalSorted, actions)
+      : createCommonMiddleware(finalSorted, finalExports.name);
   return exportStr;
 }
 
@@ -192,23 +199,26 @@ function createTsFile(
     (targetFunc &&
       targetFunc.params.filter(i => i.type !== "[unknown type]")) ||
     [];
-  const procedures: string[] = [
-    "// [astroboy.ts] 自动生成的代码",
-    params.length > 0
-      ? `import { injectScope } from "astroboy.ts";`
-      : undefined,
-    ...imports,
-    ...otherFuncs.map(i => i.toString()),
-    finalExports.toString()
-  ].filter(i => !!i);
+  const procedures: ImportsIndex[] = [];
+  procedures.push([0, "// [astroboy.ts] 自动生成的代码"]);
+  if (params.length > 0) {
+    procedures.push([
+      ImportStyle.Named,
+      `import { injectScope, IMiddlewaresScope } from "astroboy.ts";`
+    ]);
+  }
+  procedures.push(...imports);
+  procedures.push(...otherFuncs.map<ImportsIndex>(i => [8, i.toString()]));
+  procedures.push([9, finalExports.toString()]);
+  const finalSorted = procedures.sort((a, b) => a[0] - b[0]).map(i => i[1]);
   const actions: string[] = [
     createInjectActions(params, context),
     createAwaitMiddlewareAction(finalExports.name, params)
   ];
   const exportStr =
     params.length > 0
-      ? createDIMiddleware(procedures, actions, true)
-      : createCommonMiddleware(procedures, finalExports.name, true);
+      ? createDIMiddleware(finalSorted, actions, true)
+      : createCommonMiddleware(finalSorted, finalExports.name, true);
   return exportStr;
 }
 
@@ -231,7 +241,7 @@ function createDIMiddleware(
   if (isTs) {
     return `${procedures.join(
       "\n"
-    )}\nexport = () => injectScope(async ({ injector, next }: any) => {\n${actions.join(
+    )}\nexport = () => injectScope(async ({ injector, next }: IMiddlewaresScope) => {\n${actions.join(
       "\n"
     )}\n});`;
   }
@@ -267,7 +277,7 @@ function resolveIdentity(
     .find(i => i.name.includes(typeName));
   if (target) {
     return `${target.identity}${
-      target.type === "importNamespace" ? ".default." : "."
+      target.type === ImportStyle.Namespace ? ".default." : "."
     }${replace || typeName}`;
   }
   return "";
