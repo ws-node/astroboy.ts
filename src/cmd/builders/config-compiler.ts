@@ -85,7 +85,6 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
           ".ts",
           ".js"
         )}`;
-        if (fs.existsSync(compiledPath)) return;
         program = createProgram(
           {
             ...options,
@@ -132,11 +131,20 @@ export function compileFn(options: Partial<ConfigCompilerOptions>) {
           ...imports,
           ...procedures
         ];
-        const fileOutputStr = `${preRuns.join(
+        const exportStr = `${preRuns.join(
           "\n"
         )}\nmodule.exports = (${finalExports.toString()})();`;
-        fs.appendFileSync(compiledPath, fileOutputStr, { flag: "w" });
-        compileds.push(compiledPath);
+        if (!!force || !fs.existsSync(compiledPath)) {
+          fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
+          return compileds.push(compiledPath);
+        }
+        const oldFile = fs.readFileSync(compiledPath, { flag: "r" });
+        if (oldFile.toString() !== exportStr) {
+          fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
+          compileds.push(compiledPath);
+        } else {
+          return;
+        }
       });
     return compileds;
   } catch (error) {

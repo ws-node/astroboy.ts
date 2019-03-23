@@ -51,6 +51,7 @@ export interface CmdConfig {
   typeCheck?: boolean;
   transpile?: boolean;
   routers?: RouterConfig;
+  compile?: boolean;
   configCompiler?: ConfigCompilerConfig;
   middlewareCompiler?: MiddlewareCompilerConfig;
 }
@@ -91,6 +92,7 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     mock: get(merge, "mock", config.mock),
     typeCheck: get(merge, "typeCheck", config.typeCheck),
     transpile: get(merge, "transpile", config.transpile),
+    compile: get(merge, "compile", config.compile),
     routers: {
       ...get(merge, "routers", {}),
       ...get(config, "routers", {})

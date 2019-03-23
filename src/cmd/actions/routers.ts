@@ -39,10 +39,10 @@ export const RouterPlugin: CommandPlugin = {
   },
   action(_, command: IRouterCmdOptions) {
     if (_ !== "router") return;
-    console.log(chalk.green("========= [ASTROBOY.TS] <==> ROUTER ========"));
+    console.log(chalk.green("========= [ASTROBOY.TS] <==> ROUTER ========\n"));
     const fileName = command.config || "atc.config.js";
     console.log(
-      `${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`
+      `${chalk.white("🤨 - TRY LOAD FILE : ")}${chalk.yellow(fileName)}`
     );
     const projectRoot = process.cwd();
     let config: any;
@@ -73,11 +73,13 @@ export const RouterPlugin: CommandPlugin = {
     if (command.tsconfig) config.tsconfig = command.tsconfig;
     try {
       const tsnode = require.resolve("ts-node");
-      console.log(chalk.cyan("正在构建路由，请稍候...\n"));
+      console.log("");
+      console.log(chalk.cyan("⛺️ - BUILDING ROUTERS"));
+      console.log("");
       const registerFile = path.resolve(__dirname, "../register");
       const initFile = path.resolve(__dirname, "../process/init");
-      console.log(chalk.yellow("开始执行路由初始化逻辑："));
       console.log(`script ==> ${chalk.grey(initFile)}`);
+      console.log("");
       exec(
         `node -r ${registerFile} ${initFile}`,
         {
@@ -97,34 +99,32 @@ export const RouterPlugin: CommandPlugin = {
         },
         (error, stdout, stderr) => {
           if (error) {
-            console.log(chalk.yellow("初始化routers失败."));
+            console.log(chalk.yellow("BUILD ROUTERS FAILED"));
             console.log(chalk.red(<any>error));
             console.log("--------------------");
             return;
           }
           if (stderr) {
-            console.log(chalk.yellow("初始化routers失败.."));
+            console.log(chalk.yellow("BUILD ROUTERS FAILED"));
             console.log(chalk.red(stderr));
             console.log("--------------------");
             return;
           }
           try {
             const count = showRoutes(JSON.parse(stdout || "{}") || {});
-            console.log(
-              chalk.green(`路由初始化完成${chalk.white(`[${count}]`)}`)
-            );
+            console.log(chalk.green(`COUNT : ${chalk.white(`[${count}]`)}\n`));
             // console.log(stdout);
           } catch (_) {
-            console.log(chalk.yellow("初始化routers失败..."));
+            console.log(chalk.yellow("BUILD ROUTERS FAILED"));
             console.log(chalk.red(_));
             console.log("--------------------");
           }
         }
       );
     } catch (e) {
-      console.log(chalk.yellow("初始化routers失败"));
+      console.log(chalk.yellow("BUILD ROUTERS FAILED"));
       if (((<Error>e).message || "").includes("ts-node")) {
-        console.log(chalk.red("请安装ts-node"));
+        console.log(chalk.red("NEED TS-NODE"));
         return;
       }
       throw e;

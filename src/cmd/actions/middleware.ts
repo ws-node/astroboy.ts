@@ -26,12 +26,12 @@ export const MiddlewarePlugin: CommandPlugin = {
   action(_, command: IMiddlewareCmdOptions) {
     if (_ !== "middleware") return;
     console.log(
-      chalk.green("========= [ASTROBOY.TS] <==> MIDDLEWARES ========")
+      chalk.green("========= [ASTROBOY.TS] <==> MIDDLEWARES ========\n")
     );
     const projectRoot = process.cwd();
     const fileName = command.config || "atc.config.js";
     console.log(
-      `${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`
+      `${chalk.white("🤨 - TRY LOAD FILE : ")}${chalk.yellow(fileName)}`
     );
 
     let config: MiddlewareCompilerConfig;
@@ -56,64 +56,85 @@ export const MiddlewarePlugin: CommandPlugin = {
     if (command.force) config.force = String(command.force) === "true";
     if (command.config) config.tsconfig = String(command.config);
 
-    try {
-      const tsnode = require.resolve("ts-node");
-      console.log(chalk.cyan("正在编译middlewares，请稍候...\n"));
-      const registerFile = path.resolve(__dirname, "../register");
-      const initFile = path.resolve(__dirname, "../process/middleware-run");
-      console.log(chalk.yellow("开始执行middlewares编译逻辑："));
-      console.log(`script ==> ${chalk.grey(initFile)}`);
-      exec(
-        `node -r ${registerFile} ${initFile}`,
-        {
-          env: {
-            FOLDER_ROOT: config.root || "-",
-            OUTPUT_ROOT: config.output || "-",
-            FORCE: String(config.force === true),
-            ENABLED: String(config.enabled === true),
-            __TSCONFIG: path.resolve(
-              projectRoot,
-              config.tsconfig || "tsconfig.json"
-            )
-          }
-        },
-        (error, stdout, stderr) => {
-          if (error) {
-            console.log(chalk.yellow("编译middlewares失败."));
-            console.log(chalk.red(<any>error));
-            console.log("--------------------");
-            return;
-          }
-          if (stderr) {
-            console.log(chalk.yellow("编译middlewares失败.."));
-            console.log(chalk.red(stderr));
-            console.log("--------------------");
-            return;
-          }
-          try {
-            const count = showCounts(JSON.parse(stdout || "[]") || []);
-            console.log(
-              chalk.green(`middlewares编译完成${chalk.white(`[${count}]`)}`)
-            );
-            // console.log(stdout);
-            console.log(chalk.green(`编译middlewares完成`));
-          } catch (_) {
-            console.log(chalk.yellow("编译middlewares失败..."));
-            console.log(chalk.red(_));
-            console.log("--------------------");
-          }
-        }
-      );
-    } catch (e) {
-      console.log(chalk.yellow("编译middlewares失败"));
-      if (((<Error>e).message || "").includes("ts-node")) {
-        console.log(chalk.red("请安装ts-node"));
-        return;
-      }
-      throw e;
-    }
+    runMiddlewareCompile(projectRoot, config);
   }
 };
+
+export function runMiddlewareCompile(
+  projectRoot: string,
+  config: MiddlewareCompilerConfig,
+  then?: (success: boolean, error?: Error) => void
+) {
+  try {
+    const tsnode = require.resolve("ts-node");
+    console.log("");
+    console.log(chalk.cyan("🚄 - CONPILE MIDDLEWARES"));
+    console.log("");
+    const registerFile = path.resolve(__dirname, "../register");
+    const initFile = path.resolve(__dirname, "../process/middleware-run");
+    console.log(`script ==> ${chalk.grey(initFile)}`);
+    console.log("");
+    exec(
+      `node -r ${registerFile} ${initFile}`,
+      {
+        env: {
+          FOLDER_ROOT: config.root || "-",
+          OUTPUT_ROOT: config.output || "-",
+          FORCE: String(config.force === true),
+          ENABLED: String(config.enabled === true),
+          __TSCONFIG: path.resolve(
+            projectRoot,
+            config.tsconfig || "tsconfig.json"
+          )
+        }
+      },
+      (error, stdout, stderr) => {
+        if (error) {
+          console.log(chalk.yellow("COMPILE MIDDLEWARES FAILED"));
+          if (then) {
+            then(false, error);
+            return;
+          }
+          console.log(chalk.red(<any>error));
+          console.log("--------------------");
+          return;
+        }
+        if (stderr) {
+          console.log(chalk.yellow("COMPILE MIDDLEWARES FAILED"));
+          if (then) {
+            then(false, error);
+            return;
+          }
+          console.log(chalk.red(stderr));
+          console.log("--------------------");
+          return;
+        }
+        try {
+          const count = showCounts(JSON.parse(stdout || "[]") || []);
+          console.log(chalk.green(`COUNT : ${chalk.white(`[${count}]`)}\n`));
+          // console.log(stdout);
+          console.log(chalk.green(`COMPILE MIDDLEWARES OVER`));
+          if (then) then(true);
+        } catch (_) {
+          console.log(chalk.yellow("COMPILE MIDDLEWARES FAILED"));
+          if (then) {
+            then(false, error);
+            return;
+          }
+          console.log(chalk.red(_));
+          console.log("--------------------");
+        }
+      }
+    );
+  } catch (e) {
+    console.log(chalk.yellow("COMPILE MIDDLEWARES FAILED"));
+    if (((<Error>e).message || "").includes("ts-node")) {
+      console.log(chalk.red("NEED TS-NODE"));
+      return;
+    }
+    throw e;
+  }
+}
 
 function showCounts(arr: any) {
   (arr || []).forEach(name => {

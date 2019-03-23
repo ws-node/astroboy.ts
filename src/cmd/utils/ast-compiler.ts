@@ -2,6 +2,7 @@ import ts from "typescript";
 import path from "path";
 
 export enum ImportStyle {
+  TSLib = 0,
   Namespace = 1,
   Named = 2,
   Star = 3,
@@ -128,7 +129,7 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
   const imports = (context["imports"] = context["imports"] || {});
   if (Object.keys(imports).length === 0) {
     imports["tslib_1"] = {
-      type: ImportStyle.Module,
+      type: ImportStyle.TSLib,
       name: ["tslib"],
       identity: "tslib_1",
       reference: "tslib"
@@ -202,38 +203,46 @@ function normalize(value: string) {
 }
 
 function resolveRelativePath(reference: string, context: ICompileContext) {
-  if (!reference || !reference.startsWith(".")) return reference;
+  if (!reference || !reference.startsWith(".")) return [false, reference];
   const { root: sourceRoot, out: output } = context.main;
   const abosolute = path.resolve(sourceRoot, reference);
-  return path.relative(output, abosolute);
+  return [true, path.relative(output, abosolute)];
 }
 
 export const ImportsHelper = {
   toJsList(context: ICompileContext) {
-    return Object.keys(context.imports).map<[ImportStyle, string]>(id => {
-      const current = context.imports[id];
-      const relativePath = resolveRelativePath(current.reference, context);
-      let result: string;
-      switch (current.type) {
-        case ImportStyle.Module:
-          result = `const ${current.identity} = require("${relativePath}");`;
-          break;
-        case ImportStyle.Named:
-          result = `const ${current.identity} = require("${relativePath}");`;
-          break;
-        case ImportStyle.Namespace:
-          result = `const ${
-            current.identity
-          } = tslib_1.__importDefault(require("${relativePath}"));`;
-          break;
-        case ImportStyle.Star:
-          result = `const ${
-            current.identity
-          } = tslib_1.__importStar(require("${relativePath}"));`;
-          break;
-      }
-      return [current.type, result];
-    });
+    return Object.keys(context.imports)
+      .map<[ImportStyle, string]>(id => {
+        const current = context.imports[id];
+        const [is, relativePath] = resolveRelativePath(
+          current.reference,
+          context
+        );
+        let result: string;
+        switch (current.type) {
+          case ImportStyle.TSLib:
+            result = `const ${current.identity} = require("${relativePath}");`;
+            break;
+          case ImportStyle.Module:
+            result = `const ${current.identity} = require("${relativePath}");`;
+            break;
+          case ImportStyle.Named:
+            result = `const ${current.identity} = require("${relativePath}");`;
+            break;
+          case ImportStyle.Namespace:
+            result = `const ${
+              current.identity
+            } = tslib_1.__importDefault(require("${relativePath}"));`;
+            break;
+          case ImportStyle.Star:
+            result = `const ${
+              current.identity
+            } = tslib_1.__importStar(require("${relativePath}"));`;
+            break;
+        }
+        return [is ? 6 : current.type, result];
+      })
+      .sort((a, b) => a[0] - b[0]);
   },
 
   toTsList(context: ICompileContext) {
@@ -241,13 +250,18 @@ export const ImportsHelper = {
       .filter(n => n !== "tslib_1")
       .map<[ImportStyle, string]>(id => {
         const current = context.imports[id];
-        const relativePath = resolveRelativePath(current.reference, context);
+        const [is, relativePath] = resolveRelativePath(
+          current.reference,
+          context
+        );
         let result: string;
         switch (current.type) {
+          case ImportStyle.TSLib:
+            result = `const ${current.identity} = require("${relativePath}");`;
+            break;
           case ImportStyle.Module:
             result = `import ${current.identity} = require("${relativePath}");`;
             break;
-
           case ImportStyle.Named:
             result = `import ${current.identity} = require("${relativePath}");`;
             break;
@@ -258,8 +272,9 @@ export const ImportsHelper = {
             result = `import * as ${current.identity} from "${relativePath}";`;
             break;
         }
-        return [current.type, result];
-      });
+        return [is ? 6 : current.type, result];
+      })
+      .sort((a, b) => a[0] - b[0]);
   },
 
   toList(context: ICompileContext, type: "ts" | "js") {

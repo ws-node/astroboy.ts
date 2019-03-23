@@ -1,13 +1,24 @@
 import path from "path";
 import fs from "fs";
-import nodemon from "nodemon";
 import chalk from "chalk";
 import ts from "typescript";
-import childProcess, { ChildProcess } from "child_process";
-import { CommandPlugin } from "../base";
+import childProcess, { ChildProcess, exec, fork } from "child_process";
+import * as chokidar from "chokidar";
+import { CommandPlugin, InnerCmdConfig } from "../base";
 import { CancellationToken } from "../utils/cancellation-token";
 import { NormalizedMessage } from "../utils/normalized-msg";
 import { loadConfig } from "../utils/load-config";
+import { runConfigCompile } from "./config";
+import { runMiddlewareCompile } from "./middleware";
+
+const STATR_BASH = "🎩 - START APP BASH";
+const WATCHING = "👀 - WATCHING";
+const IGNORED = "🐒 - IGNORED";
+const ENVS = "🏠 - ENVS";
+const BOOTSTRAP = "🚚 - APP STARTING";
+const TYPE_CHECK = "👮 - TYPE CHECKING";
+const TYPE_GOOD = "👌 - TS CHECK GOOD";
+const TYPE_OVER = "🏁 - TS CHECK OVER";
 
 export interface IDevCmdOptions {
   config: string;
@@ -17,6 +28,19 @@ export interface IDevCmdOptions {
   mock: string | boolean;
   tsconfig: string;
   inspect: boolean;
+  compile: boolean;
+}
+
+interface ForkCmdOptions {
+  command: string;
+  args: string[];
+  env: any;
+  check: boolean;
+  cwd: string;
+  token: CancellationToken;
+  checkProcess: ChildProcess;
+  mainProcess: ChildProcess;
+  changes: string[];
 }
 
 export const DevPlugin: CommandPlugin = {
@@ -32,7 +56,8 @@ export const DevPlugin: CommandPlugin = {
       "开启 mock 模式，默认 proxy 地址为 http://127.0.0.1:8001"
     ],
     ["-T, --tsconfig [config]", "使用自定义的ts编译配置文件"],
-    ["-I, --inspect [inspect]", "启用inspector，开启编辑器断点调试"]
+    ["-I, --inspect [inspect]", "启用inspector，开启编辑器断点调试"],
+    ["--compile", "启用编译"]
   ],
   help: () => {
     console.log("");
@@ -51,18 +76,18 @@ export const DevPlugin: CommandPlugin = {
     console.log("    $ atc dev --inspect");
     console.log();
   },
-  action(_, command: IDevCmdOptions) {
+  async action(_, command: IDevCmdOptions) {
     if (_ !== "dev") return;
-    console.log(chalk.green("========= [ASTROBOY.TS] <==> DEVTOOL ========"));
+    console.log(chalk.green("========= [ASTROBOY.TS] <==> DEVTOOL ========\n"));
     const projectRoot = process.cwd();
     if (!fs.existsSync(`${projectRoot}/app/app.ts`)) {
-      console.log(chalk.yellow("项目启动失败"));
-      console.log(chalk.red(`当前项目不存在文件 ${projectRoot}/app/app.ts`));
+      console.log(chalk.yellow("PROJECT INIT FAILED\n"));
+      console.log(chalk.red(`NO FILE [${projectRoot}/app/app.ts] EXIST`));
       return;
     }
     const fileName = command.config || "atc.config.js";
     console.log(
-      `${chalk.white("尝试加载配置文件 : ")}${chalk.yellow(fileName)}`
+      `${chalk.white("🤨 - TRY LOAD FILE : ")}${chalk.yellow(fileName)}`
     );
     const config = loadConfig(projectRoot, fileName);
 
@@ -102,8 +127,26 @@ export const DevPlugin: CommandPlugin = {
     config.inspect = String(config.inspect) === "true";
     const checkStr = String(config.typeCheck);
     const transpile = String(config.transpile);
+    const compile = String(config.compile);
     config.typeCheck = checkStr === "undefined" ? true : checkStr === "true";
     config.transpile = transpile === "undefined" ? true : transpile === "true";
+    config.compile = compile === "undefined" ? false : compile === "true";
+
+    let useConfigCompile = false;
+    let configWatchRoot = "";
+    if (config.configCompiler) {
+      const { enabled = false, configroot = "" } = config.configCompiler || {};
+      configWatchRoot = path.resolve(projectRoot, configroot);
+      if (enabled && config.compile) useConfigCompile = true;
+    }
+
+    let useMiddlewareCompile = false;
+    let middleWatchRoot = "";
+    if (config.middlewareCompiler) {
+      const { enabled = false, root = "" } = config.middlewareCompiler || {};
+      middleWatchRoot = path.resolve(projectRoot, root);
+      if (enabled && config.compile) useMiddlewareCompile = true;
+    }
 
     // ts-node register
     config.env.__TSCONFIG = config.tsconfig || "-";
@@ -112,9 +155,6 @@ export const DevPlugin: CommandPlugin = {
     config.env.__TRANSPILE =
       config.typeCheck && !config.transpile ? "false" : "true";
 
-    // 传递了 --debug 参数，示例：
-    // atc dev --debug
-    // atc dev --debug koa:application
     if (config.debug && config.debug === true) {
       config.env.DEBUG = "*";
     } else if (config.debug && config.debug !== true) {
@@ -125,11 +165,13 @@ export const DevPlugin: CommandPlugin = {
     // atc dev --inspect
     const node = `node${!!config.inspect ? " --inspect" : ""}`;
 
+    let tsc_path_map = "";
+    let ts_node = "";
     try {
       const tsnode = require.resolve("ts-node");
       const registerFile = path.resolve(__dirname, "../register");
-      const ts_node = `-r ${registerFile}`;
-      const tsc_path_map = `-r ${require
+      ts_node = `-r ${registerFile}`;
+      tsc_path_map = `-r ${require
         .resolve("tsconfig-paths")
         .replace("/lib/index.js", "")}/register`;
       config.env.APP_EXTENSIONS = JSON.stringify(["js", "ts"]);
@@ -139,7 +181,7 @@ export const DevPlugin: CommandPlugin = {
       )}`;
     } catch (error) {
       if ((<string>error.message || "").includes("ts-node")) {
-        console.log(chalk.red("请安装ts-node"));
+        console.log(chalk.red("NEED TS-NODE"));
         return;
       } else {
         console.log(chalk.red(error));
@@ -147,84 +189,210 @@ export const DevPlugin: CommandPlugin = {
       }
     }
 
-    // 传递了--mock 参数
-    // atc dev --mock
-    // atc dev --mock https://127.0.0.1:8001
     if (config.mock) {
       const url = config.mock === true ? "http://127.0.0.1:8001" : config.mock;
       config.env.HTTP_PROXY = url;
       config.env.HTTPS_PROXY = url;
     }
 
-    let token = refreshToken();
-    let checkProcess: ChildProcess;
+    async function runConfigs() {
+      try {
+        if (useConfigCompile) {
+          const conf = config.configCompiler || {};
+          const compileConf = {
+            ...conf,
+            tsconfig: conf.tsconfig || config.tsconfig
+          };
+          await doActionAwait(runConfigCompile, projectRoot, compileConf);
+        }
+      } catch (error) {
+        console.log(chalk.red(error));
+        return;
+      }
+    }
 
-    nodemon(config)
-      .on("start", () => {
-        try {
-          if (config.typeCheck && config.transpile) {
-            checkProcess = startTypeCheck(projectRoot, config, token);
-          }
-        } catch (error) {
-          console.log(error);
+    async function runMiddlewares() {
+      try {
+        if (useMiddlewareCompile) {
+          const conf = config.middlewareCompiler || {};
+          const compileConf = {
+            ...conf,
+            tsconfig: conf.tsconfig || config.tsconfig
+          };
+          await doActionAwait(runMiddlewareCompile, projectRoot, compileConf);
         }
-        console.log(chalk.yellow("开始运行应用执行脚本："));
-        console.log(`script ==> ${chalk.grey(config.exec)}\n`);
-        console.log(chalk.green("应用启动中...\n"));
-        console.log(chalk.green("环境变量："));
-        console.log(chalk.cyan(`NODE_ENV: \t${config.env.NODE_ENV}`));
-        console.log(chalk.cyan(`NODE_PORT: \t${config.env.NODE_PORT}`));
-        if (config.env.DEBUG) {
-          console.log(chalk.yellow(`DEBUG: \t${config.env.DEBUG}`));
-        }
-        if (config.env.HTTP_PROXY) {
-          console.log(chalk.cyan(`HTTP_PROXY: \t${config.env.HTTP_PROXY}`));
-        }
-        if (config.env.HTTPS_PROXY) {
-          console.log(chalk.cyan(`HTTPS_PROXY: \t${config.env.HTTPS_PROXY}`));
-        }
-        console.log(chalk.green("\n监听目录变化："));
-        const LENGTH = config.watch && config.watch.length;
-        for (let i = 0; i < LENGTH; i++) {
-          console.log(chalk.yellow(config.watch[i]));
-        }
+      } catch (error) {
+        console.log(chalk.red(error));
+        return;
+      }
+    }
+
+    await runConfigs();
+    await runMiddlewares();
+
+    let changes: string[] = [];
+
+    const forkConfig: ForkCmdOptions = {
+      command: path.join(projectRoot, "app/app.ts"),
+      args: [...(!!config.inspect ? ["--inspect"] : []), ts_node, tsc_path_map],
+      env: config.env,
+      check: config.transpile && config.typeCheck,
+      cwd: projectRoot,
+      token: refreshToken(),
+      checkProcess: undefined,
+      mainProcess: undefined,
+      changes: []
+    };
+
+    chokidar
+      .watch(config.watch || [], {
+        ignored: config.ignore || []
       })
-      .on("quit", () => {
-        console.log(chalk.green("应用退出成功"));
-        process.kill(process.pid);
-      })
-      .on("restart", (files: any) => {
-        token = refreshToken(token);
-        checkProcess && checkProcess.kill();
-        console.log(chalk.yellow("监听到文件修改：", files));
+      .on("change", async (path: string | string[]) => {
+        changes = [];
+        if (typeof path === "string") {
+          changes.push(path);
+        } else {
+          changes.push(...path);
+        }
+        if (changes.findIndex(i => i.startsWith(configWatchRoot)) >= 0) {
+          console.log(chalk.yellow("CONFIGS RE-COMPILE："));
+          await runConfigs();
+        }
+        if (changes.findIndex(i => i.startsWith(middleWatchRoot)) >= 0) {
+          console.log(chalk.yellow("MIDDLEWARES RE-COMPILE："));
+          await runMiddlewares();
+        }
+        forkConfig.mainProcess.on("exit", () => {
+          startMainProcess(forkConfig);
+        });
+        forkConfig.token = refreshToken(forkConfig.token);
+        forkConfig.checkProcess && forkConfig.checkProcess.kill();
+        process.kill(forkConfig.mainProcess.pid);
       });
+
+    const rootRegexp = new RegExp(projectRoot, "g");
+
+    console.log("");
+    console.log(chalk.yellow(STATR_BASH));
+    console.log("");
+    const script = config.exec.replace(rootRegexp, ".");
+    console.log(`script ==> ${chalk.grey(script)}`);
+    console.log("");
+    console.log(chalk.green(ENVS));
+    console.log("");
+    console.log(chalk.cyan(`NODE_ENV: \t${config.env.NODE_ENV}`));
+    console.log(chalk.cyan(`NODE_PORT: \t${config.env.NODE_PORT}`));
+    if (config.env.DEBUG) {
+      console.log(chalk.yellow(`DEBUG: \t${config.env.DEBUG}`));
+    }
+    if (config.env.HTTP_PROXY) {
+      console.log(chalk.cyan(`HTTP_PROXY: \t${config.env.HTTP_PROXY}`));
+    }
+    if (config.env.HTTPS_PROXY) {
+      console.log(chalk.cyan(`HTTPS_PROXY: \t${config.env.HTTPS_PROXY}`));
+    }
+    const LENGTH = config.watch && config.watch.length;
+    if (LENGTH > 0) {
+      console.log("");
+      console.log(chalk.green(WATCHING));
+      console.log("");
+      for (let i = 0; i < LENGTH; i++) {
+        console.log(
+          `${i + 1} - ${chalk.yellow(config.watch[i].replace(rootRegexp, "."))}`
+        );
+      }
+    } else {
+      console.log("");
+      console.log(
+        chalk.green(`${WATCHING} : ${chalk.yellow("nothing here...")}`)
+      );
+    }
+    const LENGTH_2 = config.ignore && config.ignore.length;
+    if (LENGTH_2 > 0) {
+      console.log("");
+      console.log(chalk.green(IGNORED));
+      console.log("");
+      for (let i = 0; i < LENGTH_2; i++) {
+        console.log(
+          `${i + 1} - ${chalk.cyanBright(
+            config.ignore[i].replace(rootRegexp, ".")
+          )}`
+        );
+      }
+    } else {
+      console.log("");
+      console.log(
+        chalk.green(`${IGNORED} : ${chalk.cyanBright("nothing here...")}`)
+      );
+    }
+    startMainProcess(forkConfig);
   }
 };
+
+function startMainProcess(config: ForkCmdOptions) {
+  try {
+    if (config.check) {
+      config.checkProcess = startTypeCheck(config.cwd, config, config.token);
+    }
+  } catch (error) {
+    console.warn(error);
+  }
+  console.log(chalk.green(BOOTSTRAP));
+  console.log("");
+  config.mainProcess = fork(config.command, config.args, {
+    silent: false,
+    env: {
+      ...process.env,
+      ...config.env
+    }
+  });
+  return config.mainProcess;
+}
+
+function doActionAwait<T>(
+  method: (p: string, c: T, f: (s: boolean, e?: Error) => void) => void,
+  projectRoot: string,
+  config: T
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    method(projectRoot, config, (success, error) => {
+      if (success) {
+        resolve();
+      } else {
+        reject(error);
+      }
+    });
+  });
+}
 
 function startTypeCheck(
   projectRoot: string,
   config: any,
   token: CancellationToken
 ) {
-  console.log(chalk.blue("开始执行类型检查...\n"));
-  const child = childProcess.fork(
-    path.resolve(__dirname, "../process/check"),
-    [],
-    {
-      env: {
-        TSCONFIG: path.resolve(projectRoot, config.tsconfig || "tsconfig.json")
-      }
+  console.log("");
+  console.log(chalk.blue(TYPE_CHECK));
+  console.log("");
+  const script = path.resolve(__dirname, "../process/check");
+  console.log(chalk.gray(`script ==> ${script}`));
+  console.log("");
+  const child = childProcess.fork(script, [], {
+    env: {
+      TSCONFIG: path.resolve(projectRoot, config.tsconfig || "tsconfig.json")
     }
-  );
+  });
   child.on("message", (message: { diagnostics?: NormalizedMessage[] }) => {
     const { diagnostics } = message;
     if (diagnostics) {
       if (diagnostics.length === 0) {
-        console.log(chalk.blue("类型检查通过，没有发现语法错误"));
+        console.log("");
+        console.log(chalk.blue(TYPE_GOOD));
+        console.log("");
         child.kill();
         return;
       }
-      console.log(chalk.blue(`发现${diagnostics.length}个语法错误\n`));
+      console.log(chalk.blue(`Type Syntax Errors : ${diagnostics.length}\n`));
       diagnostics.forEach(item => {
         const {
           type: _,
@@ -249,7 +417,7 @@ function startTypeCheck(
       console.log(message);
     }
   });
-  child.on("exit", () => console.log("类型检查已结束"));
+  child.on("exit", () => console.log(TYPE_OVER));
   child.send(token);
   return child;
 }

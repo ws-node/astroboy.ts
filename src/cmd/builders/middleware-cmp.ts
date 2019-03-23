@@ -54,7 +54,7 @@ export function middlewareCompileFn(
       cwd,
       outFolder || defaultConfigCompilerOptions.outFolder
     );
-    const EXTENSIONS = !!force ? ".ts" : "js";
+    const EXTENSIONS = !!force ? ".ts" : ".js";
     if (!fs.existsSync(middleRootFolder)) fs.mkdirSync(middleRootFolder);
     const files = fs.readdirSync(middleRootFolder);
     if (!!force && fs.existsSync(outputFolder)) {
@@ -88,7 +88,6 @@ export function middlewareCompileFn(
           ".ts",
           EXTENSIONS
         )}`;
-        if (fs.existsSync(compiledPath)) return;
         program = createProgram(
           {
             ...options,
@@ -142,8 +141,17 @@ export function middlewareCompileFn(
           finalExports,
           context
         );
-        fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
-        compileds.push(compiledPath);
+        if (!!force || !fs.existsSync(compiledPath)) {
+          fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
+          return compileds.push(compiledPath);
+        }
+        const oldFile = fs.readFileSync(compiledPath, { flag: "r" });
+        if (oldFile.toString() !== exportStr) {
+          fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
+          compileds.push(compiledPath);
+        } else {
+          return;
+        }
       });
     return compileds;
   } catch (error) {
@@ -174,11 +182,10 @@ function createJsFile(
   procedures.push(...imports);
   procedures.push(...otherFuncs.map<ImportsIndex>(i => [8, i.toString()]));
   procedures.push([9, finalExports.toString()]);
-  const finalSorted = procedures.sort((a, b) => a[0] - b[0]).map(i => i[1]);
+  const finalSorted = procedures.map(i => i[1]);
   const actions: string[] = [
     createInjectActions(params, context),
-    createAwaitMiddlewareAction(finalExports.name, params),
-    "  await next();"
+    createAwaitMiddlewareAction(finalExports.name, params)
   ];
   const exportStr =
     params.length > 0
@@ -210,7 +217,7 @@ function createTsFile(
   procedures.push(...imports);
   procedures.push(...otherFuncs.map<ImportsIndex>(i => [8, i.toString()]));
   procedures.push([9, finalExports.toString()]);
-  const finalSorted = procedures.sort((a, b) => a[0] - b[0]).map(i => i[1]);
+  const finalSorted = procedures.map(i => i[1]);
   const actions: string[] = [
     createInjectActions(params, context),
     createAwaitMiddlewareAction(finalExports.name, params)
