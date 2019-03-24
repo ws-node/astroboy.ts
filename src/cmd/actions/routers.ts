@@ -92,7 +92,7 @@ export function runRoutersBuilder(
     console.log("");
     const registerFile = path.resolve(__dirname, "../register");
     const initFile = path.resolve(__dirname, "../process/init");
-    console.log(`script ==> ${chalk.grey(initFile)}`);
+    console.log(`root  ==> "${chalk.green("app/controllers")}"`);
     console.log("");
     startChildProcess({
       args: ["-r", registerFile, initFile],

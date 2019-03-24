@@ -3,7 +3,7 @@ import {
   createCmdConfig,
   mergeCmdConfig,
   RouterConfig as RConfig,
-  ConfigCompilerConfig as CCConfig,
+  ConfigCompilerCmdConfig as CCConfig,
   IENV as E
 } from "./src/cmd/base";
 

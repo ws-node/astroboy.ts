@@ -65,6 +65,10 @@ export function middlewareCompileFn(
     if (!fs.existsSync(middleRootFolder)) fs.mkdirSync(middleRootFolder);
     const watchedFiles = fileList.filter(findTsFiles);
     const useHMR = watchedFiles.length > 0;
+    console.log(`root  ==> "${chalk.green(rootFolder)}"`);
+    console.log(`force ==> ${chalk.magenta(String(!!force))}`);
+    console.log(`HMR   ==> ${chalk.magenta(String(!!useHMR))}`);
+    console.log("");
     if (useHMR) {
       const valid = watchedFiles.every(p => p.startsWith(middleRootFolder));
       if (!valid) {

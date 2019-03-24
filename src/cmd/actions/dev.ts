@@ -231,7 +231,11 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     try {
       if (useConfigCompile) {
         const conf = config.configCompiler || {};
+        const { outRoot: outputroot, configRoot: configroot, ...others } = dfc;
         const compileConf = {
+          configroot,
+          outputroot,
+          ...others,
           ...conf,
           tsconfig: conf.tsconfig || config.tsconfig
         };
@@ -249,7 +253,11 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     try {
       if (useMiddlewareCompile) {
         const conf = config.middlewareCompiler || {};
+        const { rootFolder: root, outFolder: output, ...others } = dfm;
         const compileConf = {
+          root,
+          output,
+          ...others,
           ...conf,
           tsconfig: conf.tsconfig || config.tsconfig
         };
@@ -267,7 +275,11 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     try {
       if (useRouterBuilds) {
         const conf = config.routers || {};
+        const { appRoot: approot, fileType: filetype, ...others } = dfr;
         const compileConf = {
+          approot,
+          filetype,
+          ...others,
           ...conf,
           tsconfig: conf.tsconfig || config.tsconfig
         };

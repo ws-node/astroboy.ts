@@ -23,7 +23,7 @@ export interface RouterConfig {
   tsconfig?: string;
 }
 
-export interface ConfigCompilerConfig {
+export interface ConfigCompilerCmdConfig {
   enabled?: boolean;
   force?: boolean;
   configroot?: string;
@@ -31,7 +31,7 @@ export interface ConfigCompilerConfig {
   tsconfig?: string;
 }
 
-export interface MiddlewareCompilerConfig {
+export interface MiddlewareCompilerCmdConfig {
   enabled?: boolean;
   force?: boolean;
   root?: string;
@@ -52,8 +52,8 @@ export interface CmdConfig {
   transpile?: boolean;
   routers?: RouterConfig;
   compile?: boolean;
-  configCompiler?: ConfigCompilerConfig & { hmr?: boolean };
-  middlewareCompiler?: MiddlewareCompilerConfig & { hmr?: boolean };
+  configCompiler?: ConfigCompilerCmdConfig & { hmr?: boolean };
+  middlewareCompiler?: MiddlewareCompilerCmdConfig & { hmr?: boolean };
 }
 
 export interface InnerCmdConfig extends CmdConfig {

@@ -2,7 +2,7 @@ import path from "path";
 import chalk from "chalk";
 import get from "lodash/get";
 import { loadConfig } from "../utils/load-config";
-import { MiddlewareCompilerConfig } from "../base";
+import { MiddlewareCompilerCmdConfig } from "../base";
 import { CommandPlugin } from "../base";
 import { startChildProcess } from "../utils/execChild";
 
@@ -34,8 +34,8 @@ export const MiddlewarePlugin: CommandPlugin = {
       `${chalk.white("🤨 - TRY LOAD FILE : ")}${chalk.yellow(fileName)}`
     );
 
-    let config: MiddlewareCompilerConfig;
-    const defaultConfigs: MiddlewareCompilerConfig = {
+    let config: MiddlewareCompilerCmdConfig;
+    const defaultConfigs: MiddlewareCompilerCmdConfig = {
       enabled: true,
       root: undefined,
       output: undefined,
@@ -46,7 +46,7 @@ export const MiddlewarePlugin: CommandPlugin = {
       const req = loadConfig(projectRoot, fileName);
       config = {
         ...defaultConfigs,
-        ...get(req, "configCompiler", {}),
+        ...get(req, "middlewareCompiler", {}),
         tsconfig: req.tsconfig || config.tsconfig
       };
     } catch (_) {
@@ -62,7 +62,7 @@ export const MiddlewarePlugin: CommandPlugin = {
 
 export function runMiddlewareCompile(
   projectRoot: string,
-  config: MiddlewareCompilerConfig,
+  config: MiddlewareCompilerCmdConfig,
   intergradeOptions: { changes?: string[] } = {},
   then?: (success: boolean, error?: Error) => void
 ) {
@@ -74,8 +74,6 @@ export function runMiddlewareCompile(
     console.log("");
     const registerFile = path.resolve(__dirname, "../register");
     const initFile = path.resolve(__dirname, "../process/middleware-run");
-    console.log(`script ==> ${chalk.grey(initFile)}`);
-    console.log("");
     startChildProcess({
       args: ["-r", registerFile, initFile],
       type: "spawn",

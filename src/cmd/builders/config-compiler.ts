@@ -7,6 +7,7 @@ import {
   compileForEach,
   ImportsHelper
 } from "../utils/ast-compiler";
+import chalk from "chalk";
 
 export interface ConfigCompilerOptions {
   /** tsconfig, 默认：`undefined` */
@@ -57,6 +58,10 @@ export function compileFn(options: Partial<InnerConfigCompilerOptions>) {
     if (!fs.existsSync(configFolder)) fs.mkdirSync(configFolder);
     const watchedFiles = fileList.filter(findTsFiles);
     const useHMR = watchedFiles.length > 0;
+    console.log(`root  ==> "${chalk.green(configRoot)}"`);
+    console.log(`force ==> ${chalk.magenta(String(!!force))}`);
+    console.log(`HMR   ==> ${chalk.magenta(String(!!useHMR))}`);
+    console.log("");
     if (useHMR) {
       const valid = watchedFiles.every(p => p.startsWith(configFolder));
       if (!valid) {

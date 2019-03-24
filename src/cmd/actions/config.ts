@@ -2,7 +2,7 @@ import path from "path";
 import chalk from "chalk";
 import get from "lodash/get";
 import { loadConfig } from "../utils/load-config";
-import { CommandPlugin, ConfigCompilerConfig } from "../base";
+import { CommandPlugin, ConfigCompilerCmdConfig } from "../base";
 import { startChildProcess } from "../utils/execChild";
 
 export interface IConfigCmdOptions {
@@ -31,8 +31,8 @@ export const ConfigPlugin: CommandPlugin = {
       `${chalk.white("🤨 - TRY LOAD FILE : ")}${chalk.yellow(fileName)}\n`
     );
 
-    let config: ConfigCompilerConfig;
-    const defaultConfigs: ConfigCompilerConfig = {
+    let config: ConfigCompilerCmdConfig;
+    const defaultConfigs: ConfigCompilerCmdConfig = {
       enabled: true,
       configroot: undefined,
       outputroot: undefined,
@@ -59,7 +59,7 @@ export const ConfigPlugin: CommandPlugin = {
 
 export function runConfigCompile(
   projectRoot: string,
-  config: ConfigCompilerConfig,
+  config: ConfigCompilerCmdConfig,
   intergradeOptions: { changes?: string[] } = {},
   then?: (success: boolean, error?: Error) => void
 ) {
@@ -71,8 +71,6 @@ export function runConfigCompile(
     console.log("");
     const registerFile = path.resolve(__dirname, "../register");
     const initFile = path.resolve(__dirname, "../process/compile-configs");
-    console.log(`script ==> ${chalk.grey(initFile)}`);
-    console.log("");
     startChildProcess({
       args: ["-r", registerFile, initFile],
       type: "spawn",
