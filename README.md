@@ -390,18 +390,18 @@ module.exports = {
   middlewareCompiler: {
     enabled: true, // 默认：false
     force: true, // 默认：false
-    root: "app/middlewares/pipes", // 默认位置：app/middlewares/pipes/*.ts
+    root: "middlewares", // 默认位置：middlewares/*.ts
     output: "app/middlewares" // 默认输出位置：app/middlewares/*.js
   }
 };
 ```
 
-> app/middlewares/pipes/test.ts
+> middlewares/test.ts
 
 ```typescript
 import { AstroboyContext } from "astroboy.ts";
 import * as atc from "astroboy.ts";
-import { testA } from "../../utils/testA";
+import { testA } from "../app/utils/testA";
 
 export default async function testMiddleware(
   context: AstroboyContext,

@@ -33,7 +33,7 @@ export const defaultConfigCompilerOptions: MiddlewareCompilerOptions = {
   enabled: false,
   force: false,
   tsconfig: undefined,
-  rootFolder: "app/middlewares/pipes",
+  rootFolder: "middlewares",
   outFolder: "app/middlewares"
 };
 
