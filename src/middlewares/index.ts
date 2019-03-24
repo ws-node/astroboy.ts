@@ -18,6 +18,8 @@ export const serverInit = async (ctx: IContext, next: () => Promise<void>) => {
   try {
     await next();
   } catch (error) {
+    console.error("DI Unhandled Exception : ");
+    console.error(error);
     await tryCatchGlobalError(injector, error);
   } finally {
     disposeRequestScope(scope, logger, injector);
