@@ -3,8 +3,8 @@ import chalk from "chalk";
 import get from "lodash/get";
 import { loadConfig } from "../utils/load-config";
 import { MiddlewareCompilerConfig } from "../base";
-import { exec } from "child_process";
 import { CommandPlugin } from "../base";
+import { startChildProcess } from "../utils/execChild";
 
 export interface IMiddlewareCmdOptions {
   force?: boolean;
@@ -63,8 +63,10 @@ export const MiddlewarePlugin: CommandPlugin = {
 export function runMiddlewareCompile(
   projectRoot: string,
   config: MiddlewareCompilerConfig,
+  intergradeOptions: { changes?: string[] } = {},
   then?: (success: boolean, error?: Error) => void
 ) {
+  const { changes = [] } = intergradeOptions;
   try {
     const tsnode = require.resolve("ts-node");
     console.log("");
@@ -74,71 +76,39 @@ export function runMiddlewareCompile(
     const initFile = path.resolve(__dirname, "../process/middleware-run");
     console.log(`script ==> ${chalk.grey(initFile)}`);
     console.log("");
-    exec(
-      `node -r ${registerFile} ${initFile}`,
-      {
-        env: {
-          FOLDER_ROOT: config.root || "-",
-          OUTPUT_ROOT: config.output || "-",
-          FORCE: String(config.force === true),
-          ENABLED: String(config.enabled === true),
-          __TSCONFIG: path.resolve(
-            projectRoot,
-            config.tsconfig || "tsconfig.json"
-          )
-        }
-      },
-      (error, stdout, stderr) => {
-        if (error) {
-          console.log(chalk.yellow("COMPILE MIDDLEWARES FAILED"));
-          if (then) {
-            then(false, error);
-            return;
-          }
-          console.log(chalk.red(<any>error));
-          console.log("--------------------");
-          return;
-        }
-        if (stderr) {
-          console.log(chalk.yellow("COMPILE MIDDLEWARES FAILED"));
-          if (then) {
-            then(false, error);
-            return;
-          }
-          console.log(chalk.red(stderr));
-          console.log("--------------------");
-          return;
-        }
-        try {
-          const count = showCounts(JSON.parse(stdout || "[]") || []);
-          console.log(chalk.green(`COUNT : ${chalk.white(`[${count}]`)}\n`));
-          // console.log(stdout);
-          console.log(chalk.green(`COMPILE MIDDLEWARES OVER`));
-          if (then) then(true);
-        } catch (_) {
-          console.log(chalk.yellow("COMPILE MIDDLEWARES FAILED"));
-          if (then) {
-            then(false, error);
-            return;
-          }
-          console.log(chalk.red(_));
-          console.log("--------------------");
-        }
+    startChildProcess({
+      args: ["-r", registerFile, initFile],
+      type: "spawn",
+      env: {
+        FOLDER_ROOT: config.root || "-",
+        OUTPUT_ROOT: config.output || "-",
+        FORCE: String(config.force === true),
+        ENABLED: String(config.enabled === true),
+        CHANGES: JSON.stringify(changes || []),
+        __TSCONFIG: path.resolve(
+          projectRoot,
+          config.tsconfig || "tsconfig.json"
+        )
       }
-    );
+    })
+      .then(() => {
+        console.log(chalk.green("✅ - COMPILE MIDDLEWARES OVER"));
+        then && then(true);
+      })
+      .catch(error => {
+        console.log(chalk.yellow("❌ - COMPILE MIDDLEWARES FAILED"));
+        console.log("");
+        if (then) {
+          return then(false, error);
+        }
+        console.log(chalk.red(error));
+      });
   } catch (e) {
-    console.log(chalk.yellow("COMPILE MIDDLEWARES FAILED"));
+    console.log(chalk.yellow("❌ - COMPILE MIDDLEWARES FAILED"));
     if (((<Error>e).message || "").includes("ts-node")) {
       console.log(chalk.red("NEED TS-NODE"));
       return;
     }
     throw e;
   }
-}
-
-function showCounts(arr: any) {
-  (arr || []).forEach(name => {
-    console.log(chalk.blue(`---> ${name}`));
-  });
-  return (arr || []).length;
 }

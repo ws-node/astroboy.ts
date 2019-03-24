@@ -9,6 +9,7 @@ import {
   ImportsHelper,
   ImportStyle
 } from "../utils/ast-compiler";
+import chalk from "chalk";
 
 export interface MiddlewareCompilerOptions {
   /** tsconfig, 默认：`undefined` */
@@ -23,6 +24,11 @@ export interface MiddlewareCompilerOptions {
   outFolder?: string;
 }
 
+export interface InnerMiddlewareCompilerOptions
+  extends MiddlewareCompilerOptions {
+  fileList?: string[];
+}
+
 export const defaultConfigCompilerOptions: MiddlewareCompilerOptions = {
   enabled: false,
   force: false,
@@ -34,14 +40,15 @@ export const defaultConfigCompilerOptions: MiddlewareCompilerOptions = {
 type ImportsIndex = [number, string];
 
 export function middlewareCompileFn(
-  options: Partial<MiddlewareCompilerOptions>
+  options: Partial<InnerMiddlewareCompilerOptions>
 ) {
   const {
     enabled = false,
     force = false,
     rootFolder,
     outFolder,
-    tsconfig
+    tsconfig,
+    fileList = []
   } = options;
   if (!enabled) return;
   try {
@@ -56,107 +63,146 @@ export function middlewareCompileFn(
     );
     const EXTENSIONS = !!force ? ".ts" : ".js";
     if (!fs.existsSync(middleRootFolder)) fs.mkdirSync(middleRootFolder);
-    const files = fs.readdirSync(middleRootFolder);
-    if (!!force && fs.existsSync(outputFolder)) {
-      if (middleRootFolder === outputFolder) {
+    const watchedFiles = fileList.filter(findTsFiles);
+    const useHMR = watchedFiles.length > 0;
+    if (useHMR) {
+      const valid = watchedFiles.every(p => p.startsWith(middleRootFolder));
+      if (!valid) {
         throw new Error(
-          "Middleware-Compiler Error: same root-folder and out-folder is invalid when [force] option is opened."
+          "Middleware-Compiler Error: paths of HMR changed files must startsWith rootFolder."
         );
       }
-      // 硬核开关，强撸中间件文件夹
-      const exists = fs.readdirSync(outputFolder);
-      exists
-        .filter(p => p.endsWith(".js") || p.endsWith(EXTENSIONS))
-        .forEach(p => {
-          fs.unlinkSync(`${outputFolder}/${p}`);
-        });
-    } else if (!fs.existsSync(outputFolder)) {
-      fs.mkdirSync(outputFolder);
     }
+    const files = !useHMR
+      ? initCompilePreSteps(middleRootFolder, force, outputFolder, EXTENSIONS)
+      : watchedFiles.map(each => path.relative(rootFolder, each));
     const compileds: string[] = [];
     const options = loadProgramConfig(tsconfig, {
       noEmit: true,
       skipLibCheck: true
     });
     let program: ts.Program;
-    files
-      .filter(p => p.endsWith(".ts"))
-      .forEach(filePath => {
-        if (filePath.endsWith(".d.ts")) return;
-        const sourcePath = `${middleRootFolder}/${filePath}`;
-        const compiledPath = `${outputFolder}/${filePath.replace(
-          ".ts",
-          EXTENSIONS
-        )}`;
-        program = createProgram(
-          {
-            ...options,
-            fileNames: [sourcePath]
-          },
-          program
+    files.forEach(filePath => {
+      const sourcePath = `${middleRootFolder}/${filePath}`;
+      const compiledPath = `${outputFolder}/${filePath.replace(
+        /\.ts$/,
+        EXTENSIONS
+      )}`;
+      program = createTSCompiler(options, sourcePath, program);
+      const file = program.getSourceFile(sourcePath);
+      const context = createContext(middleRootFolder, outputFolder);
+      compileForEach(file, context);
+      const exportList = Object.keys(context.exports);
+      if (exportList.length <= 0) return;
+      const exports = require(sourcePath);
+      if (!exports) return;
+      let finalExports: (...args: any[]) => any;
+      const otherFuncs: Array<(...args: any[]) => any> = [];
+      if (typeof exports !== "object" && typeof exports !== "function") {
+        throw new Error(
+          "Middleware-Compiler Error: a middleware function must be exported."
         );
-        const file = program.getSourceFile(sourcePath);
-        const context: ICompileContext = {
-          main: { root: middleRootFolder, out: outputFolder },
-          imports: {},
-          functions: {},
-          exports: {}
-        };
-        compileForEach(file, context);
-        const exportList = Object.keys(context.exports);
-        if (exportList.length <= 0) return;
-        const exports = require(sourcePath);
-        if (!exports) return;
-        let finalExports: (...args: any[]) => any;
-        const otherFuncs: Array<(...args: any[]) => any> = [];
-        if (typeof exports !== "object" && typeof exports !== "function") {
+      }
+      if (typeof exports === "object") {
+        const { default: excuClass, ...others } = exports;
+        if (typeof excuClass !== "function") {
           throw new Error(
             "Middleware-Compiler Error: a middleware function must be exported."
           );
-        }
-        if (typeof exports === "object") {
-          const { default: excuClass, ...others } = exports;
-          if (typeof excuClass !== "function") {
-            throw new Error(
-              "Middleware-Compiler Error: a middleware function must be exported."
-            );
-          } else {
-            finalExports = excuClass;
-            Object.keys(others || {}).forEach(name => {
-              if (typeof others[name] === "function" && !!others[name].name) {
-                otherFuncs.push(others[name].toString());
-              }
-            });
-          }
         } else {
-          finalExports = exports;
+          finalExports = excuClass;
+          Object.keys(others || {}).forEach(name => {
+            if (typeof others[name] === "function" && !!others[name].name) {
+              otherFuncs.push(others[name].toString());
+            }
+          });
         }
-        if (!finalExports.name) {
-          throw new Error(
-            "Middleware-Compiler Error: exported function must have a name."
-          );
-        }
-        const exportStr = (!!force ? createTsFile : createJsFile)(
-          otherFuncs,
-          finalExports,
-          context
+      } else {
+        finalExports = exports;
+      }
+      if (!finalExports.name) {
+        throw new Error(
+          "Middleware-Compiler Error: exported function must have a name."
         );
-        if (!!force || !fs.existsSync(compiledPath)) {
-          fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
-          return compileds.push(compiledPath);
-        }
-        const oldFile = fs.readFileSync(compiledPath, { flag: "r" });
-        if (oldFile.toString() !== exportStr) {
-          fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
-          compileds.push(compiledPath);
-        } else {
-          return;
-        }
-      });
+      }
+      const exportStr = (!!force ? createTsFile : createJsFile)(
+        otherFuncs,
+        finalExports,
+        context
+      );
+      if (!!force || !fs.existsSync(compiledPath) || useHMR) {
+        fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
+        return compileds.push(compiledPath);
+      }
+      const oldFile = fs.readFileSync(compiledPath, { flag: "r" });
+      if (oldFile.toString() !== exportStr) {
+        fs.appendFileSync(compiledPath, exportStr, { flag: "w" });
+        compileds.push(compiledPath);
+      } else {
+        return;
+      }
+    });
     return compileds;
   } catch (error) {
+    console.log(chalk.red(error.message || ""));
     throw error;
   }
+}
+
+function createContext(
+  middleRootFolder: string,
+  outputFolder: string
+): ICompileContext {
+  return {
+    main: { root: middleRootFolder, out: outputFolder },
+    imports: {},
+    functions: {},
+    exports: {}
+  };
+}
+
+function createTSCompiler(
+  options: ts.ParsedCommandLine,
+  sourcePath: string,
+  program: ts.Program
+): ts.Program {
+  return createProgram(
+    {
+      ...options,
+      fileNames: [sourcePath]
+    },
+    program
+  );
+}
+
+function initCompilePreSteps(
+  middleRootFolder: string,
+  force: boolean,
+  outputFolder: string,
+  EXTENSIONS: string
+) {
+  const files = fs.readdirSync(middleRootFolder);
+  if (!!force && fs.existsSync(outputFolder)) {
+    if (middleRootFolder === outputFolder) {
+      throw new Error(
+        "Middleware-Compiler Error: same root-folder and out-folder is invalid when [force] option is opened."
+      );
+    }
+    // 硬核开关，强撸中间件文件夹
+    const exists = fs.readdirSync(outputFolder);
+    exists
+      .filter(p => p.endsWith(".js") || p.endsWith(EXTENSIONS))
+      .forEach(p => {
+        fs.unlinkSync(`${outputFolder}/${p}`);
+      });
+  } else if (!fs.existsSync(outputFolder)) {
+    fs.mkdirSync(outputFolder);
+  }
+  return files.filter(findTsFiles);
+}
+
+function findTsFiles(i: string): any {
+  return i.endsWith(".ts") && !i.endsWith(".d.ts");
 }
 
 function createJsFile(

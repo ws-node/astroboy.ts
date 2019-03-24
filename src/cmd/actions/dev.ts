@@ -2,14 +2,16 @@ import path from "path";
 import fs from "fs";
 import chalk from "chalk";
 import ts from "typescript";
-import childProcess, { ChildProcess, exec, fork, spawn } from "child_process";
+import childProcess, { ChildProcess, spawn } from "child_process";
 import * as chokidar from "chokidar";
-import { CommandPlugin, InnerCmdConfig } from "../base";
+import { CommandPlugin } from "../base";
 import { CancellationToken } from "../utils/cancellation-token";
 import { NormalizedMessage } from "../utils/normalized-msg";
 import { loadConfig } from "../utils/load-config";
 import { runConfigCompile } from "./config";
 import { runMiddlewareCompile } from "./middleware";
+import { defaultConfigCompilerOptions as dfm } from "../builders/middleware-cmp";
+import { defaultConfigCompilerOptions as dfc } from "../builders/config-compiler";
 
 const STATR_BASH = "🎩 - START APP BASH";
 const WATCHING = "👀 - WATCHING";
@@ -19,6 +21,8 @@ const BOOTSTRAP = "🚚 - APP STARTING";
 const TYPE_CHECK = "👮 - TYPE CHECKING";
 const TYPE_GOOD = "👌 - TS CHECK GOOD";
 const TYPE_OVER = "🏁 - TS CHECK OVER";
+const CONF_RELOAD = "🐔 - CONFIGS RE-COMPILE";
+const MIDDLES_RELOAD = "🦆 - MIDDLEWARES RE-COMPILE";
 
 export interface IDevCmdOptions {
   config: string;
@@ -135,7 +139,10 @@ export const DevPlugin: CommandPlugin = {
     let useConfigCompile = false;
     let configWatchRoot = "";
     if (config.configCompiler) {
-      const { enabled = false, configroot = "" } = config.configCompiler || {};
+      const { enabled = false, configroot = "" } = {
+        ...dfc,
+        ...config.configCompiler
+      };
       configWatchRoot = path.resolve(projectRoot, configroot);
       if (enabled && config.compile) useConfigCompile = true;
     }
@@ -143,7 +150,10 @@ export const DevPlugin: CommandPlugin = {
     let useMiddlewareCompile = false;
     let middleWatchRoot = "";
     if (config.middlewareCompiler) {
-      const { enabled = false, root = "" } = config.middlewareCompiler || {};
+      const { enabled = false, root = "" } = {
+        ...dfm,
+        ...config.middlewareCompiler
+      };
       middleWatchRoot = path.resolve(projectRoot, root);
       if (enabled && config.compile) useMiddlewareCompile = true;
     }
@@ -195,7 +205,7 @@ export const DevPlugin: CommandPlugin = {
       config.env.HTTPS_PROXY = url;
     }
 
-    async function runConfigs() {
+    async function runConfigs(changes: string[] = []) {
       try {
         if (useConfigCompile) {
           const conf = config.configCompiler || {};
@@ -203,7 +213,9 @@ export const DevPlugin: CommandPlugin = {
             ...conf,
             tsconfig: conf.tsconfig || config.tsconfig
           };
-          await doActionAwait(runConfigCompile, projectRoot, compileConf);
+          await doActionAwait(runConfigCompile, projectRoot, compileConf, {
+            changes
+          });
         }
       } catch (error) {
         console.log(chalk.red(error));
@@ -211,7 +223,7 @@ export const DevPlugin: CommandPlugin = {
       }
     }
 
-    async function runMiddlewares() {
+    async function runMiddlewares(changes: string[] = []) {
       try {
         if (useMiddlewareCompile) {
           const conf = config.middlewareCompiler || {};
@@ -219,7 +231,9 @@ export const DevPlugin: CommandPlugin = {
             ...conf,
             tsconfig: conf.tsconfig || config.tsconfig
           };
-          await doActionAwait(runMiddlewareCompile, projectRoot, compileConf);
+          await doActionAwait(runMiddlewareCompile, projectRoot, compileConf, {
+            changes
+          });
         }
       } catch (error) {
         console.log(chalk.red(error));
@@ -257,20 +271,37 @@ export const DevPlugin: CommandPlugin = {
       .watch(config.watch || [], {
         ignored: config.ignore || []
       })
-      .on("change", async (path: string | string[]) => {
+      .on("change", async (paths: string | string[]) => {
         changes = [];
-        if (typeof path === "string") {
-          changes.push(path);
+        if (typeof paths === "string") {
+          changes.push(paths);
         } else {
-          changes.push(...path);
+          changes.push(...paths);
         }
-        if (changes.findIndex(i => i.startsWith(configWatchRoot)) >= 0) {
-          console.log(chalk.yellow("CONFIGS RE-COMPILE："));
-          await runConfigs();
+        const changedConfigs = changes.filter(i =>
+          i.startsWith(configWatchRoot)
+        );
+        if (changedConfigs.length > 0) {
+          console.log("");
+          console.log(chalk.yellow(CONF_RELOAD));
+          console.log("");
+          changedConfigs.forEach((eh, index) => {
+            console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
+          });
+          await runConfigs(changedConfigs);
         }
-        if (changes.findIndex(i => i.startsWith(middleWatchRoot)) >= 0) {
-          console.log(chalk.yellow("MIDDLEWARES RE-COMPILE："));
-          await runMiddlewares();
+        const changedMiddles = changes.filter(i =>
+          i.startsWith(middleWatchRoot)
+        );
+        console.log(changedMiddles);
+        if (changedMiddles.length >= 0) {
+          console.log("");
+          console.log(chalk.yellow(MIDDLES_RELOAD));
+          console.log("");
+          changedMiddles.forEach((eh, index) => {
+            console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
+          });
+          await runMiddlewares(changedMiddles);
         }
         forkConfig.mainProcess.on("exit", () => {
           startMainProcess(forkConfig);
@@ -360,12 +391,18 @@ function startMainProcess(config: ForkCmdOptions) {
 }
 
 function doActionAwait<T>(
-  method: (p: string, c: T, f: (s: boolean, e?: Error) => void) => void,
+  method: (
+    p: string,
+    c: T,
+    pl?: any,
+    f?: (s: boolean, e?: Error) => void
+  ) => void,
   projectRoot: string,
-  config: T
+  config: T,
+  payload: any
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    method(projectRoot, config, (success, error) => {
+    method(projectRoot, config, payload || {}, (success, error) => {
       if (success) {
         resolve();
       } else {

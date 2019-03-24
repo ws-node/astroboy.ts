@@ -94,7 +94,7 @@ function resolveFunctions(context: ICompileContext, node: ts.Node) {
     name,
     params: []
   });
-  (thisFuncNode.parameters || []).forEach(
+  (<any>thisFuncNode.parameters || []).forEach(
     (param: ts.ParameterDeclaration, index: number) => {
       if (!param.type || !param.type["typeName"]) {
         return thisFunc.params.push({

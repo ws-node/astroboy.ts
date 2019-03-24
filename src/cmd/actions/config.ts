@@ -4,6 +4,7 @@ import get from "lodash/get";
 import { loadConfig } from "../utils/load-config";
 import { exec } from "child_process";
 import { CommandPlugin, ConfigCompilerConfig } from "../base";
+import { startChildProcess } from "../utils/execChild";
 
 export interface IConfigCmdOptions {
   force?: boolean;
@@ -60,8 +61,10 @@ export const ConfigPlugin: CommandPlugin = {
 export function runConfigCompile(
   projectRoot: string,
   config: ConfigCompilerConfig,
+  intergradeOptions: { changes?: string[] } = {},
   then?: (success: boolean, error?: Error) => void
 ) {
+  const { changes = [] } = intergradeOptions;
   try {
     const tsnode = require.resolve("ts-node");
     console.log("");
@@ -71,71 +74,39 @@ export function runConfigCompile(
     const initFile = path.resolve(__dirname, "../process/compile-configs");
     console.log(`script ==> ${chalk.grey(initFile)}`);
     console.log("");
-    exec(
-      `node -r ${registerFile} ${initFile}`,
-      {
-        env: {
-          CONFIG_ROOT: config.configroot || "-",
-          OUTPUT_ROOT: config.outputroot || "-",
-          FORCE: String(config.force === true),
-          ENABLED: String(config.enabled === true),
-          __TSCONFIG: path.resolve(
-            projectRoot,
-            config.tsconfig || "tsconfig.json"
-          )
-        }
-      },
-      (error, stdout, stderr) => {
-        if (error) {
-          console.log(chalk.yellow("CONFIGS COMPILE FAILED"));
-          if (then) {
-            then(false, error);
-            return;
-          }
-          console.log(chalk.red(<any>error));
-          console.log("--------------------");
-          return;
-        }
-        if (stderr) {
-          console.log(chalk.yellow("CONFIGS COMPILE FAILED"));
-          if (then) {
-            then(false, error);
-            return;
-          }
-          console.log(chalk.red(stderr));
-          console.log("--------------------");
-          return;
-        }
-        try {
-          const count = showCounts(JSON.parse(stdout || "[]") || []);
-          console.log(chalk.green(`COUNT : ${chalk.white(`[${count}]`)}\n`));
-          // console.log(stdout);
-          console.log(chalk.green(`CONFIGS COMPILE OVER`));
-          if (then) then(true);
-        } catch (_) {
-          console.log(chalk.yellow("CONFIGS COMPILE FAILED"));
-          if (then) {
-            then(false, error);
-            return;
-          }
-          console.log(chalk.red(_));
-          console.log("--------------------");
-        }
+    startChildProcess({
+      args: ["-r", registerFile, initFile],
+      type: "spawn",
+      env: {
+        CONFIG_ROOT: config.configroot || "-",
+        OUTPUT_ROOT: config.outputroot || "-",
+        FORCE: String(config.force === true),
+        ENABLED: String(config.enabled === true),
+        CHANGES: JSON.stringify(changes || []),
+        __TSCONFIG: path.resolve(
+          projectRoot,
+          config.tsconfig || "tsconfig.json"
+        )
       }
-    );
+    })
+      .then(() => {
+        console.log(chalk.green("✅ - COMPILE CONFIGS OVER"));
+        then && then(true);
+      })
+      .catch(error => {
+        console.log(chalk.yellow("❌ - COMPILE CONFIGS FAILED"));
+        console.log("");
+        if (then) {
+          return then(false, error);
+        }
+        console.log(chalk.red(error));
+      });
   } catch (e) {
-    console.log(chalk.yellow("CONFIGS COMPILE FAILED"));
+    console.log(chalk.yellow("❌ - COMPILE CONFIGS FAILED"));
     if (((<Error>e).message || "").includes("ts-node")) {
       console.log(chalk.red("NEED TS-NODE"));
       return;
     }
     throw e;
   }
-}
-
-function showCounts(arr: any) {
-  (arr || []).forEach(name => {
-    console.log(chalk.blue(`---> ${name}`));
-  });
-  return (arr || []).length;
 }

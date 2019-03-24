@@ -99,13 +99,13 @@ export const RouterPlugin: CommandPlugin = {
         },
         (error, stdout, stderr) => {
           if (error) {
-            console.log(chalk.yellow("BUILD ROUTERS FAILED"));
+            console.log(chalk.yellow("❌ - BUILD ROUTERS FAILED"));
             console.log(chalk.red(<any>error));
             console.log("--------------------");
             return;
           }
           if (stderr) {
-            console.log(chalk.yellow("BUILD ROUTERS FAILED"));
+            console.log(chalk.yellow("❌ - BUILD ROUTERS FAILED"));
             console.log(chalk.red(stderr));
             console.log("--------------------");
             return;
@@ -115,14 +115,14 @@ export const RouterPlugin: CommandPlugin = {
             console.log(chalk.green(`COUNT : ${chalk.white(`[${count}]`)}\n`));
             // console.log(stdout);
           } catch (_) {
-            console.log(chalk.yellow("BUILD ROUTERS FAILED"));
+            console.log(chalk.yellow("❌ - BUILD ROUTERS FAILED"));
             console.log(chalk.red(_));
             console.log("--------------------");
           }
         }
       );
     } catch (e) {
-      console.log(chalk.yellow("BUILD ROUTERS FAILED"));
+      console.log(chalk.yellow("❌ - BUILD ROUTERS FAILED"));
       if (((<Error>e).message || "").includes("ts-node")) {
         console.log(chalk.red("NEED TS-NODE"));
         return;
