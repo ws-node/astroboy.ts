@@ -36,7 +36,7 @@ interface IPreProcess {
  * }
  */
 export function preInitFn(configs: Partial<IPreProcess>): void;
-export function preInitFn(configs: Partial<IPreProcess>, inEnd?) {
+export function preInitFn(configs: Partial<IPreProcess>, inEnd?: any) {
   return initRouters(configs, inEnd);
 }
 

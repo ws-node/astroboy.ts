@@ -43,7 +43,7 @@ export interface ICompileContext {
   };
 }
 
-export function compileForEach(node: ts.Node, context: ICompileContext) {
+export function compileForEach(node: ts.Node, context: ICompileContext): void {
   switch (node.kind) {
     case ts.SyntaxKind.ImportEqualsDeclaration:
     case ts.SyntaxKind.ImportDeclaration:
@@ -59,7 +59,7 @@ export function compileForEach(node: ts.Node, context: ICompileContext) {
     case ts.SyntaxKind.EndOfFileToken:
     case ts.SyntaxKind.SourceFile:
     default:
-      return ts.forEachChild(node, node => compileForEach(node, context));
+      ts.forEachChild(node, node => compileForEach(node, context));
   }
 }
 
@@ -70,7 +70,7 @@ function resolveExports(context: ICompileContext, node: ts.Node) {
     i.startsWith("[dynamic exports")
   ).length;
   const name =
-    thisExportsNode.expression["text"] || `[dynamic exports ${dLen}]`;
+    (<any>thisExportsNode.expression)["text"] || `[dynamic exports ${dLen}]`;
   exports[name] = { name };
 }
 
@@ -96,7 +96,7 @@ function resolveFunctions(context: ICompileContext, node: ts.Node) {
   });
   (<any>thisFuncNode.parameters || []).forEach(
     (param: ts.ParameterDeclaration, index: number) => {
-      if (!param.type || !param.type["typeName"]) {
+      if (!param.type || !(<any>param.type)["typeName"]) {
         return thisFunc.params.push({
           name: (<ts.Identifier>param.name).text,
           type: "[unknown type]",
@@ -105,19 +105,19 @@ function resolveFunctions(context: ICompileContext, node: ts.Node) {
           paramIndex: index
         });
       }
-      if (param.type["typeName"].kind === ts.SyntaxKind.QualifiedName) {
+      if ((<any>param.type)["typeName"].kind === ts.SyntaxKind.QualifiedName) {
         thisFunc.params.push({
           name: (<ts.Identifier>param.name).text,
           type: "namespaceType",
-          namespace: param.type["typeName"].left.text,
-          typeName: param.type["typeName"].right.text,
+          namespace: (<any>param.type)["typeName"].left.text,
+          typeName: (<any>param.type)["typeName"].right.text,
           paramIndex: index
         });
       } else {
         thisFunc.params.push({
           name: (<ts.Identifier>param.name).text,
           type: "directType",
-          typeName: param.type["typeName"].text,
+          typeName: (<any>param.type)["typeName"].text,
           paramIndex: index
         });
       }
@@ -138,7 +138,7 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
   if (node.kind === ts.SyntaxKind.ImportEqualsDeclaration) {
     const thisNode = <ts.ImportEqualsDeclaration>node;
     const reference =
-      (<ts.ExternalModuleReference>thisNode.moduleReference).expression[
+      (<any>(<ts.ExternalModuleReference>thisNode.moduleReference).expression)[
         "text"
       ] || "";
     const identity = getIdentity(reference, context);
@@ -150,11 +150,11 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
     };
   } else {
     const thisNode = <ts.ImportDeclaration>node;
-    const namedBindings = thisNode.importClause.namedBindings!;
+    const namedBindings = thisNode.importClause!.namedBindings!;
     if (namedBindings) {
       if (!(<ts.NamedImports>namedBindings).elements) {
         const current = <ts.NamespaceImport>namedBindings;
-        const reference = thisNode.moduleSpecifier["text"] || "";
+        const reference = (<any>thisNode.moduleSpecifier)["text"] || "";
         const identity = getIdentity(reference, context);
         imports[identity] = {
           type: ImportStyle.Star,
@@ -163,7 +163,7 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
           reference
         };
       } else {
-        const reference = thisNode.moduleSpecifier["text"] || "";
+        const reference = (<any>thisNode.moduleSpecifier)["text"] || "";
         const identity = getIdentity(reference, context);
         imports[identity] = {
           type: ImportStyle.Named,
@@ -176,12 +176,12 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
         });
       }
     } else {
-      const current = thisNode.importClause;
-      const reference = thisNode.moduleSpecifier["text"] || "";
+      const current = thisNode.importClause!;
+      const reference = (<any>thisNode.moduleSpecifier)["text"] || "";
       const identity = getIdentity(reference, context);
       imports[identity] = {
         type: ImportStyle.Namespace,
-        name: [current.name.text],
+        name: [current.name!.text],
         identity,
         reference
       };
@@ -189,7 +189,7 @@ function resolveImports(context: ICompileContext, node: ts.Node) {
   }
 }
 
-function getIdentity(reference: string, context?: ICompileContext) {
+function getIdentity(reference: string, context: ICompileContext) {
   const idx = (reference || "").lastIndexOf("/");
   const lastTail = (reference || "").slice(idx + 1) || "";
   const temp_id = normalize(lastTail);
@@ -239,6 +239,8 @@ export const ImportsHelper = {
               current.identity
             } = tslib_1.__importStar(require("${relativePath}"));`;
             break;
+          default:
+            result = "";
         }
         return [is ? 6 : current.type, result];
       })
@@ -271,6 +273,8 @@ export const ImportsHelper = {
           case ImportStyle.Star:
             result = `import * as ${current.identity} from "${relativePath}";`;
             break;
+          default:
+            result = "";
         }
         return [is ? 6 : current.type, result];
       })

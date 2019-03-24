@@ -11,7 +11,7 @@ const {
 } = process.env;
 
 try {
-  const changes: string[] = JSON.parse(CHANGES);
+  const changes: string[] = JSON.parse(CHANGES!);
   const results = compileFn({
     tsconfig: __TSCONFIG === "-" ? undefined : __TSCONFIG,
     configRoot: CONFIG_ROOT === "-" ? undefined : CONFIG_ROOT,

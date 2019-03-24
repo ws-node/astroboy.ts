@@ -57,7 +57,7 @@ export const RouterPlugin: CommandPlugin = {
       config = {
         ...defaultConfigs,
         ...get(req, "routers", {}),
-        tsconfig: req.tsconfig || config.tsconfig
+        tsconfig: req.tsconfig || "tsconfig.json"
       };
     } catch (_) {
       config = defaultConfigs;

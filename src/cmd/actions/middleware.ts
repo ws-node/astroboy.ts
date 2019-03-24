@@ -42,7 +42,7 @@ export const MiddlewarePlugin: CommandPlugin = {
       config = {
         ...defaultConfigs,
         ...get(req, "middlewareCompiler", {}),
-        tsconfig: req.tsconfig || config.tsconfig
+        tsconfig: req.tsconfig || defaultConfigs.tsconfig
       };
     } catch (_) {
       config = defaultConfigs;

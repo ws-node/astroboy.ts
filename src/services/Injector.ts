@@ -72,7 +72,7 @@ export function createInjectMixin<T extends object>(
   target: T,
   ...depts: any[]
 ): T;
-export function createInjectMixin<T extends object>(...args: any[]) {
+export function createInjectMixin(...args: any[]) {
   const [target, ...others] = args;
   if (others[0] instanceof Array) {
     return createProxyByKeys(target, others[0]);
@@ -83,7 +83,7 @@ export function createInjectMixin<T extends object>(...args: any[]) {
 
 function createProxyByDepts<T extends object>(target: T, depts: any[]) {
   return new Proxy(target, {
-    get(target, key) {
+    get(target: any, key: string) {
       if (target[key]) return target[key];
       for (let index = 0; index < depts.length; index++) {
         const current = depts[index];
@@ -91,25 +91,25 @@ function createProxyByDepts<T extends object>(target: T, depts: any[]) {
       }
       return undefined;
     },
-    set(target, key, value) {
+    set(target: any, key: string, value: any) {
       if (target[key]) return (target[key] = value);
       for (let index = 0; index < depts.length; index++) {
         const current = depts[index];
         if (current[key]) return (current[key] = value);
       }
     },
-    deleteProperty(target, key) {
+    deleteProperty(target: any, key: string) {
       throw new Error("Action [deleteProperty] of DI-Mixin is invalid.");
     },
-    enumerate(target) {
+    enumerate(target: any) {
       const ms = Object.assign({}, target, ...depts);
       return Object.keys(ms);
     },
-    ownKeys(target) {
+    ownKeys(target: any) {
       const ms = Object.assign({}, target, ...depts);
       return Object.keys(ms);
     },
-    has(target, key) {
+    has(target: any, key: string) {
       let has = key in target;
       if (has) return true;
       for (let index = 0; index < depts.length; index++) {
@@ -118,7 +118,7 @@ function createProxyByDepts<T extends object>(target: T, depts: any[]) {
       }
       return false;
     },
-    defineProperty(target, key, descriptor) {
+    defineProperty(target: any, key: string, descriptor: any) {
       throw new Error("Action [defineProperty] of DI-Mixin is invalid.");
     }
   });
@@ -126,7 +126,7 @@ function createProxyByDepts<T extends object>(target: T, depts: any[]) {
 
 function createProxyByKeys<T extends object>(target: T, depts: string[]) {
   return new Proxy(target, {
-    get(target, key) {
+    get(target: any, key: string) {
       if (target[key]) return target[key];
       for (let index = 0; index < depts.length; index++) {
         const current = target[depts[index]];
@@ -134,25 +134,25 @@ function createProxyByKeys<T extends object>(target: T, depts: string[]) {
       }
       return undefined;
     },
-    set(target, key, value) {
+    set(target: any, key: string, value: any) {
       if (target[key]) return (target[key] = value);
       for (let index = 0; index < depts.length; index++) {
         const current = target[depts[index]];
         if (current[key]) return (current[key] = value);
       }
     },
-    deleteProperty(target, key) {
+    deleteProperty(target: any, key: string) {
       throw new Error("Action [deleteProperty] of DI-Mixin is invalid.");
     },
-    enumerate(target) {
+    enumerate(target: any) {
       const ms = Object.assign({}, target, ...depts.map(i => target[i]));
       return Object.keys(ms);
     },
-    ownKeys(target) {
+    ownKeys(target: any) {
       const ms = Object.assign({}, target, ...depts.map(i => target[i]));
       return Object.keys(ms);
     },
-    has(target, key) {
+    has(target: any, key: string) {
       let has = key in target;
       if (has) return true;
       for (let index = 0; index < depts.length; index++) {
@@ -161,7 +161,7 @@ function createProxyByKeys<T extends object>(target: T, depts: string[]) {
       }
       return false;
     },
-    defineProperty(target, key, descriptor) {
+    defineProperty(target: any, key: string, descriptor: any) {
       throw new Error("Action [defineProperty] of DI-Mixin is invalid.");
     }
   });

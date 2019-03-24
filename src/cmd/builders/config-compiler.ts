@@ -34,7 +34,9 @@ export const defaultConfigCompilerOptions: ConfigCompilerOptions = {
   outRoot: "config"
 };
 
-export function compileFn(options: Partial<InnerConfigCompilerOptions>) {
+export function compileFn(
+  options: Partial<InnerConfigCompilerOptions>
+): string[] {
   const {
     enabled = false,
     force = false,
@@ -44,21 +46,21 @@ export function compileFn(options: Partial<InnerConfigCompilerOptions>) {
     // 支持增量编译
     fileList = []
   } = options;
-  if (!enabled) return;
+  if (!enabled) return [];
   try {
     const cwd = process.cwd();
     const configFolder = path.resolve(
       cwd,
-      configRoot || defaultConfigCompilerOptions.configRoot
+      configRoot || defaultConfigCompilerOptions.configRoot!
     );
     const outputFolder = path.resolve(
       cwd,
-      outRoot || defaultConfigCompilerOptions.outRoot
+      outRoot || defaultConfigCompilerOptions.outRoot!
     );
     if (!fs.existsSync(configFolder)) fs.mkdirSync(configFolder);
     const watchedFiles = fileList.filter(findTsFiles);
     const useHMR = watchedFiles.length > 0;
-    console.log(`root  ==> "${chalk.green(configRoot)}"`);
+    console.log(`root  ==> "${chalk.green(configRoot!)}"`);
     console.log(`force ==> ${chalk.magenta(String(!!force))}`);
     console.log(`HMR   ==> ${chalk.magenta(String(!!useHMR))}`);
     console.log("");
@@ -74,7 +76,7 @@ export function compileFn(options: Partial<InnerConfigCompilerOptions>) {
       ? initCompilePreSteps(configFolder, force, outputFolder)
       : watchedFiles.map(each => path.relative(configFolder, each));
     const compileds: string[] = [];
-    const options = loadProgramConfig(tsconfig, {
+    const options = loadProgramConfig(tsconfig!, {
       noEmit: true,
       skipLibCheck: true
     });
@@ -88,7 +90,7 @@ export function compileFn(options: Partial<InnerConfigCompilerOptions>) {
       program = createTSCompiler(options, sourcePath, program);
       const file = program.getSourceFile(sourcePath);
       const context = createContext(configFolder, outputFolder);
-      compileForEach(file, context);
+      compileForEach(file!, context);
       const exports = require(sourcePath);
       if (!exports) return;
       let finalExports: any;

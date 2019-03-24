@@ -1,8 +1,9 @@
-import Astroboy from "astroboy";
 import { ControllerConstructor } from "astroboy-router/dist/metadata";
 import { createRouter } from "astroboy-router";
 import { GlobalImplements } from "./utils";
 import { copyPrototype } from "./decorators/controller";
+
+const Astroboy = require("astroboy");
 
 /**
  * ## 构建路由

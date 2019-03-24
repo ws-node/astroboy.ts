@@ -96,7 +96,7 @@ export function isCustomClassInstance(obj: any, type?: any) {
     : getPrototypeConstructor(obj) === type;
 }
 
-export function getPrototypeConstructor(obj) {
+export function getPrototypeConstructor(obj: any) {
   const proto = Object.getPrototypeOf(obj);
   return proto && proto.constructor;
 }

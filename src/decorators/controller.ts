@@ -34,9 +34,9 @@ export function Controller(prefix: string) {
     prototype.__valid = true;
     Router(prefix)(target);
     const DI_CONTROLLER = class {
-      constructor(ctx) {
+      constructor(ctx: any) {
         const injector = getInjector(ctx);
-        const controller = createInstance(target, ctx);
+        const controller: any = createInstance(target, ctx);
         controller[INTERNAL_INJECTOR] = injector;
         return controller;
       }
@@ -48,17 +48,17 @@ export function Controller(prefix: string) {
       configurable: false,
       enumerable: false
     });
-    const { routes = {} } = prototype["@router"];
+    const { routes = {} } = (<any>prototype)["@router"];
     Object.getOwnPropertyNames(prototype).forEach(name => {
       if (name === "@router") return;
       if (name === "constructor") return;
       const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
-      const { value, get } = descriptor;
+      const { value, get } = descriptor!;
       if (get) return;
       if (name in routes && value && typeof value === "function") {
         const { params: routeParams } = tryGetRouteMagic(prototype, name);
-        descriptor.value = async function() {
-          const injector: InjectService = this[$$injector];
+        descriptor!.value = async function() {
+          const injector: InjectService = (<any>this)[$$injector];
           const { ctx } = injector.get<Context>(Context);
           const staticResolver = injector.get(Configs).get(STATIC_RESOLVER);
           const params = resolveRouteMethodParams(
@@ -69,7 +69,7 @@ export function Controller(prefix: string) {
           const result: ICommonResultType = await value.bind(this)(...params);
           if (result) resolveMethodResult(result, ctx, injector);
         };
-        Object.defineProperty(prototype, name, descriptor);
+        Object.defineProperty(prototype, name, descriptor!);
       }
     });
     copyPrototype<T>(DI_CONTROLLER, target);
@@ -86,7 +86,7 @@ export function copyPrototype<T>(
     Object.defineProperty(
       DI_CONTROLLER.prototype,
       name,
-      Object.getOwnPropertyDescriptor(target.prototype, name)
+      Object.getOwnPropertyDescriptor(target.prototype, name)!
     );
   });
   // @ts-ignore

@@ -21,7 +21,7 @@ preInitFn(
     ctorFolder: CTOR_PATH,
     routerFolder: ROUTER_PATH
   },
-  ({ routers, error }) => {
+  ({ routers, error }: any) => {
     if (error) {
       throw error;
     } else {

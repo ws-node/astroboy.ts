@@ -41,7 +41,7 @@ type ImportsIndex = [number, string];
 
 export function middlewareCompileFn(
   options: Partial<InnerMiddlewareCompilerOptions>
-) {
+): string[] {
   const {
     enabled = false,
     force = false,
@@ -50,22 +50,22 @@ export function middlewareCompileFn(
     tsconfig,
     fileList = []
   } = options;
-  if (!enabled) return;
+  if (!enabled) return [];
   try {
     const cwd = process.cwd();
     const middleRootFolder = path.resolve(
       cwd,
-      rootFolder || defaultConfigCompilerOptions.rootFolder
+      rootFolder || defaultConfigCompilerOptions.rootFolder!
     );
     const outputFolder = path.resolve(
       cwd,
-      outFolder || defaultConfigCompilerOptions.outFolder
+      outFolder || defaultConfigCompilerOptions.outFolder!
     );
     const EXTENSIONS = !!force ? ".ts" : ".js";
     if (!fs.existsSync(middleRootFolder)) fs.mkdirSync(middleRootFolder);
     const watchedFiles = fileList.filter(findTsFiles);
     const useHMR = watchedFiles.length > 0;
-    console.log(`root  ==> "${chalk.green(rootFolder)}"`);
+    console.log(`root  ==> "${chalk.green(rootFolder!)}"`);
     console.log(`force ==> ${chalk.magenta(String(!!force))}`);
     console.log(`HMR   ==> ${chalk.magenta(String(!!useHMR))}`);
     console.log("");
@@ -79,9 +79,9 @@ export function middlewareCompileFn(
     }
     const files = !useHMR
       ? initCompilePreSteps(middleRootFolder, force, outputFolder, EXTENSIONS)
-      : watchedFiles.map(each => path.relative(rootFolder, each));
+      : watchedFiles.map(each => path.relative(rootFolder!, each));
     const compileds: string[] = [];
-    const options = loadProgramConfig(tsconfig, {
+    const options = loadProgramConfig(tsconfig!, {
       noEmit: true,
       skipLibCheck: true
     });
@@ -95,7 +95,7 @@ export function middlewareCompileFn(
       program = createTSCompiler(options, sourcePath, program);
       const file = program.getSourceFile(sourcePath);
       const context = createContext(middleRootFolder, outputFolder);
-      compileForEach(file, context);
+      compileForEach(file!, context);
       const exportList = Object.keys(context.exports);
       if (exportList.length <= 0) return;
       const exports = require(sourcePath);
@@ -347,7 +347,7 @@ function createInjectActions(params: IFuncParam[], context: ICompileContext) {
       if (p.type === "directType") {
         result = resolveIdentity(typeName, context);
       } else {
-        result = `${resolveIdentity(p.namespace, context, typeName)}`;
+        result = `${resolveIdentity(p.namespace!, context, typeName)}`;
       }
       return `  const _p${p.paramIndex} = injector.get(${result});`;
     })

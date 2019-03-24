@@ -44,8 +44,8 @@ interface ForkCmdOptions {
   check: boolean;
   cwd: string;
   token: CancellationToken;
-  checkProcess: ChildProcess;
-  mainProcess: ChildProcess;
+  checkProcess?: ChildProcess;
+  mainProcess?: ChildProcess;
   changes: string[];
 }
 
@@ -189,12 +189,10 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
 
   if (config.debug && config.debug === true) {
     config.env.DEBUG = "*";
-  } else if (config.debug && config.debug !== true) {
+  } else if (config.debug && String(config.debug) !== "true") {
     config.env.DEBUG = config.debug;
   }
 
-  // 传递了 --inspect 参数，示例：
-  // atc dev --inspect
   const node = `node${!!config.inspect ? " --inspect" : ""}`;
 
   let tsc_path_map = "";
@@ -366,14 +364,16 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
           });
           await runMiddlewares(changedMiddles);
         }
-        forkConfig.mainProcess.on("exit", () => {
-          startMainProcess(forkConfig);
-        });
+        if (forkConfig.mainProcess) {
+          forkConfig.mainProcess!.on("exit", () => {
+            startMainProcess(forkConfig);
+          });
+          // 暂不支持controller热编译, 意义不大
+          forkConfig.token = refreshToken(forkConfig.token);
+          forkConfig.checkProcess && forkConfig.checkProcess.kill();
+          process.kill(forkConfig.mainProcess.pid);
+        }
       }
-      // 暂不支持controller热编译, 意义不大
-      forkConfig.token = refreshToken(forkConfig.token);
-      forkConfig.checkProcess && forkConfig.checkProcess.kill();
-      process.kill(forkConfig.mainProcess.pid);
     });
 
   const rootRegexp = new RegExp(projectRoot, "g");

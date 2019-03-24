@@ -32,7 +32,7 @@ export const defaultGlobalError: IGlobalErrorHandler = {
     } catch (_) {
       const logger = injector.get(SimpleLogger);
       logger.trace("GLOBAL_ERROR render failed", _);
-      ctx.body = defaultRender(error, "Internal Server Error");
+      ctx.body = defaultRender!(error, "Internal Server Error");
     }
   }
 };

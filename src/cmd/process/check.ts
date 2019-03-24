@@ -7,7 +7,7 @@ const { TSCONFIG } = process.env;
 
 async function run(cancellationToken: CancellationToken) {
   let diagnostics: any[] = [];
-  const options = loadProgramConfig(TSCONFIG, { noEmit: true });
+  const options = loadProgramConfig(TSCONFIG!, { noEmit: true });
   const program = createProgram(options);
 
   try {
@@ -54,10 +54,10 @@ async function validation(
               i.messageText,
               "\n"
             ),
-            file: i.file.fileName,
-            line: i.file.getLineAndCharacterOfPosition(i.start).line + 1,
+            file: i.file!.fileName,
+            line: i.file!.getLineAndCharacterOfPosition(i.start || 0).line + 1,
             character:
-              i.file.getLineAndCharacterOfPosition(i.start).character + 1
+              i.file!.getLineAndCharacterOfPosition(i.start || 0).character + 1
           })
       )
     );

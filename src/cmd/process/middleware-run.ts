@@ -11,7 +11,7 @@ const {
 } = process.env;
 
 try {
-  const changes: string[] = JSON.parse(CHANGES);
+  const changes: string[] = JSON.parse(CHANGES!);
   const results = middlewareCompileFn({
     tsconfig: __TSCONFIG === "-" ? undefined : __TSCONFIG,
     rootFolder: FOLDER_ROOT === "-" ? undefined : FOLDER_ROOT,

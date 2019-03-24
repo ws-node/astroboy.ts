@@ -66,6 +66,7 @@ export class Render implements Render.Contract {
     const [p1, p2, p3] = args;
     let toSnake = false;
     let isObj = false;
+    // @ts-ignore no undefined check here
     let keyStr: string = undefined;
     let toSave: any = undefined;
     if (isPlainObject(p1)) {
