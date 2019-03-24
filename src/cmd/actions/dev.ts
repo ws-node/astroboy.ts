@@ -348,8 +348,7 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
         const changedMiddles = changes.filter(i =>
           i.startsWith(middleWatchRoot)
         );
-        console.log(changedMiddles);
-        if (changedMiddles.length >= 0) {
+        if (changedMiddles.length > 0) {
           console.log("");
           console.log(chalk.yellow(MIDDLES_RELOAD));
           console.log("");
