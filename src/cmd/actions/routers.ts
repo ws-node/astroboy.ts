@@ -1,10 +1,10 @@
 import path from "path";
 import get from "lodash/get";
 import chalk from "chalk";
-import { exec } from "child_process";
 import { loadConfig } from "../utils/load-config";
 import { CommandPlugin, RouterConfig } from "../base";
 import { startChildProcess } from "../utils/execChild";
+import { defaultRouterOptions } from "../builders/routers";
 
 export interface IRouterCmdOptions {
   config?: string;
@@ -46,15 +46,12 @@ export const RouterPlugin: CommandPlugin = {
       `${chalk.white("🤨 - TRY LOAD FILE : ")}${chalk.yellow(fileName)}`
     );
     const projectRoot = process.cwd();
-    const defaultConfigs: RouterConfig = {
-      enabled: true,
-      always: false,
-      approot: "",
-      filetype: "js",
-      details: false,
-      tsconfig: undefined
-    };
     let config: RouterConfig;
+    const defaultConfigs = {
+      ...defaultRouterOptions,
+      details: true,
+      enabled: true
+    };
     try {
       const req = loadConfig(projectRoot, fileName);
       config = {

@@ -5,6 +5,7 @@ import { loadConfig } from "../utils/load-config";
 import { MiddlewareCompilerCmdConfig } from "../base";
 import { CommandPlugin } from "../base";
 import { startChildProcess } from "../utils/execChild";
+import { defaultConfigCompilerOptions as dfm } from "../builders/middleware-cmp";
 
 export interface IMiddlewareCmdOptions {
   force?: boolean;
@@ -35,13 +36,7 @@ export const MiddlewarePlugin: CommandPlugin = {
     );
 
     let config: MiddlewareCompilerCmdConfig;
-    const defaultConfigs: MiddlewareCompilerCmdConfig = {
-      enabled: true,
-      root: undefined,
-      output: undefined,
-      force: false,
-      tsconfig: undefined
-    };
+    const defaultConfigs = dfm;
     try {
       const req = loadConfig(projectRoot, fileName);
       config = {

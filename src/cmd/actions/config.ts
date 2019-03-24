@@ -4,6 +4,7 @@ import get from "lodash/get";
 import { loadConfig } from "../utils/load-config";
 import { CommandPlugin, ConfigCompilerCmdConfig } from "../base";
 import { startChildProcess } from "../utils/execChild";
+import { defaultConfigCompilerOptions as dfc } from "../builders/config-compiler";
 
 export interface IConfigCmdOptions {
   force?: boolean;
@@ -32,13 +33,7 @@ export const ConfigPlugin: CommandPlugin = {
     );
 
     let config: ConfigCompilerCmdConfig;
-    const defaultConfigs: ConfigCompilerCmdConfig = {
-      enabled: true,
-      configroot: undefined,
-      outputroot: undefined,
-      force: false,
-      tsconfig: undefined
-    };
+    const defaultConfigs = dfc;
     try {
       const req = loadConfig(projectRoot, fileName);
       config = {

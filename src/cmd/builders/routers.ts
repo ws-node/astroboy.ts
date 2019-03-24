@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
-import { GlobalImplements } from "../../utils";
 import chalk from "chalk";
+import { GlobalImplements } from "../../utils";
 
 export interface InnerRouterOptions extends RouterOptions {
   ctorFolder: string;
