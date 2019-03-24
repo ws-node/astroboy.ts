@@ -26,12 +26,23 @@ preInitFn(
       throw error;
     } else {
       if (SHOW_ROUTERS === "true") {
-        routers.forEach(each => {
-          console.log(chalk.blueBright(each));
-        });
-        console.log(chalk.cyanBright(`\nCOUNT : [${routers.length}]`));
+        const count = showRoutes(routers);
+        console.log(chalk.cyanBright(`\nCOUNT : [${count}]`));
         console.log("");
       }
     }
   }
 );
+
+function showRoutes(obj: any, preK?: string) {
+  let count = 0;
+  Object.keys(obj || {}).forEach(k => {
+    if (typeof obj[k] === "string") {
+      console.log(chalk.blueBright(!preK ? `--> ${k}` : `--> ${preK}/${k}`));
+      count += 1;
+    } else {
+      count += showRoutes(obj[k], !preK ? k : `${preK}/${k}`);
+    }
+  });
+  return count;
+}
