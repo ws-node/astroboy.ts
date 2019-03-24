@@ -92,6 +92,7 @@ export function runRoutersBuilder(
     console.log("");
     const registerFile = path.resolve(__dirname, "../register");
     const initFile = path.resolve(__dirname, "../process/init");
+    console.log(`root  ==> "${chalk.green("app/controllers")}"`);
     startChildProcess({
       args: ["-r", registerFile, initFile],
       type: "spawn",

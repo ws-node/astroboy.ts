@@ -47,9 +47,8 @@ export function initRouters(
   if (open) {
     try {
       const routers: IRouter = {};
-      const ctorPath = path.resolve(process.cwd(), base);
-      const routerPath = path.resolve(process.cwd(), routerBase);
-      console.log(`root  ==> "${chalk.green(base)}"`);
+      const ctorPath = base;
+      const routerPath = routerBase;
       console.log(`force ==> ${chalk.magenta(String(!!always))}`);
       console.log(`HMR   ==> ${chalk.magenta(String(false))}`);
       console.log("");
