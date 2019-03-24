@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
 import { GlobalImplements } from "../../utils";
+import chalk from "chalk";
 
 export interface InnerRouterOptions extends RouterOptions {
   ctorFolder: string;
@@ -48,6 +49,10 @@ export function initRouters(
       const routers: IRouter = {};
       const ctorPath = path.resolve(process.cwd(), base);
       const routerPath = path.resolve(process.cwd(), routerBase);
+      console.log(`root  ==> "${chalk.green(base)}"`);
+      console.log(`force ==> ${chalk.magenta(String(!!always))}`);
+      console.log(`HMR   ==> ${chalk.magenta(String(false))}`);
+      console.log("");
       if (!!always) {
         // 硬核开关，强撸routers文件夹
         rimraf.sync(routerPath);
