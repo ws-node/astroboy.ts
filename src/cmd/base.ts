@@ -52,8 +52,8 @@ export interface CmdConfig {
   transpile?: boolean;
   routers?: RouterConfig;
   compile?: boolean;
-  configCompiler?: ConfigCompilerConfig;
-  middlewareCompiler?: MiddlewareCompilerConfig;
+  configCompiler?: ConfigCompilerConfig & { hmr?: boolean };
+  middlewareCompiler?: MiddlewareCompilerConfig & { hmr?: boolean };
 }
 
 export interface InnerCmdConfig extends CmdConfig {

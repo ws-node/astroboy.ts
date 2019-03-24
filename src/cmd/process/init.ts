@@ -1,4 +1,5 @@
 import { preInitFn } from "../cmd";
+import chalk from "chalk";
 
 const {
   CTOR_PATH,
@@ -22,10 +23,14 @@ preInitFn(
   },
   ({ routers, error }) => {
     if (error) {
-      console.log(error);
+      throw error;
     } else {
       if (SHOW_ROUTERS === "true") {
-        console.log(JSON.stringify(routers, null, " "));
+        routers.forEach(each => {
+          console.log(chalk.blueBright(each));
+        });
+        console.log(chalk.cyanBright(`\nCOUNT : [${routers.length}]`));
+        console.log("");
       }
     }
   }

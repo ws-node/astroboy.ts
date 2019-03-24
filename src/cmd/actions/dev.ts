@@ -12,6 +12,8 @@ import { runConfigCompile } from "./config";
 import { runMiddlewareCompile } from "./middleware";
 import { defaultConfigCompilerOptions as dfm } from "../builders/middleware-cmp";
 import { defaultConfigCompilerOptions as dfc } from "../builders/config-compiler";
+import { defaultRouterOptions as dfr } from "../builders/routers";
+import { runRoutersBuilder } from "./routers";
 
 const STATR_BASH = "🎩 - START APP BASH";
 const WATCHING = "👀 - WATCHING";
@@ -142,25 +144,40 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
   config.compile = compile === "undefined" ? false : compile === "true";
 
   let useConfigCompile = false;
+  let useConfigHMR = false;
   let configWatchRoot = "";
   if (config.configCompiler) {
-    const { enabled = false, configroot = "" } = {
+    const { enabled = false, configroot = "", hmr = true } = {
       ...dfc,
       ...config.configCompiler
     };
+    useConfigHMR = hmr;
     configWatchRoot = path.resolve(projectRoot, configroot);
-    if (enabled && config.compile) useConfigCompile = true;
+    if (enabled && (config.compile || onlyCompile)) useConfigCompile = true;
   }
 
   let useMiddlewareCompile = false;
+  let useMiddlewareHMR = false;
   let middleWatchRoot = "";
   if (config.middlewareCompiler) {
-    const { enabled = false, root = "" } = {
+    const { enabled = false, root = "", hmr = true } = {
       ...dfm,
       ...config.middlewareCompiler
     };
+    useMiddlewareHMR = hmr;
     middleWatchRoot = path.resolve(projectRoot, root);
-    if (enabled && config.compile) useMiddlewareCompile = true;
+    if (enabled && (config.compile || onlyCompile)) useMiddlewareCompile = true;
+  }
+
+  let useRouterBuilds = false;
+  let ctorRoot = "app/controllers";
+  if (config.routers) {
+    const { enabled = false } = {
+      ...dfr,
+      ...config.routers
+    };
+    ctorRoot = path.resolve(projectRoot, ctorRoot);
+    if (enabled && (config.compile || onlyCompile)) useRouterBuilds = true;
   }
 
   // ts-node register
@@ -246,8 +263,27 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     }
   }
 
+  async function runRouters(changes: string[] = []) {
+    try {
+      if (useRouterBuilds) {
+        const conf = config.routers || {};
+        const compileConf = {
+          ...conf,
+          tsconfig: conf.tsconfig || config.tsconfig
+        };
+        await doActionAwait(runRoutersBuilder, projectRoot, compileConf, {
+          changes
+        });
+      }
+    } catch (error) {
+      console.log(chalk.red(error));
+      return;
+    }
+  }
+
   await runConfigs();
   await runMiddlewares();
+  await runRouters();
 
   if (onlyCompile) {
     console.log("");
@@ -290,30 +326,39 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
       } else {
         changes.push(...paths);
       }
-      const changedConfigs = changes.filter(i => i.startsWith(configWatchRoot));
-      if (changedConfigs.length > 0) {
-        console.log("");
-        console.log(chalk.yellow(CONF_RELOAD));
-        console.log("");
-        changedConfigs.forEach((eh, index) => {
-          console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
-        });
-        await runConfigs(changedConfigs);
+      if (useConfigHMR) {
+        const changedConfigs = changes.filter(i =>
+          i.startsWith(configWatchRoot)
+        );
+        if (changedConfigs.length > 0) {
+          console.log("");
+          console.log(chalk.yellow(CONF_RELOAD));
+          console.log("");
+          changedConfigs.forEach((eh, index) => {
+            console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
+          });
+          await runConfigs(changedConfigs);
+        }
       }
-      const changedMiddles = changes.filter(i => i.startsWith(middleWatchRoot));
-      console.log(changedMiddles);
-      if (changedMiddles.length >= 0) {
-        console.log("");
-        console.log(chalk.yellow(MIDDLES_RELOAD));
-        console.log("");
-        changedMiddles.forEach((eh, index) => {
-          console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
+      if (useMiddlewareHMR) {
+        const changedMiddles = changes.filter(i =>
+          i.startsWith(middleWatchRoot)
+        );
+        console.log(changedMiddles);
+        if (changedMiddles.length >= 0) {
+          console.log("");
+          console.log(chalk.yellow(MIDDLES_RELOAD));
+          console.log("");
+          changedMiddles.forEach((eh, index) => {
+            console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
+          });
+          await runMiddlewares(changedMiddles);
+        }
+        forkConfig.mainProcess.on("exit", () => {
+          startMainProcess(forkConfig);
         });
-        await runMiddlewares(changedMiddles);
       }
-      forkConfig.mainProcess.on("exit", () => {
-        startMainProcess(forkConfig);
-      });
+      // 暂不支持controller热编译, 意义不大
       forkConfig.token = refreshToken(forkConfig.token);
       forkConfig.checkProcess && forkConfig.checkProcess.kill();
       process.kill(forkConfig.mainProcess.pid);

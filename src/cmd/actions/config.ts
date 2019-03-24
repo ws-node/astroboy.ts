@@ -2,7 +2,6 @@ import path from "path";
 import chalk from "chalk";
 import get from "lodash/get";
 import { loadConfig } from "../utils/load-config";
-import { exec } from "child_process";
 import { CommandPlugin, ConfigCompilerConfig } from "../base";
 import { startChildProcess } from "../utils/execChild";
 
