@@ -5,7 +5,7 @@ import { loadConfig } from "../utils/load-config";
 import { MiddlewareCompilerCmdConfig } from "../base";
 import { CommandPlugin } from "../base";
 import { startChildProcess } from "../utils/execChild";
-import { defaultConfigCompilerOptions as dfm } from "../builders/middleware-cmp";
+import { TRANSFROM } from "../utils/transform";
 
 export interface IMiddlewareCmdOptions {
   force?: boolean;
@@ -36,7 +36,7 @@ export const MiddlewarePlugin: CommandPlugin = {
     );
 
     let config: MiddlewareCompilerCmdConfig;
-    const defaultConfigs = dfm;
+    const defaultConfigs = TRANSFROM.middlewares({});
     try {
       const req = loadConfig(projectRoot, fileName);
       config = {

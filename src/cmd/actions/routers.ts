@@ -4,7 +4,7 @@ import chalk from "chalk";
 import { loadConfig } from "../utils/load-config";
 import { CommandPlugin, RouterConfig } from "../base";
 import { startChildProcess } from "../utils/execChild";
-import { defaultRouterOptions } from "../builders/routers";
+import { TRANSFROM } from "../utils/transform";
 
 export interface IRouterCmdOptions {
   config?: string;
@@ -48,7 +48,7 @@ export const RouterPlugin: CommandPlugin = {
     const projectRoot = process.cwd();
     let config: RouterConfig;
     const defaultConfigs = {
-      ...defaultRouterOptions,
+      ...TRANSFROM.routers({}),
       details: true,
       enabled: true
     };

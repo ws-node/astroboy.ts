@@ -4,7 +4,7 @@ import get from "lodash/get";
 import { loadConfig } from "../utils/load-config";
 import { CommandPlugin, ConfigCompilerCmdConfig } from "../base";
 import { startChildProcess } from "../utils/execChild";
-import { defaultConfigCompilerOptions as dfc } from "../builders/config-compiler";
+import { TRANSFROM } from "../utils/transform";
 
 export interface IConfigCmdOptions {
   force?: boolean;
@@ -33,7 +33,7 @@ export const ConfigPlugin: CommandPlugin = {
     );
 
     let config: ConfigCompilerCmdConfig;
-    const defaultConfigs = dfc;
+    const defaultConfigs = TRANSFROM.configs({});
     try {
       const req = loadConfig(projectRoot, fileName);
       config = {

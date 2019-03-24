@@ -1,3 +1,7 @@
+SUBDIRS = configs middlewares app
+.PHONY: subdirs $(SUBDIRS)
+subdirs: $(SUBDIRS)
+
 build:
 	yarn run test
 	rm -rf dist

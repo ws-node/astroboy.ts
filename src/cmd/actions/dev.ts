@@ -10,10 +10,9 @@ import { NormalizedMessage } from "../utils/normalized-msg";
 import { loadConfig } from "../utils/load-config";
 import { runConfigCompile } from "./config";
 import { runMiddlewareCompile } from "./middleware";
-import { defaultConfigCompilerOptions as dfm } from "../builders/middleware-cmp";
-import { defaultConfigCompilerOptions as dfc } from "../builders/config-compiler";
 import { defaultRouterOptions as dfr } from "../builders/routers";
 import { runRoutersBuilder } from "./routers";
+import { TRANSFROM } from "../utils/transform";
 
 const STATR_BASH = "🎩 - START APP BASH";
 const WATCHING = "👀 - WATCHING";
@@ -143,12 +142,16 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
   config.transpile = transpile === "undefined" ? true : transpile === "true";
   config.compile = compile === "undefined" ? false : compile === "true";
 
+  const defaultC = TRANSFROM.configs({});
+  const defaultM = TRANSFROM.middlewares({});
+  const defaultR = TRANSFROM.routers({});
+
   let useConfigCompile = false;
   let useConfigHMR = false;
   let configWatchRoot = "";
   if (config.configCompiler) {
     const { enabled = false, configroot = "", hmr = true } = {
-      ...dfc,
+      ...defaultC,
       ...config.configCompiler
     };
     useConfigHMR = hmr;
@@ -161,7 +164,7 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
   let middleWatchRoot = "";
   if (config.middlewareCompiler) {
     const { enabled = false, root = "", hmr = true } = {
-      ...dfm,
+      ...defaultM,
       ...config.middlewareCompiler
     };
     useMiddlewareHMR = hmr;
@@ -173,7 +176,7 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
   let ctorRoot = "app/controllers";
   if (config.routers) {
     const { enabled = false } = {
-      ...dfr,
+      ...defaultR,
       ...config.routers
     };
     ctorRoot = path.resolve(projectRoot, ctorRoot);
@@ -229,11 +232,8 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     try {
       if (useConfigCompile) {
         const conf = config.configCompiler || {};
-        const { outRoot: outputroot, configRoot: configroot, ...others } = dfc;
         const compileConf = {
-          configroot,
-          outputroot,
-          ...others,
+          ...defaultC,
           ...conf,
           tsconfig: conf.tsconfig || config.tsconfig
         };
@@ -251,11 +251,8 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     try {
       if (useMiddlewareCompile) {
         const conf = config.middlewareCompiler || {};
-        const { rootFolder: root, outFolder: output, ...others } = dfm;
         const compileConf = {
-          root,
-          output,
-          ...others,
+          ...defaultM,
           ...conf,
           tsconfig: conf.tsconfig || config.tsconfig
         };
@@ -273,11 +270,8 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     try {
       if (useRouterBuilds) {
         const conf = config.routers || {};
-        const { appRoot: approot, fileType: filetype, ...others } = dfr;
         const compileConf = {
-          approot,
-          filetype,
-          ...others,
+          ...defaultR,
           ...conf,
           tsconfig: conf.tsconfig || config.tsconfig
         };
