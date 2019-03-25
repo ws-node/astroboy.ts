@@ -3,6 +3,7 @@ import fs from "fs";
 import chalk from "chalk";
 import ts from "typescript";
 import get from "lodash/get";
+import throttle from "lodash/throttle";
 import * as chokidar from "chokidar";
 import kill = require("kill-port");
 import childProcess, { ChildProcess, spawn } from "child_process";
@@ -336,77 +337,12 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     changes: []
   };
 
-  async function invokeWhenFilesCHanged(paths: string | string[]) {
-    forkConfig.token = refreshToken(forkConfig.token);
-    forkConfig.changes = [];
-    if (typeof paths === "string") {
-      forkConfig.changes.push(paths);
-    } else {
-      forkConfig.changes.push(...paths);
-    }
-    console.log("");
-    console.log(chalk.yellow(FILES_CHANGED));
-    console.log("");
-    forkConfig.changes.forEach(each => {
-      console.log(chalk.magenta(path.relative(projectRoot, each)));
-    });
-    console.log("");
-    if (useConfigHMR) {
-      const changedConfigs = forkConfig.changes.filter(i =>
-        i.startsWith(configWatchRoot)
-      );
-      if (changedConfigs.length > 0) {
-        console.log("");
-        console.log(chalk.yellow(CONF_RELOAD));
-        console.log("");
-        changedConfigs.forEach((eh, index) => {
-          console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
-        });
-        await runConfigs({
-          // 暂时不做取消逻辑
-          // type: "fork",
-          changes: changedConfigs
-          // token: forkConfig.token,
-          // defineCancel(child: ChildProcess, token: CancellationToken) {
-          //   child.on("message", data => console.log(data));
-          //   child.send(forkConfig.token);
-          // }
-        });
-      }
-    }
-    if (useMiddlewareHMR) {
-      const changedMiddles = forkConfig.changes.filter(i =>
-        i.startsWith(middleWatchRoot)
-      );
-      if (changedMiddles.length > 0) {
-        console.log("");
-        console.log(chalk.yellow(MIDDLES_RELOAD));
-        console.log("");
-        changedMiddles.forEach((eh, index) => {
-          console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
-        });
-        await runMiddlewares({ changes: changedMiddles });
-      }
-    }
-    // 暂不支持controller热编译, 意义不大
-    const { mainProcess, checkProcess } = forkConfig;
-    if (mainProcess) {
-      try {
-        if (checkProcess) {
-          checkProcess.kill();
-        }
-        process.kill(forkConfig.mainProcess.pid);
-        kill(get(config, "env.NODE_PORT", 8201));
-      } catch (error) {
-        console.log(chalk.red(error));
-      } finally {
-        startMainProcess(forkConfig);
-      }
-    }
-  }
-
   const { watch = [], ignore: ignored = [] } = config;
-  chokidar.watch(watch, { ignored }).on("change", invokeWhenFilesCHanged);
+  // 1.5s变更内重复视为无效
+  const onFilesChanged = throttle(invokeWhenFilesCHanged, 1500, {
+    trailing: false
+  });
+  chokidar.watch(watch, { ignored }).on("change", onFilesChanged);
 
   const ROOT_REGEXP = new RegExp(projectRoot, "g");
 
@@ -464,9 +400,82 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     );
   }
   startMainProcess(forkConfig);
+
+  async function invokeWhenFilesCHanged(paths: string | string[]) {
+    forkConfig.token = refreshToken(forkConfig.token);
+    forkConfig.changes = [];
+    if (typeof paths === "string") {
+      forkConfig.changes.push(paths);
+    } else {
+      forkConfig.changes.push(...paths);
+    }
+    console.log("");
+    console.log(chalk.yellow(FILES_CHANGED));
+    console.log("");
+    forkConfig.changes.forEach(each => {
+      console.log(chalk.magenta(path.relative(projectRoot, each)));
+    });
+    console.log("");
+
+    const { mainProcess, checkProcess } = forkConfig;
+    if (mainProcess) {
+      try {
+        if (checkProcess) {
+          checkProcess.kill();
+        }
+        process.kill(forkConfig.mainProcess.pid);
+      } catch (error) {
+        console.log(chalk.red(error));
+      } finally {
+        // 暂不支持controller热编译, 意义不大
+        await reCompile();
+        startMainProcess(forkConfig);
+      }
+    }
+  }
+
+  async function reCompile() {
+    if (useConfigHMR) {
+      const changedConfigs = forkConfig.changes.filter(i =>
+        i.startsWith(configWatchRoot)
+      );
+      if (changedConfigs.length > 0) {
+        console.log("");
+        console.log(chalk.yellow(CONF_RELOAD));
+        console.log("");
+        changedConfigs.forEach((eh, index) => {
+          console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
+        });
+        await runConfigs({
+          // 暂时不做取消逻辑
+          // type: "fork",
+          changes: changedConfigs
+          // token: forkConfig.token,
+          // defineCancel(child: ChildProcess, token: CancellationToken) {
+          //   child.on("message", data => console.log(data));
+          //   child.send(forkConfig.token);
+          // }
+        });
+      }
+    }
+    if (useMiddlewareHMR) {
+      const changedMiddles = forkConfig.changes.filter(i =>
+        i.startsWith(middleWatchRoot)
+      );
+      if (changedMiddles.length > 0) {
+        console.log("");
+        console.log(chalk.yellow(MIDDLES_RELOAD));
+        console.log("");
+        changedMiddles.forEach((eh, index) => {
+          console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
+        });
+        await runMiddlewares({ changes: changedMiddles });
+      }
+    }
+  }
 }
 
-function startMainProcess(config: ForkCmdOptions) {
+async function startMainProcess(config: ForkCmdOptions) {
   try {
     if (config.check) {
       config.checkProcess = startTypeCheck(config.cwd, config, config.token);
@@ -476,14 +485,20 @@ function startMainProcess(config: ForkCmdOptions) {
   }
   console.log(chalk.green(BOOTSTRAP));
   console.log("");
-  config.mainProcess = spawn("node", [...config.args, config.command], {
-    env: {
-      ...process.env,
-      ...config.env
-    },
-    stdio: ["pipe", process.stdout, process.stderr]
-  });
-  return config.mainProcess;
+  try {
+    await kill(get(config, "env.NODE_PORT", 8201));
+  } catch (error) {
+    console.log(chalk.red(error));
+  } finally {
+    config.mainProcess = spawn("node", [...config.args, config.command], {
+      env: {
+        ...process.env,
+        ...config.env
+      },
+      stdio: ["pipe", process.stdout, process.stderr]
+    });
+    return config.mainProcess;
+  }
 }
 
 function doActionAwait<T>(
