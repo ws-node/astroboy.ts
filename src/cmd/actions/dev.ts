@@ -367,22 +367,22 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
           });
           await runMiddlewares(changedMiddles);
         }
-        if (forkConfig.mainProcess) {
-          // forkConfig.mainProcess!.on("exit", () => {
-          //   startMainProcess(forkConfig);
-          // });
-          kill(8201)
-            .then(() => {
-              startMainProcess(forkConfig);
-            })
-            .catch((error: any) => {
-              console.log(chalk.red(error));
-            });
-          // 暂不支持controller热编译, 意义不大
-          forkConfig.token = refreshToken(forkConfig.token);
-          forkConfig.checkProcess && forkConfig.checkProcess.kill();
-          process.kill(forkConfig.mainProcess.pid);
-        }
+      }
+      if (forkConfig.mainProcess) {
+        // forkConfig.mainProcess!.on("exit", () => {
+        //   startMainProcess(forkConfig);
+        // });
+        kill(8201)
+          .then(() => {
+            startMainProcess(forkConfig);
+          })
+          .catch((error: any) => {
+            console.log(chalk.red(error));
+          });
+        // 暂不支持controller热编译, 意义不大
+        forkConfig.token = refreshToken(forkConfig.token);
+        forkConfig.checkProcess && forkConfig.checkProcess.kill();
+        process.kill(forkConfig.mainProcess.pid);
       }
     });
 
