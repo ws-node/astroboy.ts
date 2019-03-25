@@ -2,15 +2,15 @@ import path from "path";
 import fs from "fs";
 import chalk from "chalk";
 import ts from "typescript";
-import childProcess, { ChildProcess, spawn } from "child_process";
 import * as chokidar from "chokidar";
+import kill = require("kill-port");
+import childProcess, { ChildProcess, spawn } from "child_process";
 import { CommandPlugin } from "../base";
 import { CancellationToken } from "../utils/cancellation-token";
 import { NormalizedMessage } from "../utils/normalized-msg";
 import { loadConfig } from "../utils/load-config";
 import { runConfigCompile } from "./config";
 import { runMiddlewareCompile } from "./middleware";
-import { defaultRouterOptions as dfr } from "../builders/routers";
 import { runRoutersBuilder } from "./routers";
 import { TRANSFROM } from "../utils/transform";
 
@@ -24,6 +24,7 @@ const TYPE_GOOD = "👌 - TS CHECK GOOD";
 const TYPE_OVER = "🏁 - TS CHECK OVER";
 const CONF_RELOAD = "🐔 - CONFIGS RE-COMPILE";
 const MIDDLES_RELOAD = "🦆 - MIDDLEWARES RE-COMPILE";
+const FILES_CHANGED = "😱 - FILES CHANGED";
 
 export interface IDevCmdOptions {
   config: string;
@@ -42,6 +43,7 @@ interface ForkCmdOptions {
   env: any;
   check: boolean;
   cwd: string;
+  tsconfig?: string;
   token: CancellationToken;
   checkProcess?: ChildProcess;
   mainProcess?: ChildProcess;
@@ -311,6 +313,7 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
       tspath_host
     ],
     env: config.env,
+    tsconfig: config.tsconfig,
     check: config.transpile && config.typeCheck,
     cwd: projectRoot,
     token: refreshToken(),
@@ -330,6 +333,13 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
       } else {
         changes.push(...paths);
       }
+      console.log("");
+      console.log(chalk.yellow(FILES_CHANGED));
+      console.log("");
+      changes.forEach(each => {
+        console.log(chalk.magenta(path.relative(projectRoot, each)));
+      });
+      console.log("");
       if (useConfigHMR) {
         const changedConfigs = changes.filter(i =>
           i.startsWith(configWatchRoot)
@@ -358,9 +368,16 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
           await runMiddlewares(changedMiddles);
         }
         if (forkConfig.mainProcess) {
-          forkConfig.mainProcess!.on("exit", () => {
-            startMainProcess(forkConfig);
-          });
+          // forkConfig.mainProcess!.on("exit", () => {
+          //   startMainProcess(forkConfig);
+          // });
+          kill(8201)
+            .then(() => {
+              startMainProcess(forkConfig);
+            })
+            .catch((error: any) => {
+              console.log(chalk.red(error));
+            });
           // 暂不支持controller热编译, 意义不大
           forkConfig.token = refreshToken(forkConfig.token);
           forkConfig.checkProcess && forkConfig.checkProcess.kill();
@@ -471,7 +488,7 @@ function doActionAwait<T>(
 
 function startTypeCheck(
   projectRoot: string,
-  config: any,
+  config: ForkCmdOptions,
   token: CancellationToken
 ) {
   console.log("");
