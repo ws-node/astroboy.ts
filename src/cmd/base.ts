@@ -1,4 +1,12 @@
 import get from "lodash/get";
+import { ChildProcess } from "child_process";
+
+export interface IntergradeOptions<C> {
+  changes?: string[];
+  type?: "spawn" | "fork" | "exec";
+  token?: C;
+  defineCancel?: (child: ChildProcess, token: C) => void;
+}
 
 export interface CommandPlugin {
   name: string;

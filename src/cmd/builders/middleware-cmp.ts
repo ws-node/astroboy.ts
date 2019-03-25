@@ -86,13 +86,17 @@ export function middlewareCompileFn(
       skipLibCheck: true
     });
     let program: ts.Program;
+    program = createTSCompiler(
+      options,
+      files.map(i => `${middleRootFolder}/${i}`),
+      program
+    );
     files.forEach(filePath => {
       const sourcePath = `${middleRootFolder}/${filePath}`;
       const compiledPath = `${outputFolder}/${filePath.replace(
         /\.ts$/,
         EXTENSIONS
       )}`;
-      program = createTSCompiler(options, sourcePath, program);
       const file = program.getSourceFile(sourcePath);
       const context = createContext(middleRootFolder, outputFolder);
       compileForEach(file!, context);
@@ -167,13 +171,13 @@ function createContext(
 
 function createTSCompiler(
   options: ts.ParsedCommandLine,
-  sourcePath: string,
+  sourcePaths: string[],
   program: ts.Program
 ): ts.Program {
   return createProgram(
     {
       ...options,
-      fileNames: [sourcePath]
+      fileNames: sourcePaths
     },
     program
   );

@@ -2,10 +2,11 @@ import path from "path";
 import chalk from "chalk";
 import get from "lodash/get";
 import { loadConfig } from "../utils/load-config";
-import { MiddlewareCompilerCmdConfig } from "../base";
+import { MiddlewareCompilerCmdConfig, IntergradeOptions } from "../base";
 import { CommandPlugin } from "../base";
 import { startChildProcess } from "../utils/execChild";
 import { TRANSFROM } from "../utils/transform";
+import { CancellationToken } from "../utils/cancellation-token";
 
 export interface IMiddlewareCmdOptions {
   force?: boolean;
@@ -58,10 +59,15 @@ export const MiddlewarePlugin: CommandPlugin = {
 export function runMiddlewareCompile(
   projectRoot: string,
   config: MiddlewareCompilerCmdConfig,
-  intergradeOptions: { changes?: string[] } = {},
+  intergradeOptions: IntergradeOptions<CancellationToken> = {},
   then?: (success: boolean, error?: Error) => void
 ) {
-  const { changes = [] } = intergradeOptions;
+  const {
+    changes = [],
+    type = "spawn",
+    token,
+    defineCancel
+  } = intergradeOptions;
   try {
     const tsnode = require.resolve("ts-node");
     console.log("");
@@ -70,8 +76,11 @@ export function runMiddlewareCompile(
     const registerFile = path.resolve(__dirname, "../register");
     const initFile = path.resolve(__dirname, "../process/middleware-run");
     startChildProcess({
-      args: ["-r", registerFile, initFile],
-      type: "spawn",
+      type,
+      token,
+      defineCancel,
+      script: initFile,
+      args: type === "fork" ? [] : ["-r", registerFile, initFile],
       env: {
         FOLDER_ROOT: config.root || "-",
         OUTPUT_ROOT: config.output || "-",

@@ -2,9 +2,10 @@ import path from "path";
 import get from "lodash/get";
 import chalk from "chalk";
 import { loadConfig } from "../utils/load-config";
-import { CommandPlugin, RouterConfig } from "../base";
+import { CommandPlugin, RouterConfig, IntergradeOptions } from "../base";
 import { startChildProcess } from "../utils/execChild";
 import { TRANSFROM } from "../utils/transform";
+import { CancellationToken } from "../utils/cancellation-token";
 
 export interface IRouterCmdOptions {
   config?: string;
@@ -79,9 +80,10 @@ export const RouterPlugin: CommandPlugin = {
 export function runRoutersBuilder(
   projectRoot: string,
   config: RouterConfig,
-  intergradeOptions: { changes?: string[] } = {},
+  intergradeOptions: IntergradeOptions<CancellationToken> = {},
   then?: (success: boolean, error?: Error) => void
 ) {
+  const { type = "spawn", token, defineCancel } = intergradeOptions;
   try {
     const tsnode = require.resolve("ts-node");
     console.log("");
@@ -91,8 +93,11 @@ export function runRoutersBuilder(
     const initFile = path.resolve(__dirname, "../process/init");
     console.log(`root  ==> "${chalk.green("app/controllers")}"`);
     startChildProcess({
-      args: ["-r", registerFile, initFile],
-      type: "spawn",
+      type,
+      token,
+      defineCancel,
+      script: initFile,
+      args: type === "fork" ? [] : ["-r", registerFile, initFile],
       env: {
         CTOR_PATH: path.resolve(projectRoot, "app/controllers"),
         ROUTER_PATH: path.resolve(projectRoot, "app/routers"),

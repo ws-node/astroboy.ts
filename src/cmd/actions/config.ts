@@ -2,9 +2,14 @@ import path from "path";
 import chalk from "chalk";
 import get from "lodash/get";
 import { loadConfig } from "../utils/load-config";
-import { CommandPlugin, ConfigCompilerCmdConfig } from "../base";
 import { startChildProcess } from "../utils/execChild";
 import { TRANSFROM } from "../utils/transform";
+import { CancellationToken } from "../utils/cancellation-token";
+import {
+  CommandPlugin,
+  ConfigCompilerCmdConfig,
+  IntergradeOptions
+} from "../base";
 
 export interface IConfigCmdOptions {
   force?: boolean;
@@ -55,10 +60,15 @@ export const ConfigPlugin: CommandPlugin = {
 export function runConfigCompile(
   projectRoot: string,
   config: ConfigCompilerCmdConfig,
-  intergradeOptions: { changes?: string[] } = {},
+  intergradeOptions: IntergradeOptions<CancellationToken> = {},
   then?: (success: boolean, error?: Error) => void
 ) {
-  const { changes = [] } = intergradeOptions;
+  const {
+    changes = [],
+    type = "spawn",
+    token,
+    defineCancel
+  } = intergradeOptions;
   try {
     const tsnode = require.resolve("ts-node");
     console.log("");
@@ -67,8 +77,11 @@ export function runConfigCompile(
     const registerFile = path.resolve(__dirname, "../register");
     const initFile = path.resolve(__dirname, "../process/compile-configs");
     startChildProcess({
-      args: ["-r", registerFile, initFile],
-      type: "spawn",
+      type,
+      token,
+      defineCancel,
+      script: initFile,
+      args: type === "fork" ? [] : ["-r", registerFile, initFile],
       env: {
         CONFIG_ROOT: config.configroot || "-",
         OUTPUT_ROOT: config.outputroot || "-",

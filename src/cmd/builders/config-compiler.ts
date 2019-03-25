@@ -81,13 +81,17 @@ export function compileFn(
       skipLibCheck: true
     });
     let program: ts.Program;
+    program = createTSCompiler(
+      options,
+      files.map(i => `${configFolder}/${i}`),
+      program
+    );
     files.forEach(filePath => {
       const sourcePath = `${configFolder}/${filePath}`;
       const compiledPath = `${outputFolder}/${filePath.replace(
         /\.ts$/,
         ".js"
       )}`;
-      program = createTSCompiler(options, sourcePath, program);
       const file = program.getSourceFile(sourcePath);
       const context = createContext(configFolder, outputFolder);
       compileForEach(file!, context);
@@ -157,13 +161,13 @@ function createContext(
 
 function createTSCompiler(
   options: ts.ParsedCommandLine,
-  sourcePath: string,
+  sourcePaths: string[],
   program: ts.Program
 ): ts.Program {
   return createProgram(
     {
       ...options,
-      fileNames: [sourcePath]
+      fileNames: sourcePaths
     },
     program
   );

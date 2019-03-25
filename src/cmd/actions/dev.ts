@@ -2,10 +2,11 @@ import path from "path";
 import fs from "fs";
 import chalk from "chalk";
 import ts from "typescript";
+import get from "lodash/get";
 import * as chokidar from "chokidar";
 import kill = require("kill-port");
 import childProcess, { ChildProcess, spawn } from "child_process";
-import { CommandPlugin } from "../base";
+import { CommandPlugin, IntergradeOptions } from "../base";
 import { CancellationToken } from "../utils/cancellation-token";
 import { NormalizedMessage } from "../utils/normalized-msg";
 import { loadConfig } from "../utils/load-config";
@@ -230,7 +231,9 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     config.env.HTTPS_PROXY = url;
   }
 
-  async function runConfigs(changes: string[] = []) {
+  async function runConfigs(
+    options: IntergradeOptions<CancellationToken> = {}
+  ) {
     try {
       if (useConfigCompile) {
         const conf = config.configCompiler || {};
@@ -239,9 +242,12 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
           ...conf,
           tsconfig: conf.tsconfig || config.tsconfig
         };
-        await doActionAwait(runConfigCompile, projectRoot, compileConf, {
-          changes
-        });
+        await doActionAwait(
+          runConfigCompile,
+          projectRoot,
+          compileConf,
+          options
+        );
       }
     } catch (error) {
       console.log(chalk.red(error));
@@ -249,7 +255,9 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     }
   }
 
-  async function runMiddlewares(changes: string[] = []) {
+  async function runMiddlewares(
+    options: IntergradeOptions<CancellationToken> = {}
+  ) {
     try {
       if (useMiddlewareCompile) {
         const conf = config.middlewareCompiler || {};
@@ -258,9 +266,12 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
           ...conf,
           tsconfig: conf.tsconfig || config.tsconfig
         };
-        await doActionAwait(runMiddlewareCompile, projectRoot, compileConf, {
-          changes
-        });
+        await doActionAwait(
+          runMiddlewareCompile,
+          projectRoot,
+          compileConf,
+          options
+        );
       }
     } catch (error) {
       console.log(chalk.red(error));
@@ -268,7 +279,9 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     }
   }
 
-  async function runRouters(changes: string[] = []) {
+  async function runRouters(
+    options: IntergradeOptions<CancellationToken> = {}
+  ) {
     try {
       if (useRouterBuilds) {
         const conf = config.routers || {};
@@ -277,9 +290,12 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
           ...conf,
           tsconfig: conf.tsconfig || config.tsconfig
         };
-        await doActionAwait(runRoutersBuilder, projectRoot, compileConf, {
-          changes
-        });
+        await doActionAwait(
+          runRoutersBuilder,
+          projectRoot,
+          compileConf,
+          options
+        );
       }
     } catch (error) {
       console.log(chalk.red(error));
@@ -297,8 +313,6 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     console.log("");
     return;
   }
-
-  let changes: string[] = [];
 
   const tsnode_host = ts_node.split(" ")[1];
   const tspath_host = tsc_path_map.split(" ")[1];
@@ -322,76 +336,84 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     changes: []
   };
 
-  chokidar
-    .watch(config.watch || [], {
-      ignored: config.ignore || []
-    })
-    .on("change", async (paths: string | string[]) => {
-      changes = [];
-      if (typeof paths === "string") {
-        changes.push(paths);
-      } else {
-        changes.push(...paths);
-      }
-      console.log("");
-      console.log(chalk.yellow(FILES_CHANGED));
-      console.log("");
-      changes.forEach(each => {
-        console.log(chalk.magenta(path.relative(projectRoot, each)));
-      });
-      console.log("");
-      if (useConfigHMR) {
-        const changedConfigs = changes.filter(i =>
-          i.startsWith(configWatchRoot)
-        );
-        if (changedConfigs.length > 0) {
-          console.log("");
-          console.log(chalk.yellow(CONF_RELOAD));
-          console.log("");
-          changedConfigs.forEach((eh, index) => {
-            console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
-          });
-          await runConfigs(changedConfigs);
-        }
-      }
-      if (useMiddlewareHMR) {
-        const changedMiddles = changes.filter(i =>
-          i.startsWith(middleWatchRoot)
-        );
-        if (changedMiddles.length > 0) {
-          console.log("");
-          console.log(chalk.yellow(MIDDLES_RELOAD));
-          console.log("");
-          changedMiddles.forEach((eh, index) => {
-            console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
-          });
-          await runMiddlewares(changedMiddles);
-        }
-      }
-      if (forkConfig.mainProcess) {
-        // forkConfig.mainProcess!.on("exit", () => {
-        //   startMainProcess(forkConfig);
-        // });
-        kill(8201)
-          .then(() => {
-            startMainProcess(forkConfig);
-          })
-          .catch((error: any) => {
-            console.log(chalk.red(error));
-          });
-        // 暂不支持controller热编译, 意义不大
-        forkConfig.token = refreshToken(forkConfig.token);
-        forkConfig.checkProcess && forkConfig.checkProcess.kill();
-        process.kill(forkConfig.mainProcess.pid);
-      }
+  async function invokeWhenFilesCHanged(paths: string | string[]) {
+    forkConfig.token = refreshToken(forkConfig.token);
+    forkConfig.changes = [];
+    if (typeof paths === "string") {
+      forkConfig.changes.push(paths);
+    } else {
+      forkConfig.changes.push(...paths);
+    }
+    console.log("");
+    console.log(chalk.yellow(FILES_CHANGED));
+    console.log("");
+    forkConfig.changes.forEach(each => {
+      console.log(chalk.magenta(path.relative(projectRoot, each)));
     });
+    console.log("");
+    if (useConfigHMR) {
+      const changedConfigs = forkConfig.changes.filter(i =>
+        i.startsWith(configWatchRoot)
+      );
+      if (changedConfigs.length > 0) {
+        console.log("");
+        console.log(chalk.yellow(CONF_RELOAD));
+        console.log("");
+        changedConfigs.forEach((eh, index) => {
+          console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
+        });
+        await runConfigs({
+          // 暂时不做取消逻辑
+          // type: "fork",
+          changes: changedConfigs
+          // token: forkConfig.token,
+          // defineCancel(child: ChildProcess, token: CancellationToken) {
+          //   child.on("message", data => console.log(data));
+          //   child.send(forkConfig.token);
+          // }
+        });
+      }
+    }
+    if (useMiddlewareHMR) {
+      const changedMiddles = forkConfig.changes.filter(i =>
+        i.startsWith(middleWatchRoot)
+      );
+      if (changedMiddles.length > 0) {
+        console.log("");
+        console.log(chalk.yellow(MIDDLES_RELOAD));
+        console.log("");
+        changedMiddles.forEach((eh, index) => {
+          console.log(`${index + 1} - ${path.relative(projectRoot, eh)}`);
+        });
+        await runMiddlewares({ changes: changedMiddles });
+      }
+    }
+    // 暂不支持controller热编译, 意义不大
+    const { mainProcess, checkProcess } = forkConfig;
+    if (mainProcess) {
+      try {
+        if (checkProcess) {
+          checkProcess.kill();
+        }
+        process.kill(forkConfig.mainProcess.pid);
+        kill(get(config, "env.NODE_PORT", 8201));
+      } catch (error) {
+        console.log(chalk.red(error));
+      } finally {
+        startMainProcess(forkConfig);
+      }
+    }
+  }
 
-  const rootRegexp = new RegExp(projectRoot, "g");
+  const { watch = [], ignore: ignored = [] } = config;
+  chokidar.watch(watch, { ignored }).on("change", invokeWhenFilesCHanged);
+
+  const ROOT_REGEXP = new RegExp(projectRoot, "g");
 
   console.log("");
   console.log(chalk.yellow(STATR_BASH));
   console.log("");
-  const script = config.exec.replace(rootRegexp, ".");
+  const script = config.exec.replace(ROOT_REGEXP, ".");
   console.log(`script ==> ${chalk.grey(script)}`);
   console.log("");
   console.log(chalk.green(ENVS));
@@ -414,7 +436,7 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     console.log("");
     for (let i = 0; i < LENGTH; i++) {
       console.log(
-        `${i + 1} - ${chalk.yellow(config.watch[i].replace(rootRegexp, "."))}`
+        `${i + 1} - ${chalk.yellow(config.watch[i].replace(ROOT_REGEXP, "."))}`
       );
     }
   } else {
@@ -431,7 +453,7 @@ export async function action(onlyCompile: boolean, command: IDevCmdOptions) {
     for (let i = 0; i < LENGTH_2; i++) {
       console.log(
         `${i + 1} - ${chalk.cyanBright(
-          config.ignore[i].replace(rootRegexp, ".")
+          config.ignore[i].replace(ROOT_REGEXP, ".")
         )}`
       );
     }
@@ -468,12 +490,12 @@ function doActionAwait<T>(
   method: (
     p: string,
     c: T,
-    pl?: any,
+    pl?: IntergradeOptions<CancellationToken>,
     f?: (s: boolean, e?: Error) => void
   ) => void,
   projectRoot: string,
   config: T,
-  payload: any
+  payload: IntergradeOptions<CancellationToken>
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     method(projectRoot, config, payload || {}, (success, error) => {
