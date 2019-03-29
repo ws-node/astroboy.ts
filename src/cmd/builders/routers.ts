@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
 import chalk from "chalk";
-import { GlobalImplements } from "../../utils";
 
 export interface InnerRouterOptions extends RouterOptions {
   ctorFolder: string;
@@ -160,9 +159,6 @@ function createTsRouterFile({
     if (!controller.prototype["@router"]) return;
     // 非V2，则判断是老版本的Router
     if (!controller.prototype["@router::v2"]) return;
-    // const sourceCtor = GlobalImplements.get(controller);
-    // // 无法解析控制器数据，则判断是老版本的Router
-    // if (!sourceCtor) return;
     const file = createFile(
       routerPath,
       baseRouter,

@@ -86,7 +86,6 @@ export function Controller(group: string) {
       enumerable: false
     });
     copyPrototype<T>(DI_CONTROLLER, target);
-    // GlobalImplements.set(DI_CONTROLLER, target);
     return <Constructor<T>>(<unknown>DI_CONTROLLER);
   };
 }

@@ -30,10 +30,12 @@ export interface IRequestArgsOptions
   useStatic: boolean;
 }
 
-function staticResolve(
-  data: any,
-  { resolver, type }: { resolver: IStaticTypedResolver; type: any }
-) {
+interface IStaticContext {
+  resolver: IStaticTypedResolver;
+  type: any;
+}
+
+function staticResolve(data: any, { resolver, type }: IStaticContext) {
   return resolver.FromObject(data, type);
 }
 
@@ -130,15 +132,13 @@ export function BASE_ROUTE_DECO_FACTORY(configs: {
   return RT.CustomRoute(configs);
 }
 
-function BaseFactory(method: METHOD, path: string) {
+function BaseFactory(method: METHOD, paths: string[]) {
   return RT.CustomRoute({
     method,
-    tpls: [
-      {
-        tpl: "{{@group}}/{{@path}}",
-        sections: { path }
-      }
-    ]
+    tpls: paths.map(path => ({
+      tpl: "{{@group}}/{{@path}}",
+      sections: { path }
+    }))
   });
 }
 
@@ -150,8 +150,20 @@ function BaseFactory(method: METHOD, path: string) {
  * @param {string} path
  * @returns {IRouteFactory}
  */
+export function Index(paths: string[]): IRouteFactory {
+  return BaseFactory("GET", paths);
+}
+
+/**
+ * ## 定义GET请求
+ * @description
+ * @author Big Mogician
+ * @export
+ * @param {string} path
+ * @returns {IRouteFactory}
+ */
 export function GET(path: string): IRouteFactory {
-  return BaseFactory("GET", path);
+  return BaseFactory("GET", [path]);
 }
 
 /**
@@ -163,7 +175,7 @@ export function GET(path: string): IRouteFactory {
  * @returns {IRouteFactory}
  */
 export function PUT(path: string): IRouteFactory {
-  return BaseFactory("PUT", path);
+  return BaseFactory("PUT", [path]);
 }
 
 /**
@@ -175,7 +187,7 @@ export function PUT(path: string): IRouteFactory {
  * @returns {IRouteFactory}
  */
 export function POST(path: string): IRouteFactory {
-  return BaseFactory("POST", path);
+  return BaseFactory("POST", [path]);
 }
 
 /**
@@ -187,5 +199,5 @@ export function POST(path: string): IRouteFactory {
  * @returns {IRouteFactory}
  */
 export function DELETE(path: string): IRouteFactory {
-  return BaseFactory("DELETE", path);
+  return BaseFactory("DELETE", [path]);
 }

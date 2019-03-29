@@ -49,7 +49,6 @@ export function setColor(name: keyof typeof Colors, value: any): string {
 }
 
 export const GlobalDI = new DIContainer<ScopeID, { ctx: any }>();
-export const GlobalImplements = new Map<any, any>();
 
 export function setScopeId(ctx: IContext) {
   const state = ctx.state || (ctx.state = {});
