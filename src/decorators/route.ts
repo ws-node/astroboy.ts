@@ -1,94 +1,76 @@
-import {
-  APIFactory,
-  CustomRouteFactory
-} from "astroboy-router/dist/decorators/route.factory";
-import { METHOD, IRouteFactory, IRouter } from "astroboy-router/dist/metadata";
-import { tryGetRouter } from "astroboy-router/dist/decorators/utils";
-import { getMethodParamsType } from "../utils";
+import * as RT from "astroboy-router";
+import * as MT from "astroboy-router/metadata";
+import { METHOD, IRouteFactory } from "astroboy-router/metadata";
+import { IStaticTypedResolver } from "../typings/IStaticTypeResolver";
+import { PartReset } from "../utils";
 
-const MAGIC_CONTENT = new Map<any, IRouterMagic<any>>();
-
-type ParamsFactory<T = any> = (
+export type RouteArgsFactory<T = any> = (
   target: T,
   propertyKey: string,
   index: number
 ) => void;
-type ParamsResolver<T = any, R = any> = (source: T) => R;
 
-interface ParamsOptions {
-  transform: ParamsResolver;
+export interface IParamsArgsOptions
+  extends PartReset<MT.IParamsArgsOptions, { useStatic: any }> {
   useStatic: boolean;
 }
 
-export interface RouteArgument {
-  type: "params" | "body";
-  index: number;
-  resolver: ParamsResolver | undefined;
-  static: boolean | undefined;
-  ctor: any | undefined;
+export interface IBodyArgsOptions
+  extends PartReset<MT.IBodyArgsOptions, { useStatic: any }> {
+  useStatic: boolean;
 }
 
-export interface IRouterMagic<T> {
-  prototype: T;
-  routerMeta: IRouter<T>;
-  routes: {
-    [prop: string]: {
-      params: RouteArgument[];
-    };
-  };
+export interface IQueryArgsOptions
+  extends PartReset<MT.IQueryArgsOptions, { useStatic: any }> {
+  useStatic: boolean;
 }
 
-export function tryGetRouteMagic<T>(prototype: T, key: string) {
-  const router = tryGetRouterMagic(prototype);
-  let route = router.routes[key];
-  if (!route) {
-    router.routes[key] = route = {
-      params: []
-    };
-  }
-  return route;
+export interface IRequestArgsOptions
+  extends PartReset<MT.IRequestArgsOptions, { useStatic: any }> {
+  useStatic: boolean;
 }
 
-export function tryGetRouterMagic<T>(prototype: T) {
-  let found = MAGIC_CONTENT.get(prototype);
-  if (!found) {
-    MAGIC_CONTENT.set(
-      prototype,
-      (found = {
-        prototype,
-        routes: {},
-        routerMeta: tryGetRouter(prototype)
-      })
-    );
-  }
-  return found;
+function staticResolve(
+  data: any,
+  { resolver, type }: { resolver: IStaticTypedResolver; type: any }
+) {
+  return resolver.FromObject(data, type);
 }
 
 /**
- * ## 从request中获取params和query
+ * ## 从request中获取params
  * @description
  * @author Big Mogician
  * @export
- * @returns {ParamsFactory}
+ * @returns {RouteArgsFactory}
  */
-export function FromParams(): ParamsFactory;
-export function FromParams(options: Partial<ParamsOptions>): ParamsFactory;
-export function FromParams(options?: Partial<ParamsOptions>) {
-  const { transform = undefined, useStatic = undefined } = options || {};
-  return function dynamic_params<T>(
-    prototype: T,
-    propKey: string,
-    index: number
-  ) {
-    route_query({
-      prototype,
-      propKey,
-      index,
-      transform,
-      useStatic,
-      type: "params"
-    });
-  };
+export function FromParams(): RouteArgsFactory;
+export function FromParams(
+  options: Partial<IParamsArgsOptions>
+): RouteArgsFactory;
+export function FromParams(options: Partial<IParamsArgsOptions> = {}) {
+  return RT.FromParams({
+    transform: options.transform,
+    useStatic: options.useStatic && staticResolve
+  });
+}
+
+/**
+ * ## 从request中获取query
+ * @description
+ * @author Big Mogician
+ * @export
+ * @returns {RouteArgsFactory}
+ */
+export function FromQuery(): RouteArgsFactory;
+export function FromQuery(
+  options: Partial<IQueryArgsOptions>
+): RouteArgsFactory;
+export function FromQuery(options: Partial<IQueryArgsOptions> = {}) {
+  return RT.FromQuery({
+    transform: options.transform,
+    useStatic: options.useStatic && staticResolve
+  });
 }
 
 /**
@@ -96,67 +78,35 @@ export function FromParams(options?: Partial<ParamsOptions>) {
  * @description
  * @author Big Mogician
  * @export
- * @returns {ParamsFactory}
+ * @returns {RouteArgsFactory}
  */
-export function FromBody(): ParamsFactory;
-export function FromBody(options: Partial<ParamsOptions>): ParamsFactory;
-export function FromBody(options?: Partial<ParamsOptions>) {
-  const { transform = undefined, useStatic = undefined } = options || {};
-  return function dynamic_params<T>(
-    prototype: T,
-    propKey: string,
-    index: number
-  ) {
-    route_query({
-      prototype,
-      propKey,
-      index,
-      transform,
-      useStatic,
-      type: "body"
-    });
-  };
-}
-
-function route_query<T>({
-  type,
-  prototype,
-  propKey,
-  index,
-  transform,
-  useStatic
-}: {
-  type: "params" | "body";
-  prototype: T;
-  propKey: string;
-  index: number;
-  transform?: any;
-  useStatic?: boolean;
-}) {
-  const types = getMethodParamsType(prototype, propKey);
-  tryGetRouteMagic(prototype, propKey).params.push({
-    ctor: resolveParamType(types[index]),
-    resolver: transform,
-    static: useStatic,
-    type,
-    index
+export function FromBody(): RouteArgsFactory;
+export function FromBody(options: Partial<IBodyArgsOptions>): RouteArgsFactory;
+export function FromBody(options: Partial<IBodyArgsOptions> = {}) {
+  return RT.FromBody({
+    transform: options.transform,
+    useStatic: options.useStatic && staticResolve
   });
 }
 
-function resolveParamType(type?: any) {
-  if (!type) return undefined;
-  if (type === Object) return undefined;
-  return type;
-}
-
-function addMagicForRoute(method: METHOD, path: string): IRouteFactory {
-  return function route_magic<T>(
-    prototype: T,
-    propKey: string,
-    descriptor?: PropertyDescriptor
-  ) {
-    APIFactory(method, path)(prototype, propKey, descriptor);
-  };
+/**
+ * ## 从request中获取内容
+ * * 顶级装饰器，用于定制
+ * @description
+ * @author Big Mogician
+ * @export
+ * @returns {RouteArgsFactory}
+ */
+export function FromRequest(): RouteArgsFactory;
+export function FromRequest(
+  options: Partial<IRequestArgsOptions>
+): RouteArgsFactory;
+export function FromRequest(options: Partial<IRequestArgsOptions> = {}) {
+  const { useStatic, ...others } = options;
+  return RT.FromRequest({
+    ...others,
+    useStatic: useStatic && staticResolve
+  });
 }
 
 /**
@@ -169,23 +119,27 @@ function addMagicForRoute(method: METHOD, path: string): IRouteFactory {
  *   method: METHOD;
  *   tpls: string[];
  *   name?: string;
- *   isIndex?: boolean;
  * }} configs
  * @returns
  */
-export function __BASE_ROUTE_DECO_FACTORY(configs: {
+export function BASE_ROUTE_DECO_FACTORY(configs: {
   method: METHOD;
   tpls: string[];
   name?: string;
-  isIndex?: boolean;
 }) {
-  return function __route_custom<T>(
-    prototype: T,
-    propKey: string,
-    descriptor?: PropertyDescriptor
-  ) {
-    return CustomRouteFactory(configs)(prototype, propKey, descriptor);
-  };
+  return RT.CustomRoute(configs);
+}
+
+function BaseFactory(method: METHOD, path: string) {
+  return RT.CustomRoute({
+    method,
+    tpls: [
+      {
+        tpl: "{{@group}}/{{@path}}",
+        sections: { path }
+      }
+    ]
+  });
 }
 
 /**
@@ -197,7 +151,7 @@ export function __BASE_ROUTE_DECO_FACTORY(configs: {
  * @returns {IRouteFactory}
  */
 export function GET(path: string): IRouteFactory {
-  return addMagicForRoute("GET", path);
+  return BaseFactory("GET", path);
 }
 
 /**
@@ -209,7 +163,7 @@ export function GET(path: string): IRouteFactory {
  * @returns {IRouteFactory}
  */
 export function PUT(path: string): IRouteFactory {
-  return addMagicForRoute("PUT", path);
+  return BaseFactory("PUT", path);
 }
 
 /**
@@ -221,7 +175,7 @@ export function PUT(path: string): IRouteFactory {
  * @returns {IRouteFactory}
  */
 export function POST(path: string): IRouteFactory {
-  return addMagicForRoute("POST", path);
+  return BaseFactory("POST", path);
 }
 
 /**
@@ -233,5 +187,5 @@ export function POST(path: string): IRouteFactory {
  * @returns {IRouteFactory}
  */
 export function DELETE(path: string): IRouteFactory {
-  return addMagicForRoute("DELETE", path);
+  return BaseFactory("DELETE", path);
 }

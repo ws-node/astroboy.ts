@@ -354,10 +354,15 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.9.4.tgz#ceb0048a546db453f6248f2d1d95e937a6f00a14"
   integrity sha512-Zl8dGvAcEmadgs1tmSPcvwzO1YRsz38bVJQvH1RvRqSR9/5n61Q1ktcDL0ht3FXWR+ZpVmXVwN1LuH4Ax23NsA==
 
-"@types/node@^10.12.10", "@types/node@^10.9.4":
+"@types/node@^10.12.10":
   version "10.12.26"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.26.tgz#2dec19f1f7981c95cb54bab8f618ecb5dc983d0e"
   integrity sha512-nMRqS+mL1TOnIJrL6LKJcNZPB8V3eTfRo9FQA2b5gDvrHurC8XbSA86KNe0dShlEL7ReWJv/OU9NL7Z0dnqWTg==
+
+"@types/node@^10.3.2":
+  version "10.14.4"
+  resolved "https://registry.npmjs.org/@types/node/-/node-10.14.4.tgz#1c586b991457cbb58fef51bc4e0cfcfa347714b5"
+  integrity sha512-DT25xX/YgyPKiHFOpNuANIQIVvYEwCWXgK2jYYwqgaMrYE6+tq+DtmMwlD3drl6DJbUwtlIDnn0d7tIn/EbXBg==
 
 "@types/nunjucks@^3.1.0":
   version "3.1.1"
@@ -651,16 +656,17 @@ astroboy-cli@0.0.8:
     ts-node "^7.0.0"
     tsconfig-paths "^3.4.2"
 
-astroboy-router@1.2.0-rc.1:
-  version "1.2.0-rc.1"
-  resolved "https://registry.yarnpkg.com/astroboy-router/-/astroboy-router-1.2.0-rc.1.tgz#a11221862400526c4f314a8af83fbae1555dee23"
-  integrity sha512-JQy9A3tTcmSvakzIin1IkeY3ZYgzFu35lsArvuJgMKU0fb6P8Q1SHfB9pWgg4B69iaIWQ151QTlnQEUA5HVaVA==
+astroboy-router@2.1.2-rc.4:
+  version "2.1.2-rc.4"
+  resolved "https://registry.npmjs.org/astroboy-router/-/astroboy-router-2.1.2-rc.4.tgz#dd87d0f89e8520f9287bc537809bd2a4a033c5b5"
+  integrity sha512-mQ6ZPkI0Tprd2Mav192z8hAwrTM0iZ2GrzJ8HlKo3T99J/ZV5yuUAynvyGmVJfyWVNS1tGJnzACWC/flXlayEg==
   dependencies:
     "@types/koa" "^2.0.46"
     "@types/koa-router" "^7.0.31"
-    "@types/node" "^10.9.4"
+    "@types/node" "^10.3.2"
     lodash "^4.17.11"
-    reflect-metadata "^0.1.12"
+    reflect-metadata "0.1.12"
+    tslib "1.9.3"
 
 astroboy@*:
   version "0.0.38"
@@ -4238,11 +4244,6 @@ reflect-metadata@0.1.12:
   version "0.1.12"
   resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.12.tgz#311bf0c6b63cd782f228a81abe146a2bfa9c56f2"
   integrity sha512-n+IyV+nGz3+0q3/Yf1ra12KpCyi001bi4XFxSjbiWWjfqb52iTTtpGXmCCAOWWIAn9KEuFZKGqBERHmrtScZ3A==
-
-reflect-metadata@^0.1.12:
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
-  integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
 
 regenerator-runtime@^0.10.0:
   version "0.10.5"

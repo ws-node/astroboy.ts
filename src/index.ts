@@ -1,7 +1,7 @@
-import { ControllerConstructor } from "astroboy-router/dist/metadata";
+import { IControllerConstructor } from "astroboy-router/metadata";
 import { createRouter } from "astroboy-router";
-import { GlobalImplements } from "./utils";
-import { copyPrototype } from "./decorators/controller";
+// import { GlobalImplements } from "./utils";
+// import { copyPrototype } from "./decorators/controller";
 
 const Astroboy = require("astroboy");
 
@@ -18,17 +18,17 @@ const Astroboy = require("astroboy");
  * @returns
  */
 export function buildRouter<T>(
-  ctor: ControllerConstructor<T>,
+  ctor: IControllerConstructor<T>,
   name: string,
   root: string
 ) {
-  const sourceCtor = GlobalImplements.get(ctor);
-  const result = createRouter(sourceCtor, name, root);
-  copyPrototype(<any>ctor, sourceCtor);
+  // const sourceCtor = GlobalImplements.get(ctor);
+  const result = createRouter(ctor, name, root);
+  // copyPrototype(<any>ctor, sourceCtor);
   return result;
 }
 
-export * from "astroboy-router";
+// export * from "astroboy-router";
 export * from "./decorators";
 export * from "./middlewares";
 export * from "./services/Injector";

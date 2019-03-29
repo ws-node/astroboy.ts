@@ -5,7 +5,7 @@ export {
   POST,
   PUT,
   DELETE,
-  __BASE_ROUTE_DECO_FACTORY,
+  BASE_ROUTE_DECO_FACTORY,
   FromParams,
   FromBody
 } from "./route";
