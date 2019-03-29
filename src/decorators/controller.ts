@@ -77,6 +77,7 @@ export function Controller(group: string) {
       }
     };
     DI_CONTROLLER.prototype["@router"] = tryGetRouter(<any>prototype);
+    DI_CONTROLLER.prototype["@router::v2"] = true;
     Object.defineProperty(prototype, $$injector, {
       get() {
         return this[INTERNAL_INJECTOR];

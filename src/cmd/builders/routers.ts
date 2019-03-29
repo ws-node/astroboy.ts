@@ -158,9 +158,11 @@ function createTsRouterFile({
     const controller = require(`${ctorPath}/${commonName}`);
     // 找不到router源定义，静默退出
     if (!controller.prototype["@router"]) return;
-    const sourceCtor = GlobalImplements.get(controller);
-    // 无法解析控制器数据，则判断是老版本的Router
-    if (!sourceCtor) return;
+    // 非V2，则判断是老版本的Router
+    if (!controller.prototype["@router::v2"]) return;
+    // const sourceCtor = GlobalImplements.get(controller);
+    // // 无法解析控制器数据，则判断是老版本的Router
+    // if (!sourceCtor) return;
     const file = createFile(
       routerPath,
       baseRouter,
