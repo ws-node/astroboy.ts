@@ -656,10 +656,10 @@ astroboy-cli@0.0.8:
     ts-node "^7.0.0"
     tsconfig-paths "^3.4.2"
 
-astroboy-router@2.1.2-rc.4:
-  version "2.1.2-rc.4"
-  resolved "https://registry.npmjs.org/astroboy-router/-/astroboy-router-2.1.2-rc.4.tgz#dd87d0f89e8520f9287bc537809bd2a4a033c5b5"
-  integrity sha512-mQ6ZPkI0Tprd2Mav192z8hAwrTM0iZ2GrzJ8HlKo3T99J/ZV5yuUAynvyGmVJfyWVNS1tGJnzACWC/flXlayEg==
+astroboy-router@2.1.2-rc.5:
+  version "2.1.2-rc.5"
+  resolved "https://registry.npmjs.org/astroboy-router/-/astroboy-router-2.1.2-rc.5.tgz#5d6361457d6bda1e6aa94b5160d31632875a246e"
+  integrity sha512-n4435LHFfqQXLDsVvU153A7ymSEkt3H3xq04VGfzUqi5ruUcKv9gq1v4VeAlkFtV8XlocfvNIGjrffGEZhQbWw==
   dependencies:
     "@types/koa" "^2.0.46"
     "@types/koa-router" "^7.0.31"

@@ -3,7 +3,9 @@ import { Router, createRouter } from "astroboy-router";
 import {
   IRouteBuildContext,
   IRouteDescriptor,
-  IControllerConstructor
+  IControllerConstructor,
+  IArgSolutionsContext,
+  IParseArgsOptions
 } from "astroboy-router/metadata";
 import {
   createLifeHooks,
@@ -27,6 +29,23 @@ const INTERNAL_INJECTOR = Symbol.for("DI_CONTROLLER::INTERNAL_INJECTOR");
 const FORK_TARGET = Symbol.for("DI_CONTROLLER::FORK_TARGET");
 const InjectorGetter = Symbol.for("DI_CONTROLLER::injector");
 
+/**
+ * 重新定义args的获取方式
+ *
+ * @author Big Mogician
+ * @param {any} delegator 控制器instance
+ * @returns {IArgSolutionsContext}
+ */
+function fetchArgs(delegator: any): IArgSolutionsContext {
+  const injector: InjectService = (<any>delegator)[InjectorGetter];
+  const context = injector.get<Context>(Context);
+  return {
+    query: context.ctx.query || {},
+    params: context.ctx.params || {},
+    body: context.ctx.body || {}
+  };
+}
+
 function onBuild(context: IRouteBuildContext, descriptor: IRouteDescriptor) {
   const { lifeCycle } = context.router;
   const { pipes } = context.route;
@@ -44,7 +63,11 @@ function onBuild(context: IRouteBuildContext, descriptor: IRouteDescriptor) {
     const injector: InjectService = (<any>this)[InjectorGetter];
     const context = injector.get<Context>(Context);
     const staticResolver = injector.get(Configs).get(STATIC_RESOLVER);
-    const args = helpers.parseArgs.call(this, { resolver: staticResolver });
+    const args = helpers.parseArgs.call(this, {
+      fetchArgs,
+      // 重新定义静态类型处理器
+      resolver: staticResolver
+    } as Partial<IParseArgsOptions>);
     const result: ICommonResultType = await source.call(this, ...args);
     if (result) resolveMethodResult(result, context.ctx, injector);
     if (needOnQuit) await hooks.runOnQuits.call(this);
