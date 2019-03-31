@@ -1,6 +1,7 @@
 export * from "./injectable";
 export { Controller, buildRouter } from "./controller";
 export {
+  HTTP,
   GET,
   POST,
   PUT,

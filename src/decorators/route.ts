@@ -5,29 +5,75 @@ import { METHOD, IRouteFactory } from "astroboy-router/metadata";
 import { IStaticTypedResolver } from "../typings/IStaticTypeResolver";
 import { PartReset } from "../utils";
 
-export type RouteArgsFactory<T = any> = (
+/** 参数注入装饰器工厂类型 */
+export type IRouteArgsFactory<T = any> = (
   target: T,
   propertyKey: string,
   index: number
 ) => void;
 
+/**
+ * 基础参数装饰器配置
+ *
+ * @author Big Mogician
+ * @interface IBaseArgsOptions
+ */
 interface IBaseArgsOptions {
+  /** 使用内置静态类型处理，默认：`false` */
   useStatic: boolean;
+  /** 参数注入的最后一个钩子函数，默认：`undefined` */
   finally(data: any, types?: Constructor<any>[]): any;
 }
 
+/**
+ * ## Params参数注入装饰器工厂配置
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IParamsArgsOptions
+ * @extends {PartReset<MT.IParamsArgsOptions, { useStatic: any }>}
+ * @extends {IBaseArgsOptions}
+ */
 export interface IParamsArgsOptions
   extends PartReset<MT.IParamsArgsOptions, { useStatic: any }>,
     IBaseArgsOptions {}
 
+/**
+ * ## Body参数注入装饰器工厂配置
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IBodyArgsOptions
+ * @extends {PartReset<MT.IBodyArgsOptions, { useStatic: any }>}
+ * @extends {IBaseArgsOptions}
+ */
 export interface IBodyArgsOptions
   extends PartReset<MT.IBodyArgsOptions, { useStatic: any }>,
     IBaseArgsOptions {}
 
+/**
+ * ## Query参数注入装饰器工厂配置
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IQueryArgsOptions
+ * @extends {PartReset<MT.IQueryArgsOptions, { useStatic: any }>}
+ * @extends {IBaseArgsOptions}
+ */
 export interface IQueryArgsOptions
   extends PartReset<MT.IQueryArgsOptions, { useStatic: any }>,
     IBaseArgsOptions {}
 
+/**
+ * ## Request参数注入装饰器工厂配置
+ * * 基础装饰器工厂，用于扩展
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IRequestArgsOptions
+ * @extends {PartReset<MT.IRequestArgsOptions, { useStatic: any }>}
+ * @extends {IBaseArgsOptions}
+ */
 export interface IRequestArgsOptions
   extends PartReset<MT.IRequestArgsOptions, { useStatic: any }>,
     IBaseArgsOptions {}
@@ -37,10 +83,29 @@ interface IStaticContext {
   type: any[];
 }
 
+/**
+ * 静态类型处理，使用框架实现
+ * * `resolver` 由框架提供
+ *
+ * @author Big Mogician
+ * @param {*} data
+ * @param {IStaticContext} { resolver, type = [] }
+ */
 function staticResolve(data: any, { resolver, type = [] }: IStaticContext) {
   return resolver.FromObject(data, type[0]);
 }
 
+/**
+ * 决定静态类型处理的逻辑
+ * * `useStatic && finalStep` ：启动静态类型转换，植入finally逻辑
+ * * `useStatic && !finalStep` ：启动静态类型转换，无finally处理
+ * * `!useStatic && finalStep` ：关闭静态类型转换，植入finally逻辑
+ * * `!useStatic && !finalStep` ：空逻辑，退出
+ *
+ * @author Big Mogician
+ * @param {Partial<IRequestArgsOptions>} options
+ * @returns {(data: any, options: IStaticContext) => any}
+ */
 function decideStaticFn(
   options: Partial<IRequestArgsOptions>
 ): (data: any, options: IStaticContext) => any {
@@ -48,8 +113,7 @@ function decideStaticFn(
   if (!finalStep && !useStatic) return undefined;
   if (!useStatic) return (data, opts) => finalStep(data, opts.type);
   if (!finalStep) return staticResolve;
-  return (data, options) =>
-    finalStep(staticResolve(data, options), options.type);
+  return (data, opts) => finalStep(staticResolve(data, opts), opts.type);
 }
 
 /**
@@ -57,19 +121,14 @@ function decideStaticFn(
  * @description
  * @author Big Mogician
  * @export
- * @returns {RouteArgsFactory}
+ * @returns {IRouteArgsFactory}
  */
-export function FromParams(): RouteArgsFactory;
+export function FromParams(): IRouteArgsFactory;
 export function FromParams(
   options: Partial<IParamsArgsOptions>
-): RouteArgsFactory;
+): IRouteArgsFactory;
 export function FromParams(options: Partial<IParamsArgsOptions> = {}) {
-  const useStatic = decideStaticFn(options);
-  return RT.FromParams({
-    useTypes: options.useTypes,
-    transform: options.transform,
-    useStatic
-  });
+  return RT.FromParams({ ...options, useStatic: decideStaticFn(options) });
 }
 
 /**
@@ -77,19 +136,14 @@ export function FromParams(options: Partial<IParamsArgsOptions> = {}) {
  * @description
  * @author Big Mogician
  * @export
- * @returns {RouteArgsFactory}
+ * @returns {IRouteArgsFactory}
  */
-export function FromQuery(): RouteArgsFactory;
+export function FromQuery(): IRouteArgsFactory;
 export function FromQuery(
   options: Partial<IQueryArgsOptions>
-): RouteArgsFactory;
+): IRouteArgsFactory;
 export function FromQuery(options: Partial<IQueryArgsOptions> = {}) {
-  const useStatic = decideStaticFn(options);
-  return RT.FromQuery({
-    useTypes: options.useTypes,
-    transform: options.transform,
-    useStatic
-  });
+  return RT.FromQuery({ ...options, useStatic: decideStaticFn(options) });
 }
 
 /**
@@ -97,17 +151,12 @@ export function FromQuery(options: Partial<IQueryArgsOptions> = {}) {
  * @description
  * @author Big Mogician
  * @export
- * @returns {RouteArgsFactory}
+ * @returns {IRouteArgsFactory}
  */
-export function FromBody(): RouteArgsFactory;
-export function FromBody(options: Partial<IBodyArgsOptions>): RouteArgsFactory;
+export function FromBody(): IRouteArgsFactory;
+export function FromBody(options: Partial<IBodyArgsOptions>): IRouteArgsFactory;
 export function FromBody(options: Partial<IBodyArgsOptions> = {}) {
-  const useStatic = decideStaticFn(options);
-  return RT.FromBody({
-    useTypes: options.useTypes,
-    transform: options.transform,
-    useStatic
-  });
+  return RT.FromBody({ ...options, useStatic: decideStaticFn(options) });
 }
 
 /**
@@ -116,19 +165,14 @@ export function FromBody(options: Partial<IBodyArgsOptions> = {}) {
  * @description
  * @author Big Mogician
  * @export
- * @returns {RouteArgsFactory}
+ * @returns {IRouteArgsFactory}
  */
-export function FromRequest(): RouteArgsFactory;
+export function FromRequest(): IRouteArgsFactory;
 export function FromRequest(
   options: Partial<IRequestArgsOptions>
-): RouteArgsFactory;
+): IRouteArgsFactory;
 export function FromRequest(options: Partial<IRequestArgsOptions> = {}) {
-  const { useStatic: _, ...others } = options;
-  const useStatic = decideStaticFn(options);
-  return RT.FromRequest({
-    ...others,
-    useStatic
-  });
+  return RT.FromRequest({ ...options, useStatic: decideStaticFn(options) });
 }
 
 export type HttpMethod = METHOD | "PATCH" | "OPTION";
@@ -160,11 +204,22 @@ export function BASE_ROUTE_DECO_FACTORY(configs: {
   });
 }
 
-function BaseFactory(method: METHOD, paths: string[], force = false) {
+/**
+ * ## 定义一次Http请求路由
+ *
+ * @author Big Mogician
+ * @export
+ * @param {HttpMethod} method
+ * @param {string} path
+ * @returns {IRouteFactory}
+ */
+export function HTTP(method: HttpMethod, path: string): IRouteFactory;
+export function HTTP(method: HttpMethod, paths: string[]): IRouteFactory;
+export function HTTP(method: HttpMethod, paths: string | string[]) {
   return RT.CustomRoute({
-    method,
-    forceRouter: force,
-    patterns: paths.map(path => ({
+    method: <METHOD>method,
+    forceRouter: false,
+    patterns: (Array.isArray(paths) ? paths : [paths]).map(path => ({
       pattern: "{{@group}}/{{@path}}",
       sections: { path }
     }))
@@ -179,8 +234,8 @@ function BaseFactory(method: METHOD, paths: string[], force = false) {
  * @param {string} path
  * @returns {IRouteFactory}
  */
-export function GET(path: string, force = false): IRouteFactory {
-  return BaseFactory("GET", [path], force);
+export function GET(path: string): IRouteFactory {
+  return HTTP("GET", path);
 }
 
 /**
@@ -191,8 +246,8 @@ export function GET(path: string, force = false): IRouteFactory {
  * @param {string} path
  * @returns {IRouteFactory}
  */
-export function PUT(path: string, force = false): IRouteFactory {
-  return BaseFactory("PUT", [path], force);
+export function PUT(path: string): IRouteFactory {
+  return HTTP("PUT", path);
 }
 
 /**
@@ -203,8 +258,8 @@ export function PUT(path: string, force = false): IRouteFactory {
  * @param {string} path
  * @returns {IRouteFactory}
  */
-export function POST(path: string, force = false): IRouteFactory {
-  return BaseFactory("POST", [path], force);
+export function POST(path: string): IRouteFactory {
+  return HTTP("POST", path);
 }
 
 /**
@@ -215,6 +270,6 @@ export function POST(path: string, force = false): IRouteFactory {
  * @param {string} path
  * @returns {IRouteFactory}
  */
-export function DELETE(path: string, force = false): IRouteFactory {
-  return BaseFactory("DELETE", [path], force);
+export function DELETE(path: string): IRouteFactory {
+  return HTTP("DELETE", path);
 }

@@ -6,7 +6,8 @@ import {
   IControllerConstructor,
   IArgSolutionsContext,
   IParseArgsOptions,
-  IRouterMetaConfig
+  IRouterMetaConfig,
+  IRouterFactory
 } from "astroboy-router/metadata";
 import {
   createLifeHooks,
@@ -31,7 +32,7 @@ const FORK_TARGET = Symbol.for("DI_CONTROLLER::FORK_TARGET");
 const InjectorGetter = Symbol.for("DI_CONTROLLER::injector");
 
 /**
- * 重新定义args的获取方式
+ * ### 重新定义args的获取方式
  *
  * @author Big Mogician
  * @param {any} delegator 控制器instance
@@ -47,6 +48,13 @@ function fetchArgs(delegator: any): IArgSolutionsContext {
   };
 }
 
+/**
+ * ### 重新定义Route构建逻辑
+ *
+ * @author Big Mogician
+ * @param {IRouteBuildContext} context
+ * @param {IRouteDescriptor} descriptor
+ */
 function onBuild(context: IRouteBuildContext, descriptor: IRouteDescriptor) {
   const { lifeCycle } = context.router;
   const { pipes } = context.route;
@@ -82,10 +90,12 @@ function onBuild(context: IRouteBuildContext, descriptor: IRouteDescriptor) {
  * @description
  * @author Big Mogician
  * @export
- * @param {string} group
- * @returns
+ * @param {string | IRouterMetaConfig<void>} group
+ * @returns {IRouterFactory}
  */
-export function Controller(group: string | IRouterMetaConfig<void>) {
+export function Controller(group: string): IRouterFactory;
+export function Controller(options: IRouterMetaConfig<void>): IRouterFactory;
+export function Controller(group: string | IRouterMetaConfig<void>): any {
   return function<T>(target: Constructor<T>) {
     const prototype: IBaseInjectable = target.prototype;
     prototype.__valid = true;
@@ -96,7 +106,7 @@ export function Controller(group: string | IRouterMetaConfig<void>) {
         delegate.lifecycle("onBuild", onBuild, true);
       }
     })(target);
-    const DI_CONTROLLER = class {
+    const DI_ForkController = class {
       static [FORK_TARGET] = target;
       constructor(ctx: any) {
         const injector = getInjector(ctx);
@@ -106,7 +116,7 @@ export function Controller(group: string | IRouterMetaConfig<void>) {
       }
     };
     prototype["@router::v2"] = true;
-    copyPrototype(DI_CONTROLLER, target);
+    copyPrototype(DI_ForkController, target);
     Object.defineProperty(prototype, InjectorGetter, {
       get() {
         return this[INTERNAL_INJECTOR];
@@ -114,11 +124,18 @@ export function Controller(group: string | IRouterMetaConfig<void>) {
       configurable: false,
       enumerable: false
     });
-    return <Constructor<T>>(<unknown>DI_CONTROLLER);
+    return <Constructor<T>>(<unknown>DI_ForkController);
   };
 }
 
-export function getForkSource(target: any) {
+/**
+ * ### 获取fork对象的原始原型
+ *
+ * @author Big Mogician
+ * @export
+ * @param {IControllerConstructor<any>} target
+ */
+export function getForkSource(target: IControllerConstructor<any>) {
   const source = target[FORK_TARGET];
   if (!source) {
     throw new Error(
@@ -129,7 +146,7 @@ export function getForkSource(target: any) {
 }
 
 /**
- * 执行简单的原型拷贝
+ * ### 执行简单的原型拷贝
  * * 目的在于astroboy的routers在构建时会检查是否存在当前路由方法
  * * 返回的DI_CONTROLLER不存在相关函数信息，会报错
  * * 再运行时，执行的是真实的控制器对象上的逻辑
