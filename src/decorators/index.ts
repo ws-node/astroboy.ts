@@ -1,7 +1,6 @@
 export * from "./injectable";
 export { Controller, buildRouter } from "./controller";
 export {
-  Index,
   GET,
   POST,
   PUT,
@@ -10,6 +9,7 @@ export {
   FromParams,
   FromBody,
   FromQuery,
-  FromRequest
+  FromRequest,
+  HttpMethod
 } from "./route";
 export { ReactiveSingleton, Watch } from "./singleton";

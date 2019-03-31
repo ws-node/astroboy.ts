@@ -111,6 +111,8 @@ export function FromRequest(options: Partial<IRequestArgsOptions> = {}) {
   });
 }
 
+export type HttpMethod = METHOD | "PATCH" | "OPTION";
+
 /**
  * ## 最高扩展性的路由声明
  * * 使用这个扩展工厂构造Route声明
@@ -118,18 +120,18 @@ export function FromRequest(options: Partial<IRequestArgsOptions> = {}) {
  * @author Big Mogician
  * @export
  * @param {{
- *   method: METHOD;
+ *   method: HttpMethod;
  *   tpls: string[];
  *   name?: string;
  * }} configs
  * @returns
  */
 export function BASE_ROUTE_DECO_FACTORY(configs: {
-  method: METHOD;
+  method: HttpMethod;
   tpls: string[];
   name?: string;
 }) {
-  return RT.CustomRoute(configs);
+  return RT.CustomRoute(<any>configs);
 }
 
 function BaseFactory(method: METHOD, paths: string[]) {
@@ -140,18 +142,6 @@ function BaseFactory(method: METHOD, paths: string[]) {
       sections: { path }
     }))
   });
-}
-
-/**
- * ## 定义GET请求
- * @description
- * @author Big Mogician
- * @export
- * @param {string} path
- * @returns {IRouteFactory}
- */
-export function Index(paths: string[]): IRouteFactory {
-  return BaseFactory("GET", paths);
 }
 
 /**
