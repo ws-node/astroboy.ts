@@ -1,5 +1,6 @@
 import * as RT from "astroboy-router";
 import * as MT from "astroboy-router/metadata";
+import { Constructor } from "@bonbons/di";
 import { METHOD, IRouteFactory } from "astroboy-router/metadata";
 import { IStaticTypedResolver } from "../typings/IStaticTypeResolver";
 import { PartReset } from "../utils";
@@ -10,33 +11,45 @@ export type RouteArgsFactory<T = any> = (
   index: number
 ) => void;
 
-export interface IParamsArgsOptions
-  extends PartReset<MT.IParamsArgsOptions, { useStatic: any }> {
+interface IBaseArgsOptions {
   useStatic: boolean;
+  finally(data: any, types?: Constructor<any>[]): any;
 }
+
+export interface IParamsArgsOptions
+  extends PartReset<MT.IParamsArgsOptions, { useStatic: any }>,
+    IBaseArgsOptions {}
 
 export interface IBodyArgsOptions
-  extends PartReset<MT.IBodyArgsOptions, { useStatic: any }> {
-  useStatic: boolean;
-}
+  extends PartReset<MT.IBodyArgsOptions, { useStatic: any }>,
+    IBaseArgsOptions {}
 
 export interface IQueryArgsOptions
-  extends PartReset<MT.IQueryArgsOptions, { useStatic: any }> {
-  useStatic: boolean;
-}
+  extends PartReset<MT.IQueryArgsOptions, { useStatic: any }>,
+    IBaseArgsOptions {}
 
 export interface IRequestArgsOptions
-  extends PartReset<MT.IRequestArgsOptions, { useStatic: any }> {
-  useStatic: boolean;
-}
+  extends PartReset<MT.IRequestArgsOptions, { useStatic: any }>,
+    IBaseArgsOptions {}
 
 interface IStaticContext {
   resolver: IStaticTypedResolver;
-  type: any;
+  type: any[];
 }
 
-function staticResolve(data: any, { resolver, type }: IStaticContext) {
-  return resolver.FromObject(data, type);
+function staticResolve(data: any, { resolver, type = [] }: IStaticContext) {
+  return resolver.FromObject(data, type[0]);
+}
+
+function decideStaticFn(
+  options: Partial<IRequestArgsOptions>
+): (data: any, options: IStaticContext) => any {
+  const { useStatic, finally: finalStep } = options;
+  if (!finalStep && !useStatic) return undefined;
+  if (!useStatic) return (data, opts) => finalStep(data, opts.type);
+  if (!finalStep) return staticResolve;
+  return (data, options) =>
+    finalStep(staticResolve(data, options), options.type);
 }
 
 /**
@@ -51,9 +64,11 @@ export function FromParams(
   options: Partial<IParamsArgsOptions>
 ): RouteArgsFactory;
 export function FromParams(options: Partial<IParamsArgsOptions> = {}) {
+  const useStatic = decideStaticFn(options);
   return RT.FromParams({
+    useTypes: options.useTypes,
     transform: options.transform,
-    useStatic: options.useStatic && staticResolve
+    useStatic
   });
 }
 
@@ -69,9 +84,11 @@ export function FromQuery(
   options: Partial<IQueryArgsOptions>
 ): RouteArgsFactory;
 export function FromQuery(options: Partial<IQueryArgsOptions> = {}) {
+  const useStatic = decideStaticFn(options);
   return RT.FromQuery({
+    useTypes: options.useTypes,
     transform: options.transform,
-    useStatic: options.useStatic && staticResolve
+    useStatic
   });
 }
 
@@ -85,9 +102,11 @@ export function FromQuery(options: Partial<IQueryArgsOptions> = {}) {
 export function FromBody(): RouteArgsFactory;
 export function FromBody(options: Partial<IBodyArgsOptions>): RouteArgsFactory;
 export function FromBody(options: Partial<IBodyArgsOptions> = {}) {
+  const useStatic = decideStaticFn(options);
   return RT.FromBody({
+    useTypes: options.useTypes,
     transform: options.transform,
-    useStatic: options.useStatic && staticResolve
+    useStatic
   });
 }
 
@@ -104,10 +123,11 @@ export function FromRequest(
   options: Partial<IRequestArgsOptions>
 ): RouteArgsFactory;
 export function FromRequest(options: Partial<IRequestArgsOptions> = {}) {
-  const { useStatic, ...others } = options;
+  const { useStatic: _, ...others } = options;
+  const useStatic = decideStaticFn(options);
   return RT.FromRequest({
     ...others,
-    useStatic: useStatic && staticResolve
+    useStatic
   });
 }
 

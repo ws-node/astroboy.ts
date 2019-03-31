@@ -42,7 +42,7 @@ function fetchArgs(delegator: any): IArgSolutionsContext {
   return {
     query: context.ctx.query || {},
     params: context.ctx.params || {},
-    body: context.ctx.body || {}
+    body: context.ctx.request.body || {}
   };
 }
 
