@@ -1,11 +1,14 @@
 import { Constructor, IBaseInjectable } from "@bonbons/di";
-import { Router } from "astroboy-router";
-import { IRouteBuildContext, IRouteDescriptor } from "astroboy-router/metadata";
+import { Router, createRouter } from "astroboy-router";
+import {
+  IRouteBuildContext,
+  IRouteDescriptor,
+  IControllerConstructor
+} from "astroboy-router/metadata";
 import {
   createLifeHooks,
   createBuildHelper
 } from "astroboy-router/entrance/build";
-import { tryGetRouter } from "astroboy-router/utils";
 import { createInstance, getInjector } from "../utils";
 import { InjectService } from "../services/Injector";
 import { Context } from "../services/Context";
@@ -20,8 +23,9 @@ declare module "koa" {
   }
 }
 
-const INTERNAL_INJECTOR = "$INTERNAL_INJECTOR";
-const $$injector = "$$injector";
+const INTERNAL_INJECTOR = Symbol.for("DI_CONTROLLER::INTERNAL_INJECTOR");
+const FORK_TARGET = Symbol.for("DI_CONTROLLER::FORK_TARGET");
+const InjectorGetter = Symbol.for("DI_CONTROLLER::injector");
 
 function onBuild(context: IRouteBuildContext, descriptor: IRouteDescriptor) {
   const { lifeCycle } = context.router;
@@ -37,7 +41,7 @@ function onBuild(context: IRouteBuildContext, descriptor: IRouteDescriptor) {
     if (needOnPipe) await hooks.runOnPipes.call(this);
     if (needPipe) await hooks.runPipes.call(this, pipes);
     if (needOnEnter) await hooks.runOnEnters.call(this);
-    const injector: InjectService = (<any>this)[$$injector];
+    const injector: InjectService = (<any>this)[InjectorGetter];
     const context = injector.get<Context>(Context);
     const staticResolver = injector.get(Configs).get(STATIC_RESOLVER);
     const args = helpers.parseArgs.call(this, { resolver: staticResolver });
@@ -68,7 +72,7 @@ export function Controller(group: string) {
       }
     })(target);
     const DI_CONTROLLER = class {
-      static __FORK = target;
+      static [FORK_TARGET] = target;
       constructor(ctx: any) {
         const injector = getInjector(ctx);
         const controller: any = createInstance(target, ctx);
@@ -76,20 +80,37 @@ export function Controller(group: string) {
         return controller;
       }
     };
-    DI_CONTROLLER.prototype["@router"] = tryGetRouter(<any>prototype);
-    DI_CONTROLLER.prototype["@router::v2"] = true;
-    Object.defineProperty(prototype, $$injector, {
+    prototype["@router::v2"] = true;
+    copyPrototype(DI_CONTROLLER, target);
+    Object.defineProperty(prototype, InjectorGetter, {
       get() {
         return this[INTERNAL_INJECTOR];
       },
       configurable: false,
       enumerable: false
     });
-    copyPrototype<T>(DI_CONTROLLER, target);
     return <Constructor<T>>(<unknown>DI_CONTROLLER);
   };
 }
 
+export function getForkSource(target: any) {
+  const source = target[FORK_TARGET];
+  if (!source) {
+    throw new Error(
+      "astroboy.ts buildController failed: no fork source found."
+    );
+  }
+  return source;
+}
+
+/**
+ * 执行简单的原型拷贝
+ * * 目的在于astroboy的routers在构建时会检查是否存在当前路由方法
+ * * 返回的DI_CONTROLLER不存在相关函数信息，会报错
+ * * 再运行时，执行的是真实的控制器对象上的逻辑
+ * @param DI_CONTROLLER DI控制器构造函数
+ * @param target 真实控制器构造函数
+ */
 export function copyPrototype<T>(
   DI_CONTROLLER: Constructor<any>,
   target: Constructor<T>
@@ -120,4 +141,24 @@ async function resolveMethodResult(
   } else {
     ctx.body = <string>result;
   }
+}
+
+/**
+ * ## 构建路由
+ * * 等效astroboy-router的createRouter方法
+ * @description
+ * @author Big Mogician
+ * @export
+ * @template T
+ * @param {ControllerConstructor<T>} ctor
+ * @param {string} name
+ * @param {string} root
+ * @returns
+ */
+export function buildRouter<T>(
+  ctor: IControllerConstructor<T>,
+  name: string,
+  root: string
+) {
+  return createRouter(getForkSource(ctor), name, root);
 }

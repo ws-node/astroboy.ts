@@ -1,29 +1,5 @@
-import { IControllerConstructor } from "astroboy-router/metadata";
-import { createRouter } from "astroboy-router";
+import Astroboy = require("astroboy");
 
-const Astroboy = require("astroboy");
-
-/**
- * ## 构建路由
- * * 等效astroboy-router的createRouter方法
- * @description
- * @author Big Mogician
- * @export
- * @template T
- * @param {ControllerConstructor<T>} ctor
- * @param {string} name
- * @param {string} root
- * @returns
- */
-export function buildRouter<T>(
-  ctor: IControllerConstructor<T>,
-  name: string,
-  root: string
-) {
-  return createRouter(ctor, name, root);
-}
-
-// export * from "astroboy-router";
 export * from "./decorators";
 export * from "./middlewares";
 export * from "./services/Injector";

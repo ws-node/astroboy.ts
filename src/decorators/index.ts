@@ -1,5 +1,5 @@
 export * from "./injectable";
-export { Controller } from "./controller";
+export { Controller, buildRouter } from "./controller";
 export {
   Index,
   GET,
