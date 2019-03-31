@@ -216,10 +216,12 @@ export function BASE_ROUTE_DECO_FACTORY(configs: {
 export function HTTP(method: HttpMethod, path: string): IRouteFactory;
 export function HTTP(method: HttpMethod, paths: string[]): IRouteFactory;
 export function HTTP(method: HttpMethod, paths: string | string[]) {
+  const pathSections = Array.isArray(paths) ? paths : [paths];
   return RT.CustomRoute({
     method: <METHOD>method,
     forceRouter: false,
-    patterns: (Array.isArray(paths) ? paths : [paths]).map(path => ({
+    path: pathSections,
+    patterns: pathSections.map(path => ({
       pattern: "{{@group}}/{{@path}}",
       sections: { path }
     }))
