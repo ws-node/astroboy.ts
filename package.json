@@ -50,7 +50,7 @@
     "@types/koa-router": "^7.0.35",
     "@types/node": "^10.12.10",
     "@types/uuid": "3.4.4",
-    "astroboy-router": "2.1.2-rc.8",
+    "astroboy-router": "2.1.2-rc.10",
     "camelcase": "4.1.0",
     "cerialize": "0.1.18",
     "chalk": "2.4.1",

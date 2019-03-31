@@ -5,7 +5,8 @@ import {
   IRouteDescriptor,
   IControllerConstructor,
   IArgSolutionsContext,
-  IParseArgsOptions
+  IParseArgsOptions,
+  IRouterMetaConfig
 } from "astroboy-router/metadata";
 import {
   createLifeHooks,
@@ -54,7 +55,7 @@ function onBuild(context: IRouteBuildContext, descriptor: IRouteDescriptor) {
   const needOnEnter = (lifeCycle.onEnter || []).length > 0;
   const needOnQuit = (lifeCycle.onQuit || []).length > 0;
   const source: (...args: any[]) => Promise<any> = descriptor.value;
-  const hooks = createLifeHooks(lifeCycle);
+  const hooks = createLifeHooks(context);
   const helpers = createBuildHelper(context);
   descriptor.value = async function() {
     if (needOnPipe) await hooks.runOnPipes.call(this);
@@ -84,12 +85,13 @@ function onBuild(context: IRouteBuildContext, descriptor: IRouteDescriptor) {
  * @param {string} group
  * @returns
  */
-export function Controller(group: string) {
+export function Controller(group: string | IRouterMetaConfig<void>) {
   return function<T>(target: Constructor<T>) {
     const prototype: IBaseInjectable = target.prototype;
     prototype.__valid = true;
+    const opts = typeof group === "string" ? { group } : group;
     Router({
-      group,
+      ...opts,
       register(delegate) {
         delegate.lifecycle("onBuild", onBuild, true);
       }

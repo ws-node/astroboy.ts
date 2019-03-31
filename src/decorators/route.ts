@@ -148,17 +148,24 @@ export type HttpMethod = METHOD | "PATCH" | "OPTION";
  */
 export function BASE_ROUTE_DECO_FACTORY(configs: {
   method: HttpMethod;
-  tpls: string[];
+  patterns: (string | MT.IRouteUrlPattern)[];
   name?: string;
+  force?: boolean;
 }) {
-  return RT.CustomRoute(<any>configs);
+  return RT.CustomRoute({
+    method: <METHOD>configs.method,
+    name: configs.name,
+    forceRouter: configs.force,
+    patterns: configs.patterns
+  });
 }
 
-function BaseFactory(method: METHOD, paths: string[]) {
+function BaseFactory(method: METHOD, paths: string[], force = false) {
   return RT.CustomRoute({
     method,
-    tpls: paths.map(path => ({
-      tpl: "{{@group}}/{{@path}}",
+    forceRouter: force,
+    patterns: paths.map(path => ({
+      pattern: "{{@group}}/{{@path}}",
       sections: { path }
     }))
   });
@@ -172,8 +179,8 @@ function BaseFactory(method: METHOD, paths: string[]) {
  * @param {string} path
  * @returns {IRouteFactory}
  */
-export function GET(path: string): IRouteFactory {
-  return BaseFactory("GET", [path]);
+export function GET(path: string, force = false): IRouteFactory {
+  return BaseFactory("GET", [path], force);
 }
 
 /**
@@ -184,8 +191,8 @@ export function GET(path: string): IRouteFactory {
  * @param {string} path
  * @returns {IRouteFactory}
  */
-export function PUT(path: string): IRouteFactory {
-  return BaseFactory("PUT", [path]);
+export function PUT(path: string, force = false): IRouteFactory {
+  return BaseFactory("PUT", [path], force);
 }
 
 /**
@@ -196,8 +203,8 @@ export function PUT(path: string): IRouteFactory {
  * @param {string} path
  * @returns {IRouteFactory}
  */
-export function POST(path: string): IRouteFactory {
-  return BaseFactory("POST", [path]);
+export function POST(path: string, force = false): IRouteFactory {
+  return BaseFactory("POST", [path], force);
 }
 
 /**
@@ -208,6 +215,6 @@ export function POST(path: string): IRouteFactory {
  * @param {string} path
  * @returns {IRouteFactory}
  */
-export function DELETE(path: string): IRouteFactory {
-  return BaseFactory("DELETE", [path]);
+export function DELETE(path: string, force = false): IRouteFactory {
+  return BaseFactory("DELETE", [path], force);
 }
