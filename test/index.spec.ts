@@ -4,7 +4,7 @@ import { defineUnit } from "./unit";
 
 defineUnit(["index", "Astroboy.ts index outputs"], () => {
   it("test astroboy.ts package exports", () => {
-    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(48);
+    expect(Object.keys(Pkg).length, "[astroboy.ts] exports count").to.equal(49);
     expect(typeof Pkg.Astroboy, "[astroboy.ts].Astroboy").to.equal("function");
     expect(
       typeof Pkg.AstroboyContext,
@@ -127,6 +127,9 @@ defineUnit(["index", "Astroboy.ts index outputs"], () => {
     ).to.equal("function");
     expect(typeof Pkg.Watch, "[astroboy.ts].Watch").to.equal("function");
     expect(typeof Pkg.ConfigReader, "[astroboy.ts].ConfigReader").to.equal(
+      "function"
+    );
+    expect(typeof Pkg.Middlewares, "[astroboy.ts].ConfigReader").to.equal(
       "function"
     );
   });

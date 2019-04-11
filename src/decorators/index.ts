@@ -1,4 +1,5 @@
 export * from "./injectable";
+export * from "./middleware";
 export { Controller, buildRouter } from "./controller";
 export {
   HTTP,
