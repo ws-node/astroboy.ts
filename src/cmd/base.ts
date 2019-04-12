@@ -73,11 +73,11 @@ export function createCmdConfig(config: CmdConfig): CmdConfig {
   return config;
 }
 
-export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
+export function mergeCmdConfig(config: CmdConfig, merge: CmdConfig): CmdConfig {
   const watch = get(merge, "watch", undefined);
   const ignore = get(merge, "ignore", undefined);
   const oldEnvs = get(merge, "env", {});
-  const newEnvs = get(config, "env", {});
+  const newEnvs = get(merge, "env", {});
   return {
     tsconfig: get(merge, "tsconfig", config.tsconfig),
     inspect: get(merge, "inspect", config.inspect),
@@ -88,12 +88,12 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     watch: !watch
       ? config.watch
       : config.watch !== false
-      ? [...watch, ...(config.watch || [])]
+      ? [...(config.watch || []), ...watch]
       : [],
     ignore: !ignore
       ? config.ignore
       : config.ignore !== false
-      ? [...ignore, ...(config.ignore || [])]
+      ? [...(config.ignore || []), ...ignore]
       : [],
     verbose: get(merge, "verbose", config.verbose),
     debug: get(merge, "debug", config.debug),
@@ -102,16 +102,16 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     transpile: get(merge, "transpile", config.transpile),
     compile: get(merge, "compile", config.compile),
     routers: {
-      ...get(merge, "routers", {}),
-      ...get(config, "routers", {})
+      ...get(config, "routers", {}),
+      ...get(merge, "routers", {})
     },
     configCompiler: {
-      ...get(merge, "configCompiler", {}),
-      ...get(config, "configCompiler", {})
+      ...get(config, "configCompiler", {}),
+      ...get(merge, "configCompiler", {})
     },
     middlewareCompiler: {
-      ...get(merge, "middlewareCompiler", {}),
-      ...get(config, "middlewareCompiler", {})
+      ...get(config, "middlewareCompiler", {}),
+      ...get(merge, "middlewareCompiler", {})
     }
   };
 }
