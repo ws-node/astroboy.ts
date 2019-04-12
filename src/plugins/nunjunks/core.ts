@@ -35,10 +35,10 @@ export class NunjunksEngine implements IViewEngine {
   constructor(private cfg: Configs, private rs: Render) {}
 
   public async render(name: string, configs: any): Promise<string> {
-    return this.createEnv(configs).render(name, this.rs.views);
+    return this.createEnv(configs).render(name, this.rs.getView());
   }
 
   public async renderString(tpl: string, configs: any): Promise<string> {
-    return this.createEnv(configs).renderString(tpl, this.rs.views);
+    return this.createEnv(configs).renderString(tpl, this.rs.getView());
   }
 }

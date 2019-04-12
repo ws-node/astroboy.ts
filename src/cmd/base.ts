@@ -1,4 +1,12 @@
 import get from "lodash/get";
+import { ChildProcess } from "child_process";
+
+export interface IntergradeOptions<C> {
+  changes?: string[];
+  type?: "spawn" | "fork" | "exec";
+  token?: C;
+  defineCancel?: (child: ChildProcess, token: C) => void;
+}
 
 export interface CommandPlugin {
   name: string;
@@ -23,11 +31,19 @@ export interface RouterConfig {
   tsconfig?: string;
 }
 
-export interface ConfigCompilerConfig {
+export interface ConfigCompilerCmdConfig {
   enabled?: boolean;
   force?: boolean;
   configroot?: string;
   outputroot?: string;
+  tsconfig?: string;
+}
+
+export interface MiddlewareCompilerCmdConfig {
+  enabled?: boolean;
+  force?: boolean;
+  root?: string;
+  output?: string;
   tsconfig?: string;
 }
 
@@ -43,7 +59,9 @@ export interface CmdConfig {
   typeCheck?: boolean;
   transpile?: boolean;
   routers?: RouterConfig;
-  configCompiler?: ConfigCompilerConfig;
+  compile?: boolean;
+  configCompiler?: ConfigCompilerCmdConfig & { hmr?: boolean };
+  middlewareCompiler?: MiddlewareCompilerCmdConfig & { hmr?: boolean };
 }
 
 export interface InnerCmdConfig extends CmdConfig {
@@ -82,6 +100,7 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     mock: get(merge, "mock", config.mock),
     typeCheck: get(merge, "typeCheck", config.typeCheck),
     transpile: get(merge, "transpile", config.transpile),
+    compile: get(merge, "compile", config.compile),
     routers: {
       ...get(merge, "routers", {}),
       ...get(config, "routers", {})
@@ -89,6 +108,10 @@ export function mergeCmdConfig(merge: CmdConfig, config: CmdConfig): CmdConfig {
     configCompiler: {
       ...get(merge, "configCompiler", {}),
       ...get(config, "configCompiler", {})
+    },
+    middlewareCompiler: {
+      ...get(merge, "middlewareCompiler", {}),
+      ...get(config, "middlewareCompiler", {})
     }
   };
 }

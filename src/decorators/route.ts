@@ -1,94 +1,149 @@
-import {
-  APIFactory,
-  CustomRouteFactory
-} from "astroboy-router/dist/decorators/route.factory";
-import { METHOD, IRouteFactory, IRouter } from "astroboy-router/dist/metadata";
-import { tryGetRouter } from "astroboy-router/dist/decorators/utils";
-import { getMethodParamsType } from "../utils";
+import * as RT from "astroboy-router";
+import * as MT from "astroboy-router/metadata";
+import { Constructor } from "@bonbons/di";
+import { METHOD, IRouteFactory } from "astroboy-router/metadata";
+import { IStaticTypedResolver } from "../typings/IStaticTypeResolver";
+import { PartReset } from "../utils";
 
-const MAGIC_CONTENT = new Map<any, IRouterMagic<any>>();
-
-type ParamsFactory<T = any> = (
+/** 参数注入装饰器工厂类型 */
+export type IRouteArgsFactory<T = any> = (
   target: T,
   propertyKey: string,
   index: number
 ) => void;
-type ParamsResolver<T = any, R = any> = (source: T) => R;
 
-interface ParamsOptions {
-  transform: ParamsResolver;
+/**
+ * 基础参数装饰器配置
+ *
+ * @author Big Mogician
+ * @interface IBaseArgsOptions
+ */
+interface IBaseArgsOptions {
+  /** 使用内置静态类型处理，默认：`false` */
   useStatic: boolean;
-}
-
-export interface RouteArgument {
-  type: "params" | "body";
-  index: number;
-  resolver: ParamsResolver | undefined;
-  static: boolean | undefined;
-  ctor: any | undefined;
-}
-
-export interface IRouterMagic<T> {
-  prototype: T;
-  routerMeta: IRouter<T>;
-  routes: {
-    [prop: string]: {
-      params: RouteArgument[];
-    };
-  };
-}
-
-export function tryGetRouteMagic<T>(prototype: T, key: string) {
-  const router = tryGetRouterMagic(prototype);
-  let route = router.routes[key];
-  if (!route) {
-    router.routes[key] = route = {
-      params: []
-    };
-  }
-  return route;
-}
-
-export function tryGetRouterMagic<T>(prototype: T) {
-  let found = MAGIC_CONTENT.get(prototype);
-  if (!found) {
-    MAGIC_CONTENT.set(
-      prototype,
-      (found = {
-        prototype,
-        routes: {},
-        routerMeta: tryGetRouter(prototype)
-      })
-    );
-  }
-  return found;
+  /** 参数注入的最后一个钩子函数，默认：`undefined` */
+  finally(data: any, types?: Constructor<any>[]): any;
 }
 
 /**
- * ## 从request中获取params和query
+ * ## Params参数注入装饰器工厂配置
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IParamsArgsOptions
+ * @extends {PartReset<MT.IParamsArgsOptions, { useStatic: any }>}
+ * @extends {IBaseArgsOptions}
+ */
+export interface IParamsArgsOptions
+  extends PartReset<MT.IParamsArgsOptions, { useStatic: any }>,
+    IBaseArgsOptions {}
+
+/**
+ * ## Body参数注入装饰器工厂配置
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IBodyArgsOptions
+ * @extends {PartReset<MT.IBodyArgsOptions, { useStatic: any }>}
+ * @extends {IBaseArgsOptions}
+ */
+export interface IBodyArgsOptions
+  extends PartReset<MT.IBodyArgsOptions, { useStatic: any }>,
+    IBaseArgsOptions {}
+
+/**
+ * ## Query参数注入装饰器工厂配置
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IQueryArgsOptions
+ * @extends {PartReset<MT.IQueryArgsOptions, { useStatic: any }>}
+ * @extends {IBaseArgsOptions}
+ */
+export interface IQueryArgsOptions
+  extends PartReset<MT.IQueryArgsOptions, { useStatic: any }>,
+    IBaseArgsOptions {}
+
+/**
+ * ## Request参数注入装饰器工厂配置
+ * * 基础装饰器工厂，用于扩展
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IRequestArgsOptions
+ * @extends {PartReset<MT.IRequestArgsOptions, { useStatic: any }>}
+ * @extends {IBaseArgsOptions}
+ */
+export interface IRequestArgsOptions
+  extends PartReset<MT.IRequestArgsOptions, { useStatic: any }>,
+    IBaseArgsOptions {}
+
+interface IStaticContext {
+  resolver: IStaticTypedResolver;
+  type: any[];
+}
+
+/**
+ * 静态类型处理，使用框架实现
+ * * `resolver` 由框架提供
+ *
+ * @author Big Mogician
+ * @param {*} data
+ * @param {IStaticContext} { resolver, type = [] }
+ */
+function staticResolve(data: any, { resolver, type = [] }: IStaticContext) {
+  return resolver.FromObject(data, type[0]);
+}
+
+/**
+ * 决定静态类型处理的逻辑
+ * * `useStatic && finalStep` ：启动静态类型转换，植入finally逻辑
+ * * `useStatic && !finalStep` ：启动静态类型转换，无finally处理
+ * * `!useStatic && finalStep` ：关闭静态类型转换，植入finally逻辑
+ * * `!useStatic && !finalStep` ：空逻辑，退出
+ *
+ * @author Big Mogician
+ * @param {Partial<IRequestArgsOptions>} options
+ * @returns {(data: any, options: IStaticContext) => any}
+ */
+function decideStaticFn(
+  options: Partial<IRequestArgsOptions>
+): (data: any, options: IStaticContext) => any {
+  const { useStatic, finally: finalStep } = options;
+  if (!finalStep && !useStatic) return undefined;
+  if (!useStatic) return (data, opts) => finalStep(data, opts.type);
+  if (!finalStep) return staticResolve;
+  return (data, opts) => finalStep(staticResolve(data, opts), opts.type);
+}
+
+/**
+ * ## 从request中获取params
  * @description
  * @author Big Mogician
  * @export
- * @returns {ParamsFactory}
+ * @returns {IRouteArgsFactory}
  */
-export function FromParams(): ParamsFactory;
-export function FromParams(options: Partial<ParamsOptions>): ParamsFactory;
-export function FromParams(options?: Partial<ParamsOptions>) {
-  const { transform = undefined, useStatic = undefined } = options || {};
-  return function dynamic_params<T>(
-    prototype: T,
-    propKey: string,
-    index: number
-  ) {
-    route_query({
-      prototype,
-      propKey,
-      index,
-      transform,
-      useStatic,
-      type: "params"
-    });
-  };
+export function FromParams(): IRouteArgsFactory;
+export function FromParams(
+  options: Partial<IParamsArgsOptions>
+): IRouteArgsFactory;
+export function FromParams(options: Partial<IParamsArgsOptions> = {}) {
+  return RT.FromParams({ ...options, useStatic: decideStaticFn(options) });
+}
+
+/**
+ * ## 从request中获取query
+ * @description
+ * @author Big Mogician
+ * @export
+ * @returns {IRouteArgsFactory}
+ */
+export function FromQuery(): IRouteArgsFactory;
+export function FromQuery(
+  options: Partial<IQueryArgsOptions>
+): IRouteArgsFactory;
+export function FromQuery(options: Partial<IQueryArgsOptions> = {}) {
+  return RT.FromQuery({ ...options, useStatic: decideStaticFn(options) });
 }
 
 /**
@@ -96,68 +151,31 @@ export function FromParams(options?: Partial<ParamsOptions>) {
  * @description
  * @author Big Mogician
  * @export
- * @returns {ParamsFactory}
+ * @returns {IRouteArgsFactory}
  */
-export function FromBody(): ParamsFactory;
-export function FromBody(options: Partial<ParamsOptions>): ParamsFactory;
-export function FromBody(options?: Partial<ParamsOptions>) {
-  const { transform = undefined, useStatic = undefined } = options || {};
-  return function dynamic_params<T>(
-    prototype: T,
-    propKey: string,
-    index: number
-  ) {
-    route_query({
-      prototype,
-      propKey,
-      index,
-      transform,
-      useStatic,
-      type: "body"
-    });
-  };
+export function FromBody(): IRouteArgsFactory;
+export function FromBody(options: Partial<IBodyArgsOptions>): IRouteArgsFactory;
+export function FromBody(options: Partial<IBodyArgsOptions> = {}) {
+  return RT.FromBody({ ...options, useStatic: decideStaticFn(options) });
 }
 
-function route_query<T>({
-  type,
-  prototype,
-  propKey,
-  index,
-  transform,
-  useStatic
-}: {
-  type: "params" | "body";
-  prototype: T;
-  propKey: string;
-  index: number;
-  transform?: any;
-  useStatic?: boolean;
-}) {
-  const types = getMethodParamsType(prototype, propKey);
-  tryGetRouteMagic(prototype, propKey).params.push({
-    ctor: resolveParamType(types[index]),
-    resolver: transform,
-    static: useStatic,
-    type,
-    index
-  });
+/**
+ * ## 从request中获取内容
+ * * 顶级装饰器，用于定制
+ * @description
+ * @author Big Mogician
+ * @export
+ * @returns {IRouteArgsFactory}
+ */
+export function FromRequest(): IRouteArgsFactory;
+export function FromRequest(
+  options: Partial<IRequestArgsOptions>
+): IRouteArgsFactory;
+export function FromRequest(options: Partial<IRequestArgsOptions> = {}) {
+  return RT.FromRequest({ ...options, useStatic: decideStaticFn(options) });
 }
 
-function resolveParamType(type?: any) {
-  if (!type) return undefined;
-  if (type === Object) return undefined;
-  return type;
-}
-
-function addMagicForRoute(method: METHOD, path: string): IRouteFactory {
-  return function route_magic<T>(
-    prototype: T,
-    propKey: string,
-    descriptor?: PropertyDescriptor
-  ) {
-    APIFactory(method, path)(prototype, propKey, descriptor);
-  };
-}
+export type HttpMethod = METHOD | "PATCH" | "OPTION";
 
 /**
  * ## 最高扩展性的路由声明
@@ -166,26 +184,48 @@ function addMagicForRoute(method: METHOD, path: string): IRouteFactory {
  * @author Big Mogician
  * @export
  * @param {{
- *   method: METHOD;
+ *   method: HttpMethod;
  *   tpls: string[];
  *   name?: string;
- *   isIndex?: boolean;
  * }} configs
  * @returns
  */
-export function __BASE_ROUTE_DECO_FACTORY(configs: {
-  method: METHOD;
-  tpls: string[];
+export function BASE_ROUTE_DECO_FACTORY(configs: {
+  method: HttpMethod;
+  patterns: (string | MT.IRouteUrlPattern)[];
   name?: string;
-  isIndex?: boolean;
+  force?: boolean;
 }) {
-  return function __route_custom<T>(
-    prototype: T,
-    propKey: string,
-    descriptor?: PropertyDescriptor
-  ) {
-    return CustomRouteFactory(configs)(prototype, propKey, descriptor);
-  };
+  return RT.CustomRoute({
+    method: <METHOD>configs.method,
+    name: configs.name,
+    forceRouter: configs.force,
+    patterns: configs.patterns
+  });
+}
+
+/**
+ * ## 定义一次Http请求路由
+ *
+ * @author Big Mogician
+ * @export
+ * @param {HttpMethod} method
+ * @param {string} path
+ * @returns {IRouteFactory}
+ */
+export function HTTP(method: HttpMethod, path: string): IRouteFactory;
+export function HTTP(method: HttpMethod, paths: string[]): IRouteFactory;
+export function HTTP(method: HttpMethod, paths: string | string[]) {
+  const pathSections = Array.isArray(paths) ? paths : [paths];
+  return RT.CustomRoute({
+    method: <METHOD>method,
+    forceRouter: false,
+    path: pathSections,
+    patterns: pathSections.map(path => ({
+      pattern: "{{@group}}/{{@path}}",
+      sections: { path }
+    }))
+  });
 }
 
 /**
@@ -197,7 +237,7 @@ export function __BASE_ROUTE_DECO_FACTORY(configs: {
  * @returns {IRouteFactory}
  */
 export function GET(path: string): IRouteFactory {
-  return addMagicForRoute("GET", path);
+  return HTTP("GET", path);
 }
 
 /**
@@ -209,7 +249,7 @@ export function GET(path: string): IRouteFactory {
  * @returns {IRouteFactory}
  */
 export function PUT(path: string): IRouteFactory {
-  return addMagicForRoute("PUT", path);
+  return HTTP("PUT", path);
 }
 
 /**
@@ -221,7 +261,7 @@ export function PUT(path: string): IRouteFactory {
  * @returns {IRouteFactory}
  */
 export function POST(path: string): IRouteFactory {
-  return addMagicForRoute("POST", path);
+  return HTTP("POST", path);
 }
 
 /**
@@ -233,5 +273,5 @@ export function POST(path: string): IRouteFactory {
  * @returns {IRouteFactory}
  */
 export function DELETE(path: string): IRouteFactory {
-  return addMagicForRoute("DELETE", path);
+  return HTTP("DELETE", path);
 }

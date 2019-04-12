@@ -1,5 +1,5 @@
 import path from "path";
-import { createOptions } from "../../services/Configs";
+import { createOptions } from "../../typings/IConfigs";
 
 export interface INunjunksRenderOptions {
   root: string;

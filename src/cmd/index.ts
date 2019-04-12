@@ -1,8 +1,10 @@
 import commander from "commander";
 import { CommandPlugin } from "./base";
-import { RouterPlugin } from "./router";
-import { ConfigPlugin } from "./config";
-import { DevPlugin } from "./dev";
+import { DevPlugin } from "./actions/dev";
+import { RouterPlugin } from "./actions/routers";
+import { ConfigPlugin } from "./actions/config";
+import { MiddlewarePlugin } from "./actions/middleware";
+import { CompilePlugin } from "./actions/compile";
 
 function initCommand(plugin: CommandPlugin) {
   const program = commander.name(plugin.name).description(plugin.description);
@@ -14,7 +16,13 @@ function initCommand(plugin: CommandPlugin) {
   program.action(plugin.action).on("--help", plugin.help);
 }
 
-[DevPlugin, RouterPlugin, ConfigPlugin].forEach(i => initCommand(i));
+[
+  DevPlugin,
+  CompilePlugin,
+  RouterPlugin,
+  ConfigPlugin,
+  MiddlewarePlugin
+].forEach(i => initCommand(i));
 
 commander.version("1.0.0-rc.1").parse(process.argv);
 

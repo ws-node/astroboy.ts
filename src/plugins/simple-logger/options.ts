@@ -1,5 +1,5 @@
-import { createOptions } from "../../services/Configs";
 import { SimpleLogLevel } from "./base";
+import { createOptions } from "../../typings/IConfigs";
 
 export interface ISimpleLoggerOptions {
   level: SimpleLogLevel | number;

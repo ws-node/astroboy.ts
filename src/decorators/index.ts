@@ -1,12 +1,17 @@
 export * from "./injectable";
-export { Controller } from "./controller";
+export * from "./middleware";
+export { Controller, buildRouter } from "./controller";
 export {
+  HTTP,
   GET,
   POST,
   PUT,
   DELETE,
-  __BASE_ROUTE_DECO_FACTORY,
+  BASE_ROUTE_DECO_FACTORY,
   FromParams,
-  FromBody
+  FromBody,
+  FromQuery,
+  FromRequest,
+  HttpMethod
 } from "./route";
 export { ReactiveSingleton, Watch } from "./singleton";

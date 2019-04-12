@@ -2,6 +2,46 @@
 
 ## 迭代记录
 
+### 1.1.3-rc.55
+
+- 泛化 `Render` ，支持扩展其 options 类型，同时新增 `getView` 接口，支持上层扩展复写获取 Views 的逻辑
+
+### 1.1.3-rc.40
+
+- `atc` 新增 `compile` 编译命令，全量编译路由、配置和中间件
+
+### 1.1.3-rc.36
+
+- 修复问题，调整 DevTool 的 console 输出风格
+
+### 1.1.3-rc.34
+
+- 最小 node 版本提高到 8.0
+
+### 1.1.3-rc.30
+
+- 优化中间件编译，force 默认编译到 ts
+
+### 1.1.3-rc.27
+
+- 改进了编译指令的健壮性和稳定性，修复一些存在的问题
+
+### 1.1.3-rc.17
+
+- [ BREAKING CHANGE ] 废除装饰器 `DefineConfig` 并删除，config 改为纯函数导出，并支持多函数
+
+### 1.1.3-rc.16
+
+- `atc` 新增 `middleware` 编译命令，支持对 ts 格式的 `middleware` 执行编译操作，简化 DI 能力支持
+
+### 1.1.3-rc.4
+
+- 提供新的装饰器 `DefineConfig` 优化 config 的书写方式
+
+### 1.1.3-rc.2
+
+- 移除 `astroboy` 的依赖，只作为开发依赖，可以解除 `astroboy` 版本的绑定
+
 ### 1.1.2-rc.2
 
 - 调整 `atc config --force` 命令的行为，不会删掉 config 文件夹，只会清除所有 js 文件
@@ -16,7 +56,7 @@
 
 ### 1.0.11-rc.17
 
-- `atc` 新增 `config` 编译命令，支持对 ts 格式的 `config` 执行编译操作，支持未来的 config-DI 能力
+- `atc` 新增 `config` 编译命令，支持对 ts 格式的 `config` 执行编译操作，支持 config-DI 能力
 
 ### 1.0.11-rc.7
 

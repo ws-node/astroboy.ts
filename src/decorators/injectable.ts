@@ -31,6 +31,7 @@ export function Injectable(
 ): <T>(target: Constructor<T>) => any;
 export function Injectable(config?: InjectScope | Partial<IInjectableConfigs>) {
   return function<T>(target: Constructor<T>) {
+    // @ts-ignore no check for undefined
     let token: InjectToken<any> = undefined;
     let scope: InjectScope = InjectScope.Scope;
     switch (config) {
@@ -43,7 +44,7 @@ export function Injectable(config?: InjectScope | Partial<IInjectableConfigs>) {
         const { token: tk = undefined, type: tp = InjectScope.Scope } =
           config || {};
         scope = tp || InjectScope.Scope;
-        token = tk;
+        token = <any>tk;
     }
     const prototype: IBaseInjectable = target.prototype;
     prototype.__valid = true;

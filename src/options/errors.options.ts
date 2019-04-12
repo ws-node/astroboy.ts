@@ -1,4 +1,4 @@
-import { createOptions, Configs } from "../services/Configs";
+import { Configs } from "../services/Configs";
 import { InjectService } from "../services/Injector";
 import { Context } from "../services/Context";
 import { Render } from "../services/Render";
@@ -6,6 +6,7 @@ import { RenderResult } from "../results/render";
 import { RENDER_RESULT_OPTIONS } from "./render.options";
 import { ENV } from "../configs/env.config";
 import { SimpleLogger } from "../plugins/simple-logger";
+import { createOptions } from "../typings/IConfigs";
 
 interface IGlobalErrorHandler {
   handler?: (error: any, injector: InjectService, configs: Configs) => void;
@@ -31,7 +32,7 @@ export const defaultGlobalError: IGlobalErrorHandler = {
     } catch (_) {
       const logger = injector.get(SimpleLogger);
       logger.trace("GLOBAL_ERROR render failed", _);
-      ctx.body = defaultRender(error, "Internal Server Error");
+      ctx.body = defaultRender!(error, "Internal Server Error");
     }
   }
 };

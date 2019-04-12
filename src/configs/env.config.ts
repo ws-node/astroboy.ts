@@ -1,4 +1,4 @@
-import { createConfig } from "../services/Configs";
+import { createConfig } from "../typings/IConfigs";
 
 interface IENV {
   /** 设置DI解析的模式，默认：`'native'` */

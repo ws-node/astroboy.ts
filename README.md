@@ -15,6 +15,7 @@
 - 可扩展的注入式模版引擎
 - 可配置容器定义化
 - DI 可注入依赖实现多重继承
+- Config 体系接入 DI 容器
 - 配置容器对接 astroboy 标准 configs 模式
 - 自动化生成 astroboy 的 routers 规范
 - 命令行工具支持
@@ -29,21 +30,16 @@
 - [Demo1:多版本并存](https://github.com/ws-node/demo.astroboy.ts) - 最大兼容预览(多重代码风格可以共存)
 - [Demo2:全量 astroboy.ts+构建 base 项目包](https://github.com/ws-node/demo2.astroboy.ts) - base 仓库预览(构建继承 astroboy.ts 的 base 项目)
 - [Demo3:使用 base 仓库构建应用](https://github.com/ws-node/demo3.astroboy.ts) - 最大预览(使用 base 项目构建应用)
-- [Core](https://github.com/ws-node/astroboy.ts/wiki/Core) - 核心组件
-- [Services](https://github.com/ws-node/astroboy.ts/wiki/Services) - 内置服务列表
-- [Configs/Options](https://github.com/ws-node/astroboy.ts/wiki/Configs-Options) - 配置列表
-- [Decorators](https://github.com/ws-node/astroboy.ts/wiki/Decorators) - 装饰器列表
-- [Functions](https://github.com/ws-node/astroboy.ts/wiki/Functions) - 功能函数
-- [Interfaces](https://github.com/ws-node/astroboy.ts/wiki/Interfaces) - 公开接口列表
+- [GitHub Pages](https://ws-node.github.io/astroboy.ts) - astroboy.ts 文档
 
 ### 安装
 
 ```
-npm install astroboy.ts
+npm install astroboy astroboy.ts
 ```
 
 ```
-yarn add astroboy.ts
+yarn add astroboy astroboy.ts
 ```
 
 ### 接入说明
@@ -56,6 +52,8 @@ yarn add astroboy.ts
 import path from "path";
 import { Server, Astroboy } from "astroboy.ts";
 
+// astroboy请手动安装，因为astroboy.ts只将其设置为开发依赖
+// 未安装astroboy，会引发npm解析错误
 Server.Create(Astroboy, {
   ROOT_PATH: path.resolve(__dirname, "..")
 }).run({
@@ -96,7 +94,7 @@ const path = require("path");
 module.exports = {
   "@astroboy.ts": {
     showTrace: false,
-    diType: "proxy"
+    diType: "native"
   }
 };
 ```
@@ -105,7 +103,7 @@ module.exports = {
 
 ```
 # 本地安装astrpboy.ts
-./node_modules/.bin/atc dev --inspect --tsconfig app/tsconfig.json
+npx atc dev --inspect --tsconfig app/tsconfig.json
 # 全局装过astrpboy.ts
 atc dev --inspect --tsconfig app/tsconfig.json
 ```
@@ -129,6 +127,7 @@ module.exports = {
   debug: "*",
   mock: "http://127.0.0.1:8001",
   // atc router 的命令配置
+  // 编译生成routers，不再需要手动书写routers文件
   routers: {
     enabled: true,
     always: false,
@@ -143,7 +142,15 @@ module.exports = {
     path.join(__dirname, "plugins/**/*.*")
   ],
   // 忽略的文件列表
-  ignore: []
+  ignore: [],
+  // atc config 的命令配置
+  // 编译ts配置文件，支持DI能力 @1.1.0 引入
+  configCompiler: {
+    enabled: true,
+    force: true,
+    configroot: "app/config",
+    outputroot: "config
+  }
 };
 ```
 
@@ -240,27 +247,15 @@ import { buildRouter } from "astroboy.ts";
 export = buildRouter(TEST, "test", "/v1");
 ```
 
-> 注：1.0.1-rc.27 版本以后已经支持自动生成 router，不需再要上述步骤，有两种模式任选其一，操作如下：
+> 注：1.0.1-rc.27 版本以后已经支持自动生成 router，不需再要上述步骤，操作如下：
 
-##### 1. routers 预处理模式
+##### routers 预处理模式
 
 - 使用 `astroboy.ts` 提供的命令行工具
 
 ```bash
 # 在开发启动或者生产打包前确保执行即可
 ./node_modules/.bin/atc router --always --filetype ts
-```
-
-##### 2. 动态初始化(不推荐)
-
-- 配置 `app/app.ts` 文件 (但是在删除控制器后，需要手动删除 routers 中多余的文件)
-
-```typescript
-Server.Create(..., {
-  ...
-})
-  .option(ROUTER_OPTIONS, { appRoot: "/v1", enabled: true })
-  ...
 ```
 
 到此一个完整的业务级别的 router 构造完成了。
@@ -376,6 +371,234 @@ export = () =>
     await next();
     // console.log("fuck");
   });
+```
+
+##### 编译模式支持 @1.1.3-rc.16
+
+在 `1.1.3-rc.16` 版本引入中间件编译能力，支持使用 DI 语法来直接书写中间件。
+
+配置文件：
+
+```javascript
+const path = require("path");
+
+// 不相关的配置信息已经隐藏
+module.exports = {
+  tsconfig: "tsconfig.json",
+  // atc middleware 的命令配置
+  // 编译ts配置文件，支持DI能力 @1.1.03-rc.16 引入
+  middlewareCompiler: {
+    enabled: true, // 默认：false
+    force: true, // 默认：false
+    root: "middlewares", // 默认位置：middlewares/*.ts
+    output: "app/middlewares" // 默认输出位置：app/middlewares/*.js
+  }
+};
+```
+
+> middlewares/test.ts
+
+```typescript
+import { AstroboyContext } from "astroboy.ts";
+import * as atc from "astroboy.ts";
+import { testA } from "../app/utils/testA";
+
+export default async function testMiddleware(
+  context: AstroboyContext,
+  injector: atc.InjectService
+) {
+  console.log(new Date().getTime());
+  console.log(context.ctx.url);
+  await testA();
+  await this.next();
+}
+```
+
+执行命令： `atc middleware --force`
+
+得到结果：
+
+> app/middlewares/test.js
+
+```javascript
+// [astroboy.ts] 自动生成的代码
+import { injectScope, IMiddlewaresScope } from "astroboy.ts";
+import astroboy_ts_1 = require("astroboy.ts");
+import * as astroboy_ts_2 from "astroboy.ts";
+import testA_1 = require("../utils/testA");
+async function testMiddleware(context, injector) {
+    console.log(new Date().getTime());
+    console.log(context.ctx.url);
+    await testA_1.testA();
+    await this.next();
+}
+export = () => injectScope(async ({ injector, next }: IMiddlewaresScope) => {
+  const _p0 = injector.get(astroboy_ts_1.AstroboyContext);
+  const _p1 = injector.get(astroboy_ts_2.InjectService);
+  await testMiddleware.call({ next }, _p0, _p1);
+});
+```
+
+#### 5.支持 DI 的 ts 配置文件
+
+在 `1.1.0` 版本引入配置文件编译能力，支持使用 ts 来书写 config，同时可以将类型友好的服务化配置引入 DI。
+
+使用 `atc config --force` ，强制使用 ts 配置文件夹，覆盖原始的 config
+
+##### 1.配置 atc.config.js
+
+```javascript
+const path = require("path");
+
+// 不相关的配置信息已经隐藏
+module.exports = {
+  tsconfig: "tsconfig.json",
+  // atc config 的命令配置
+  // 编译ts配置文件，支持DI能力 @1.1.0 引入
+  configCompiler: {
+    enabled: true, // 默认：false
+    force: true, // 默认：false
+    configroot: "app/config", // 默认位置：app/config/**.ts
+    outputroot: "config" // 默认输出位置：config/**.js
+  }
+};
+```
+
+##### 2.书写配置文件
+
+下面是一个 `config.default.ts` 的例子：
+
+> app/config/config.default.ts
+
+```typescript
+import { IStrictConfigsCompiler, ConfigReader } from "astroboy.ts";
+
+type DIType = "proxy" | "native";
+
+// 定义整个应用的config结构
+export interface IConfigs {
+  "@astroboy.ts": {
+    showTrace: boolean;
+    diType: DIType;
+  };
+  demo: {
+    key01: number;
+    key02: string;
+  };
+  strOpt: string;
+  a: number;
+  b: string;
+  c: {
+    d: boolean;
+    e?: string;
+  };
+  f: {
+    v: string;
+  };
+}
+
+// 创建应用级别的DI项，可以在controller、service等地方注入使用
+export class MyConfigsReader extends ConfigReader<IConfigs> {}
+
+// 只要加上export标识，就可以输出到编译后的文件中去
+export function woshinidie() {
+  xFunc();
+  return 123456;
+}
+
+export function xFunc() {
+  console.log({
+    a: 124,
+    b: "sdfad"
+  });
+}
+
+// 默认导出实现接口约定的类
+export default function DefaultCOnfigs(): IConfigs {
+  const path = require("path");
+  return {
+    "@astroboy.ts": {
+      showTrace: true,
+      diType: <DIType>"proxy"
+    },
+    demo: {
+      key01: 12345,
+      key02: "woshinidie"
+    },
+    strOpt: "test_string_config",
+    a: woshinidie(),
+    b: "default",
+    c: {
+      d: false,
+      e: "352424"
+    }
+  };
+}
+```
+
+书写一个环境 config 配置，比如 `config.dev.ts` :
+
+> app/config/config.dev.ts
+
+```typescript
+import { IConfigs } from "./config.default";
+
+// 使用非严格接口，只提供一部分的参数，用于覆盖
+export default () => (<Partial<IConfigs>{
+  b: "dev"
+});
+```
+
+完成以后，在应用启动时执行：`atc config --force` :
+
+> config/config.default.js
+
+```javascript
+// [astroboy.ts] 自动生成的代码
+const tslib_1 = require("tslib");
+const astroboy_ts_1 = require("astroboy.ts");
+class MyConfigsReader extends astroboy_ts_1.ConfigReader {}
+function woshinidie() {
+  xFunc();
+  return 123456;
+}
+function xFunc() {
+  console.log({
+    a: 124,
+    b: "sdfad"
+  });
+}
+module.exports = (function DefaultCOnfigs() {
+  const path = require("path");
+  return {
+    "@astroboy.ts": {
+      showTrace: true,
+      diType: "proxy"
+    },
+    demo: {
+      key01: 12345,
+      key02: "woshinidie"
+    },
+    strOpt: "test_string_config",
+    a: woshinidie(),
+    b: "default",
+    c: {
+      d: false,
+      e: "352424"
+    }
+  };
+})();
+```
+
+> config/config.dev.js
+
+```javascript
+// [astroboy.ts] 自动生成的代码
+const tslib_1 = require("tslib");
+const config_default_1 = require("./config.default");
+module.exports = (() => ({
+  b: "dev"
+}))();
 ```
 
 > 文档完善中...

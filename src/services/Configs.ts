@@ -2,26 +2,9 @@ import {
   IConfigCollection,
   ConfigsCollection as ReadonlyConfigs
 } from "@bonbons/di";
+import { ConfigToken, ConfigEntry } from "../typings/IConfigs";
 
 export { InjectScope } from "@bonbons/di";
-
-export interface ConfigToken<T> {
-  key: symbol;
-}
-
-export interface ConfigEntry<T> {
-  token: ConfigToken<T>;
-  value: T;
-}
-
-export type TokenGenerator = <T>(key: string) => ConfigToken<T>;
-
-export const createOptions: TokenGenerator = (key: string) => ({
-  key: Symbol(key)
-});
-export const createConfig: TokenGenerator = (key: string) => ({
-  key: Symbol(`config::${key}`)
-});
 
 export class RealConfigCollection implements IConfigCollection {
   private map = new Map<symbol, { value: any }>();

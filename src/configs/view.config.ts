@@ -1,4 +1,4 @@
-import { createConfig } from "../services/Configs";
+import { createConfig } from "../typings/IConfigs";
 
 /**
  * Astroboy的配置的view结构

@@ -1,13 +1,13 @@
-import { ConfigsCollection as ReadonlyConfigs } from "@bonbons/di";
-import { InjectService } from "../services/Injector";
+import {
+  ConfigsCollection as ReadonlyConfigs,
+  ReadonlyDIContainer as ReadonlyDI
+} from "@bonbons/di";
+import { Async } from "./IViewEngine";
 
 export interface IResultScope {
   configs: ReadonlyConfigs;
-  injector: InjectService;
+  injector: ReadonlyDI;
 }
-
-/** 表示一个异步过程 */
-export type Async<T> = T | Promise<T>;
 
 /**
  * ## 路由方法返回接口定义

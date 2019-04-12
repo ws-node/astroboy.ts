@@ -3,7 +3,6 @@ import merge from "lodash/merge";
 import isPlainObject from "lodash/isPlainObject";
 import reduce from "lodash/reduce";
 import uuid from "uuid/v4";
-import chalk from "chalk";
 import {
   Constructor,
   getDependencies,
@@ -49,16 +48,7 @@ export function setColor(name: keyof typeof Colors, value: any): string {
   return `${Colors[name]}${value}${Colors.reset}`;
 }
 
-export const GlobalDI = new DIContainer<ScopeID, { ctx: any }>({
-  // throws: false,
-  // onEmit: ({ level, data }) =>
-  //   console.log(
-  //     chalk[level === "warn" ? "yellow" : level === "error" ? "red" : "white"](
-  //       `[${level.toUpperCase()}] - ${data.msg}`
-  //     )
-  //   )
-});
-export const GlobalImplements = new Map<any, any>();
+export const GlobalDI = new DIContainer<ScopeID, { ctx: any }>();
 
 export function setScopeId(ctx: IContext) {
   const state = ctx.state || (ctx.state = {});
@@ -105,7 +95,7 @@ export function isCustomClassInstance(obj: any, type?: any) {
     : getPrototypeConstructor(obj) === type;
 }
 
-export function getPrototypeConstructor(obj) {
+export function getPrototypeConstructor(obj: any) {
   const proto = Object.getPrototypeOf(obj);
   return proto && proto.constructor;
 }

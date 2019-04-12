@@ -23,6 +23,7 @@ module.exports = {
       "@bigmogician/publisher": undefined,
       "@types/chai": undefined,
       "@types/mocha": undefined,
+      "astroboy-cli": undefined,
       "source-map-support": undefined,
       "tslint-config-prettier": undefined,
       "typedoc-plugin-external-module-name": undefined

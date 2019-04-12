@@ -2,52 +2,65 @@ import { AstroboyContext } from "./AstroboyContext";
 import { Injectable } from "../decorators/injectable";
 
 /**
- * 基础configs预编译接口
- *
- * @author Big Mogician
- * @interface BaseCompiler
- * @template T
- */
-interface BaseCompiler<T> {
-  /**
-   * 编译输出过程，可以是import语句，模块变量声明，函数等执行过程语句
-   *
-   * @author Big Mogician
-   * @param {NodeJS.Process} process
-   * @returns {string[]}
-   * @memberof BaseCompiler
-   */
-  procedures?(process: NodeJS.Process): string[];
-}
-
-/**
- * 严格configs预编译接口
- * * 需要实现完整的configs接口
- * * 适合config.default.ts使用
+ * astroboy基础配置结构
  *
  * @author Big Mogician
  * @export
- * @interface IStrictConfigsCompiler
- * @extends {BaseCompiler<T>}
- * @template T
+ * @interface IAstroboyBaseConfigs
  */
-export interface IStrictConfigsCompiler<T> extends BaseCompiler<T> {
-  configs(process: NodeJS.Process): T;
+export interface IAstroboyBaseConfigs {
+  view: {
+    root: string;
+    cache: false;
+    defaultExtension: string;
+    defaultViewEngine: string;
+    mapping: { [prop: string]: any };
+  };
 }
 
+type MatchInvoke = string | RegExp | ((ctx: any) => boolean);
+
 /**
- * 松散configs预编译接口
- * * 需要实现部分的configs接口
- * * 适合非config.default.ts的文件使用
+ * astroboy中间件配置参数类型结构
  *
  * @author Big Mogician
  * @export
- * @interface IConfigsCompiler
- * @extends {BaseCompiler<T>}
+ * @interface IAstMiddlewareConfig
  * @template T
  */
-export interface IConfigsCompiler<T> extends BaseCompiler<T> {
-  configs(process: NodeJS.Process): Partial<T>;
+export interface IAstMiddlewareConfig<T = any> {
+  priority?: number;
+  enable?: boolean;
+  options?: T;
+  ignore?: MatchInvoke | Array<MatchInvoke>;
+  match?: MatchInvoke | Array<MatchInvoke>;
+}
+
+/**
+ * astroboy基础中间件配置结构
+ *
+ * @author Big Mogician
+ * @export
+ * @interface IAstroboyBaseMiddlewares
+ */
+export interface IAstroboyBaseMiddlewares {
+  "astroboy-static": IAstMiddlewareConfig<{ root?: string }>;
+  "astroboy-security-cto": IAstMiddlewareConfig<string>;
+  "astroboy-security-frameOptions": IAstMiddlewareConfig<string>;
+  "astroboy-security-hsts": IAstMiddlewareConfig<{ maxAge: number }>;
+  "astroboy-security-xssProtection": IAstMiddlewareConfig<string>;
+  "astroboy-security-xss": IAstMiddlewareConfig<any>;
+  "astroboy-router": IAstMiddlewareConfig<any>;
+  "astroboy-body": IAstMiddlewareConfig<{
+    formidable?: {
+      uploadDir: string;
+    };
+    multipart?: string;
+    jsonLimit?: string;
+    formLimit?: string;
+    textLimit?: string;
+    strict?: boolean;
+  }>;
 }
 
 /**
@@ -60,23 +73,6 @@ export interface IConfigsCompiler<T> extends BaseCompiler<T> {
  */
 @Injectable()
 export class ConfigReader<T extends { [prop: string]: any } = {}> {
-  /**
-   * ### 使用语法表达式来填充
-   * * 使用简单语句
-   * * 避免使用复杂字符串
-   * * 繁重的逻辑可以使用`procedures`
-   *
-   * @author Big Mogician
-   * @static
-   * @template T
-   * @param {string} expression
-   * @returns {T}
-   * @memberof ConfigReader
-   */
-  static Expression<T = any>(expression: string): T {
-    return Symbol(expression) as any;
-  }
-
   /**
    * 整个config数据
    *

@@ -18,16 +18,14 @@ import {
 import { ENV, defaultEnv, CONFIG_VIEW, defaultView } from "./configs";
 import {
   JSON_RESULT_OPTIONS,
-  ROUTER_OPTIONS,
-  CONFIG_COMPILER_OPTIONS,
   RENDER_RESULT_OPTIONS,
   STATIC_RESOLVER,
   GLOBAL_ERROR,
   defaultJsonResultOptions,
   defaultRenderResultOptions,
-  defaultConfigCompilerOptions
+  defaultGlobalError
 } from "./options";
-import { RealConfigCollection, ConfigToken, Configs } from "./services/Configs";
+import { RealConfigCollection, Configs } from "./services/Configs";
 import { TypedSerializer } from "./plugins/typed-serializer";
 import {
   NunjunksEngine,
@@ -41,13 +39,8 @@ import {
 } from "./plugins/simple-logger";
 import { Render } from "./services/Render";
 import { ConfigReader } from "./services/ConfigReader";
-import { initRouters } from "./builders/routers";
-import {
-  InnerRouterOptions,
-  defaultRouterOptions
-} from "./options/router.options";
-import { defaultGlobalError } from "./options/errors.options";
 import { InnerBundle } from "./bundle";
+import { ConfigToken } from "./typings/IConfigs";
 
 type DIPair = [any, any];
 type DependencyFactory<DEPTS, T> = [DEPTS, (...args: any[]) => T] | (() => T);
@@ -384,8 +377,6 @@ export class Server {
     this.option(JSON_RESULT_OPTIONS, defaultJsonResultOptions);
     this.option(RENDER_RESULT_OPTIONS, defaultRenderResultOptions);
     this.option(STATIC_RESOLVER, TypedSerializer);
-    this.option(ROUTER_OPTIONS, defaultRouterOptions);
-    this.option(CONFIG_COMPILER_OPTIONS, defaultConfigCompilerOptions);
     this.option(NUNJUNKS_OPTIONS, defaultNunjunksOptions);
     this.option(SIMPLE_LOGGER_OPTIONS, defaultSimpleLoggerOptions);
     this.option(GLOBAL_ERROR, defaultGlobalError);
@@ -489,20 +480,22 @@ export class Server {
     this.di.complete();
   }
 
+  /**
+   * ## Init函数，在服务启动时触发
+   * 🌟 在继承树中重载此方法以进行框架扩展
+   * * 在基础依赖注入功能完成之前执行
+   *
+   * @author Big Mogician
+   * @protected
+   * @memberof Server
+   */
+  protected init() {}
+
   //#endregion
 
   private preInit() {
     this.initOptions();
     this.initInjections();
-  }
-
-  private init() {
-    this.initRouters();
-  }
-
-  private initRouters() {
-    initRouters(<InnerRouterOptions>this.configs.get(ROUTER_OPTIONS));
-    return this;
   }
 
   private finalInjectionsInit() {
