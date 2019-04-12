@@ -1,7 +1,8 @@
 import Koa from "koa";
 
 export interface IContext extends Koa.Context {
-  config: any;
+  readonly config: any;
+  readonly view: any;
   getConfig(...args: any[]): any;
   getServiceClass(...args: any[]): any;
   /**
@@ -31,4 +32,11 @@ export interface IContext extends Koa.Context {
     ...args: any[]
   ): any;
   getLib(...args: any[]): any;
+  /**
+   * @description 渲染模版文件 异步
+   * @param {...any[]} args
+   * @returns {Promise<any>}
+   */
+  render(...args: any[]): Promise<any>;
+  renderView(...args: any[]): Promise<any>;
 }
